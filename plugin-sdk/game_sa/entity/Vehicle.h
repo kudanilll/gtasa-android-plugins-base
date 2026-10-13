@@ -470,10 +470,10 @@ unsigned int m_nTimeWhenBlowedUp;      // game will delete vehicle when 60 secon
 unsigned short m_nCopsInCarTimer; // timer for police car (which is following player) occupants to stay in car. If this
                                   // timer reachs some value, they will leave a car. The timer increases each frame if
                                   // player is stopped in car, otherway it resets
-unsigned short m_wBombTimer;  // goes down with each frame
-CEntity *m_pWhoDetonatedMe;   // if vehicle was detonated, game copies m_pWhoInstalledBombOnMe here
-float m_fVehicleFrontGroundZ; // we get these values from CCollision::IsStoredPolyStillValidVerticalLine
-float m_fVehicleRearGroundZ;  //
+unsigned short m_wBombTimer;      // goes down with each frame
+CEntity *m_pWhoDetonatedMe;       // if vehicle was detonated, game copies m_pWhoInstalledBombOnMe here
+float m_fVehicleFrontGroundZ;     // we get these values from CCollision::IsStoredPolyStillValidVerticalLine
+float m_fVehicleRearGroundZ;      //
 unsigned char m_nOilSpills;
 float m_fLastOilSpillX;
 float m_fLastOilSpillY;

@@ -19,3 +19,16 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+---
+
+### Third-Party Licenses & Attribution
+
+- **plugin-sdk/**:
+  Adapted from [AndroidModLoader/aml-psdk](https://github.com/AndroidModLoader/aml-psdk) by RusJJ.
+  Licensed under the GNU General Public License v3.0 (GPLv3).
+  See `plugin-sdk/LICENSE` for the full license text.
+
+- **mod/thirdparty/stb_sprintf.h**:
+  By Sean Barrett. Dual-licensed under Public Domain and MIT License.
+  See `mod/thirdparty/STB_LICENSE` for details.
