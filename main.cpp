@@ -1,39 +1,46 @@
 #include <mod/amlmod.h>
-#include <mod/config.h>
 #include <mod/logger.h>
 
-MYMODCFG(net.rusjj.mymod.guid, AML Mod Template, 1.0, RusJJ)
+#include <plugin-sdk/game_sa/Events.h>
+#include <plugin-sdk/game_sa/base/Timer.h>
+#include <plugin-sdk/game_sa/engine/Font.h>
+#include <plugin-sdk/game_sa/engine/Sprite2d.h>
+#include <plugin-sdk/game_sa/entity/PlayerPed.h>
 
-// MYMOD(net.rusjj.mymod.guid, AML Mod Template Without Config, 1.0, RusJJ)
+MYMOD(net.rusjj.baseplugin, BasePlugin, 1.0, RusJJ)
 
-// NEEDGAME(net.rusjj.mygame)
+static bool g_bMessageTriggered = false;
+static uint32_t g_nTimeToHide = 0;
 
-// BEGIN_DEPLIST()
-//     ADD_DEPENDENCY_VER(net.rusjj.aml, 1.0)
-// END_DEPLIST()
+ON_MOD_LOAD() {
+    logger->SetTag("BasePlugin");
+    logger->Info("BasePlugin loaded");
 
-uintptr_t pGameLibrary = 0;
-ConfigEntry *pCfgMyBestEntry;
+    Events::drawHudEvent += []() {
+        CPlayerPed *player = FindPlayerPed(-1);
+        if (!player)
+            return;
 
-extern "C" void OnModLoad() {
-    logger->SetTag("Mod Template");
+        uint32_t currentTime = CTimer::GetTimeMS();
 
-    pGameLibrary = aml->GetLib("libMyGame.so");
-    if (pGameLibrary) {
-        logger->Info("MyGame mod is loaded!");
-    } else {
-        logger->Error("MyGame mod is not loaded :(");
-        return; // Do not load our mod?
-    }
+        // first spawn in-game starts the 3s window
+        if (!g_bMessageTriggered) {
+            g_bMessageTriggered = true;
+            g_nTimeToHide = currentTime + 3000;
+        }
 
-    pCfgMyBestEntry = cfg->Bind("mySetting", "DefaultValue is 0?", "MyUniqueSection");
-    pCfgMyBestEntry->SetString("DefaultValue is unchanged");
-    pCfgMyBestEntry->SetInt(1);
-    pCfgMyBestEntry->Reset();
-    delete pCfgMyBestEntry; // Clean-up memory
+        if (currentTime <= g_nTimeToHide) {
+            CSprite2d::DrawRect(CRect(40.0f, 40.0f, 260.0f, 95.0f), CRGBA(0, 0, 0, 180));
 
-    bool bEnabled = cfg->Bind("Enable", true)->GetBool();
-    delete Config::pLastEntry; // Clean-up of the latest ConfigEntry*
-
-    cfg->Save(); // Will only save if something was changed
+            CFont::SetScale(0.75f, 1.4f);
+            CFont::SetOrientation(ALIGN_LEFT);
+            CFont::SetFontStyle(FO_FONT_STYLE_STANDARD);
+            CFont::SetProportional(true);
+            CFont::SetColor(CRGBA(255, 255, 255, 255));
+            CFont::SetDropColor(CRGBA(0, 0, 0, 255));
+            CFont::SetEdge(1);
+            CFont::PrintString(55.0f, 52.0f, "mod loaded!");
+            CFont::RenderFontBuffer();
+        }
+    };
 }
