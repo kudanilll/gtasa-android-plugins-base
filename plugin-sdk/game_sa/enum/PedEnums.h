@@ -1,7 +1,6 @@
 #pragma once
 
-enum ePedType : unsigned int
-{
+enum ePedType : unsigned int {
     PED_TYPE_PLAYER1,
     PED_TYPE_PLAYER2,
     PED_TYPE_PLAYER_NETWORK,
@@ -36,8 +35,7 @@ enum ePedType : unsigned int
     PED_TYPE_MISSION8
 };
 
-enum ePedState : unsigned int
-{
+enum ePedState : unsigned int {
     PEDSTATE_NONE,
     PEDSTATE_IDLE,
     PEDSTATE_LOOK_ENTITY,
@@ -105,8 +103,7 @@ enum ePedState : unsigned int
     PEDSTATE_DEPLOY_STINGER
 };
 
-enum eMoveState : unsigned int
-{
+enum eMoveState : unsigned int {
     PEDMOVE_NONE = 0,
     PEDMOVE_STILL,
     PEDMOVE_TURN_L,
@@ -117,8 +114,7 @@ enum eMoveState : unsigned int
     PEDMOVE_SPRINT
 };
 
-enum eFightingStyle : unsigned char
-{
+enum eFightingStyle : unsigned char {
     STYLE_STANDARD = 4,
     STYLE_BOXING,
     STYLE_KUNG_FU,
@@ -134,8 +130,7 @@ enum eFightingStyle : unsigned char
     STYLE_ELBOWS
 };
 
-enum ePedStats : int32_t
-{
+enum ePedStats : int32_t {
     PEDSTAT_PLAYER = 0x0,
     PEDSTAT_COP = 0x1,
     PEDSTAT_MEDIC = 0x2,
@@ -182,16 +177,10 @@ enum ePedStats : int32_t
     PEDSTAT_NUM = 0x2B,
 };
 
-enum ePedCreatedBy : unsigned char
-{
+enum ePedCreatedBy : unsigned char {
     PED_UNKNOWN = 0,
     PED_GAME = 1,
     PED_MISSION = 2,
 };
 
-enum MoveLimbResult
-{
-    CANT_REACH_TARGET = 0,
-    HAVENT_REACHED_TARGET,
-    REACHED_TARGET
-};
+enum MoveLimbResult { CANT_REACH_TARGET = 0, HAVENT_REACHED_TARGET, REACHED_TARGET };

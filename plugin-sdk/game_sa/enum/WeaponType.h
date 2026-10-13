@@ -1,7 +1,6 @@
 #pragma once
 
-enum eWeaponType : unsigned int
-{
+enum eWeaponType : unsigned int {
     WEAPONTYPE_UNARMED = 0x0,
     WEAPONTYPE_BRASSKNUCKLE = 0x1,
     WEAPONTYPE_GOLFCLUB = 0x2,
@@ -53,8 +52,7 @@ enum eWeaponType : unsigned int
     WEAPONTYPE_ARMOUR = 0x30,
     WEAPONTYPE_FLARE = 0x3A
 };
-enum eWeaponState : unsigned int
-{
+enum eWeaponState : unsigned int {
     WEAPONSTATE_READY = 0,
     WEAPONSTATE_FIRING,
     WEAPONSTATE_RELOADING,

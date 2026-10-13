@@ -8,8 +8,7 @@
     Do not delete this comment block. Respect others' work!
 */
 
-enum AssocGroupId
-{
+enum AssocGroupId {
     ANIM_STD_PED = 0,
     ANIM_STD_DOOR = 1,
     ANIM_BIKE_PED = 2,

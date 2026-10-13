@@ -3,8 +3,7 @@
 
 #include <plugin-sdk/game_sa/plugin.h>
 
-struct CTimer
-{
+struct CTimer {
     // Functions
     DECL_FASTCALL_SIMPLE(Initialise, _ZN6CTimer10InitialiseEv, void);
     DECL_FASTCALL_SIMPLE(Shutdown, _ZN6CTimer8ShutdownEv, void);
@@ -42,42 +41,15 @@ struct CTimer
     DECL_VALUE_PLT_BOOL(bSkipProcessThisFrame, BYBIT(0x679250, 0x8504B8));
 
     // Helper functions
-    static inline u32 GetTimeMS()
-    {
-        return m_snTimeInMilliseconds;
-    }
-    static inline u32 GetTimeInMS()
-    {
-        return m_snTimeInMilliseconds;
-    }
-    static inline bool IsTimePassed(u32 time)
-    {
-        return (time < GetTimeInMS());
-    }
-    static inline float GetTimeScale()
-    {
-        return ms_fTimeScale;
-    }
-    static inline float GetTimeStep()
-    {
-        return ms_fTimeStep;
-    }
-    static inline float GetTimeStepFix()
-    {
-        return GetTimeStep() / (50.0f / 30.0f);
-    }
-    static inline float GetTimeStepInvFix()
-    {
-        return (50.0f / 30.0f) / GetTimeStep();
-    }
-    static inline float GetTimeStepInSeconds()
-    {
-        return GetTimeStep() / 50.0f;
-    }
-    static inline bool IsPaused()
-    {
-        return ( m_UserPause() || m_CodePause() );
-    }
+    static inline u32 GetTimeMS() { return m_snTimeInMilliseconds; }
+    static inline u32 GetTimeInMS() { return m_snTimeInMilliseconds; }
+    static inline bool IsTimePassed(u32 time) { return (time < GetTimeInMS()); }
+    static inline float GetTimeScale() { return ms_fTimeScale; }
+    static inline float GetTimeStep() { return ms_fTimeStep; }
+    static inline float GetTimeStepFix() { return GetTimeStep() / (50.0f / 30.0f); }
+    static inline float GetTimeStepInvFix() { return (50.0f / 30.0f) / GetTimeStep(); }
+    static inline float GetTimeStepInSeconds() { return GetTimeStep() / 50.0f; }
+    static inline bool IsPaused() { return (m_UserPause() || m_CodePause()); }
 };
 
 #define m_snTimeInMilliseconds m_snTimeInMilliseconds()

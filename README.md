@@ -6,12 +6,16 @@ A starter template for building Android Mod Loader (AML) mods for GTA San Andrea
 
 - **Integrated Plugin-SDK**:
   - Focused strictly on GTA:SA (`plugin-sdk/game_sa/`).
+  - Clean absolute include paths (all relative `#include "../..."` and quoted paths normalized to `<plugin-sdk/...>`).
   - RenderWare types (`plugin-sdk/renderware/`), GTA base math & types (`plugin-sdk/gta_base/`), and event hook system (`Events::*`).
+- Supports both **32-bit (`armeabi-v7a`)** and **64-bit (`arm64-v8a`)** architectures.
 
 ## Project Structure
 
 ```text
 base_plugins/
+├── .clang-format               # LLVM-based code formatting configuration
+├── format.ps1 / format.cmd     # Script to auto-format entire codebase
 ├── Android.mk                  # NDK build configuration
 ├── Application.mk              # ABI & STL configuration
 ├── build.ps1                   # PowerShell build script
@@ -40,12 +44,19 @@ base_plugins/
    D:\Android\Sdk\ndk\27.1.12297006
    ```
 
-2. Run the build script:
+2. Format code (optional):
+
+   ```powershell
+   ./format.ps1
+   # atau double-click format.cmd
+   ```
+
+3. Run the build script:
 
    ```powershell
    ./build.ps1
    ```
 
-3. Built shared libraries (`libmodtemplate.so`) will output to:
+4. Built shared libraries (`libmodtemplate.so`) will output to:
    - `libs/armeabi-v7a/libmodtemplate.so`
    - `libs/arm64-v8a/libmodtemplate.so`

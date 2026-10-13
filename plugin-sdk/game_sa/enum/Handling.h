@@ -1,7 +1,6 @@
 #pragma once
 
-enum eVehicleHandlingModelFlags : unsigned int
-{
+enum eVehicleHandlingModelFlags : unsigned int {
     VEHICLE_HANDLING_MODEL_IS_VAN = 0x1,
     VEHICLE_HANDLING_MODEL_IS_BUS = 0x2,
     VEHICLE_HANDLING_MODEL_IS_LOW = 0x4,
@@ -36,8 +35,7 @@ enum eVehicleHandlingModelFlags : unsigned int
     VEHICLE_HANDLING_MODEL_IS_HATCHBACK = 0x80000000
 };
 
-enum eVehicleHandlingFlags : unsigned int
-{
+enum eVehicleHandlingFlags : unsigned int {
     VEHICLE_HANDLING_1G_BOOST = 0x1,
     VEHICLE_HANDLING_2G_BOOST = 0x2,
     VEHICLE_HANDLING_NPC_ANTI_ROLL = 0x4,
@@ -68,10 +66,4 @@ enum eVehicleHandlingFlags : unsigned int
     VEHICLE_HANDLING_SWINGING_CHASSIS = 0x10000000
 };
 
-enum eVehicleLightsSize : unsigned char
-{
-    LIGHTS_LONG,
-    LIGHTS_SMALL,
-    LIGHTS_BIG,
-    LIGHTS_TALL
-};
+enum eVehicleLightsSize : unsigned char { LIGHTS_LONG, LIGHTS_SMALL, LIGHTS_BIG, LIGHTS_TALL };

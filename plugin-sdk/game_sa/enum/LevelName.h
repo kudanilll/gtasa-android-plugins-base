@@ -3,13 +3,6 @@
 
 #include <plugin-sdk/game_sa/plugin.h>
 
-enum eLevelName : u32
-{
-    LEVEL_GENERIC,
-    LEVEL_LOSANGELES,
-    LEVEL_SANFRANCISCO,
-    LEVEL_LASVEGAS,
-    MAX_LEVELS
-};
+enum eLevelName : u32 { LEVEL_GENERIC, LEVEL_LOSANGELES, LEVEL_SANFRANCISCO, LEVEL_LASVEGAS, MAX_LEVELS };
 
 #endif // __AML_PSDK_SALEVELNAME_H

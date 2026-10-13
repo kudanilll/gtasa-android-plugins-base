@@ -1,9 +1,9 @@
 #ifndef __AML_PSDK_RWOBJECT_H
 #define __AML_PSDK_RWOBJECT_H
 
-#include <plugin-sdk/sdk_base.h>
-#include <plugin-sdk/renderware/RwLinks.h>
 #include <plugin-sdk/renderware/RwBase.h>
+#include <plugin-sdk/renderware/RwLinks.h>
+#include <plugin-sdk/sdk_base.h>
 
 #define rpATOMIC 1
 #define rpCLUMP 2
@@ -29,40 +29,38 @@ struct RpWorld;
 struct RpWorldSector;
 struct RwCamera;
 
-struct RwObject
-{
-    RwUInt8  type;
-    RwUInt8  subType;
-    RwUInt8  flags;
-    RwUInt8  privateFlags;
-    union
-    {
-        void    *parent;
+struct RwObject {
+    RwUInt8 type;
+    RwUInt8 subType;
+    RwUInt8 flags;
+    RwUInt8 privateFlags;
+    union {
+        void *parent;
         RwFrame *frame; // Mostly (or always) RwFrame*
     };
 };
 
 typedef RwObject *(*RwObjectCallBack)(RwObject *object, void *data);
-typedef RwObjectHasFrame * (*RwObjectHasFrameSyncFunction)(RwObjectHasFrame *object);
+typedef RwObjectHasFrame *(*RwObjectHasFrameSyncFunction)(RwObjectHasFrame *object);
 
-typedef RpAtomic       *(*RpAtomicCallBack)(RpAtomic *atomic, void *data);
-typedef RpClump        *(*RpClumpCallBack)(RpClump *clump, void *data);
-typedef RpLight        *(*RpLightCallBack)(RpLight *light, void *data);
-typedef RpMaterial     *(*RpMaterialCallBack)(RpMaterial *material, void *data);
-typedef RpMesh         *(*RpMeshCallBack)(RpMesh *mesh, RpMeshHeader *meshHeader, void *data);
-typedef RpWorld        *(*RpWorldCallBack)(RpWorld *world, void *data);
-typedef RpWorldSector  *(*RpWorldSectorCallBack)(RpWorldSector *sector, void *data);
-typedef RpWorldSector  *(*RpWorldSectorCallBackRender)(RpWorldSector *sector);
-typedef RwCamera       *(*RwCameraCallBack)(RwCamera *camera, void *data);
+typedef RpAtomic *(*RpAtomicCallBack)(RpAtomic *atomic, void *data);
+typedef RpClump *(*RpClumpCallBack)(RpClump *clump, void *data);
+typedef RpLight *(*RpLightCallBack)(RpLight *light, void *data);
+typedef RpMaterial *(*RpMaterialCallBack)(RpMaterial *material, void *data);
+typedef RpMesh *(*RpMeshCallBack)(RpMesh *mesh, RpMeshHeader *meshHeader, void *data);
+typedef RpWorld *(*RpWorldCallBack)(RpWorld *world, void *data);
+typedef RpWorldSector *(*RpWorldSectorCallBack)(RpWorldSector *sector, void *data);
+typedef RpWorldSector *(*RpWorldSectorCallBackRender)(RpWorldSector *sector);
+typedef RwCamera *(*RwCameraCallBack)(RwCamera *camera, void *data);
 
-struct RwObjectHasFrame
-{
-    RwObject                     object;
-    RwLLLink                     lFrame;
+struct RwObjectHasFrame {
+    RwObject object;
+    RwLLLink lFrame;
     RwObjectHasFrameSyncFunction sync;
 };
 
-DECL_FASTCALL_SIMPLE_GLO(_rwObjectHasFrameSetFrame, _Z25_rwObjectHasFrameSetFramePvP7RwFrame, void, void* object, RwFrame* frame);
-DECL_FASTCALL_SIMPLE_GLO(_rwObjectHasFrameReleaseFrame, _Z29_rwObjectHasFrameReleaseFramePv, void, RwFrame* object);
+DECL_FASTCALL_SIMPLE_GLO(_rwObjectHasFrameSetFrame, _Z25_rwObjectHasFrameSetFramePvP7RwFrame, void, void *object,
+                         RwFrame *frame);
+DECL_FASTCALL_SIMPLE_GLO(_rwObjectHasFrameReleaseFrame, _Z29_rwObjectHasFrameReleaseFramePv, void, RwFrame *object);
 
 #endif // __AML_PSDK_RWOBJECT_H

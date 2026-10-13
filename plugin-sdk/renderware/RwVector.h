@@ -7,14 +7,16 @@
 #define RwV2d CVector2D
 #define RwV3d CVector
 
-union RQVector
-{
+union RQVector {
     float v[4];
-    struct { float x, y, z, w; };
-    struct { float r, g, b, a; };
+    struct {
+        float x, y, z, w;
+    };
+    struct {
+        float r, g, b, a;
+    };
 
-    inline RQVector operator*(float f)
-    {
+    inline RQVector operator*(float f) {
         RQVector result;
         result.x = this->x * f;
         result.y = this->y * f;
@@ -22,8 +24,7 @@ union RQVector
         result.w = this->w * f;
         return result;
     }
-    inline RQVector operator*=(float f)
-    {
+    inline RQVector operator*=(float f) {
         this->x *= f;
         this->y *= f;
         this->z *= f;
@@ -32,20 +33,17 @@ union RQVector
     }
 };
 
-struct RwSphere
-{
+struct RwSphere {
     RwV3d center;
     RwReal radius;
 };
 
-struct RwBBox
-{
+struct RwBBox {
     RwV3d sup; /* Supremum corner (max) */
     RwV3d inf; /* Infimum corner (min) */
 };
 
-struct RwPlane
-{
+struct RwPlane {
     RwV3d normal;
     RwReal distance;
 };

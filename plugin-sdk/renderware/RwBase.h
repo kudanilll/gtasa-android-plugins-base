@@ -14,23 +14,20 @@
 #define RwChar char
 #define RwFixed i64
 
-struct RwRect
-{
+struct RwRect {
     RwInt32 x;
     RwInt32 y;
     RwInt32 w;
     RwInt32 h;
 };
 
-enum RwOpCombineType : RwInt32
-{
+enum RwOpCombineType : RwInt32 {
     rwCOMBINEREPLACE = 0x0,
     rwCOMBINEPRECONCAT = 0x1,
     rwCOMBINEPOSTCONCAT = 0x2,
 };
 
-enum RwPlatformID : RwInt32
-{
+enum RwPlatformID : RwInt32 {
     rwID_PCD3D7 = 0x1,
     rwID_PCOGL = 0x2,
     rwID_MAC = 0x3,
@@ -45,8 +42,6 @@ enum RwPlatformID : RwInt32
     rwID_ES2_ATC = 0xC,
     rwID_ES2_UNC = 0xD,
 };
-
-
 
 struct RwStream;
 
@@ -65,26 +60,25 @@ struct RwPluginRegistry;
 /* One registered plugin. Every Rw/Rp object type owns a registry, and each
  * RpXxxRegisterPlugin() call appends an entry like this to it. `offset` is
  * what RpXxxGetPluginOffset() hands back. */
-struct RwPluginRegEntry
-{
-    RwInt32                           offset;
-    RwInt32                           size;
-    RwUInt32                          pluginID;
+struct RwPluginRegEntry {
+    RwInt32 offset;
+    RwInt32 size;
+    RwUInt32 pluginID;
 
-    RwPluginDataChunkReadCallBack     readCB;
-    RwPluginDataChunkWriteCallBack    writeCB;
-    RwPluginDataChunkGetSizeCallBack  getSizeCB;
-    RwPluginDataChunkAlwaysCallBack   alwaysCB;
-    RwPluginDataChunkRightsCallBack   rightsCB;
+    RwPluginDataChunkReadCallBack readCB;
+    RwPluginDataChunkWriteCallBack writeCB;
+    RwPluginDataChunkGetSizeCallBack getSizeCB;
+    RwPluginDataChunkAlwaysCallBack alwaysCB;
+    RwPluginDataChunkRightsCallBack rightsCB;
 
-    RwPluginObjectConstructor         constructCB;
-    RwPluginObjectDestructor          destructCB;
-    RwPluginObjectCopy                copyCB;
-    RwPluginErrorStrCallBack          errStrCB;
+    RwPluginObjectConstructor constructCB;
+    RwPluginObjectDestructor destructCB;
+    RwPluginObjectCopy copyCB;
+    RwPluginErrorStrCallBack errStrCB;
 
-    RwPluginRegEntry                 *nextRegEntry;
-    RwPluginRegEntry                 *prevRegEntry;
-    RwPluginRegistry                 *parentRegistry;
+    RwPluginRegEntry *nextRegEntry;
+    RwPluginRegEntry *prevRegEntry;
+    RwPluginRegistry *parentRegistry;
 };
 
 CHECKSIZE(RwPluginRegEntry, 0x3C, 0x70);

@@ -3,22 +3,19 @@
 
 #include <plugin-sdk/game_sa/plugin.h>
 
-enum RsInputDeviceType : i32
-{
+enum RsInputDeviceType : i32 {
     rsKEYBOARD = 0,
     rsMOUSE = 1,
     rsPAD = 2,
 };
 
-enum RsEventStatus : i32
-{
+enum RsEventStatus : i32 {
     rsEVENTERROR = 0,
     rsEVENTPROCESSED = 1,
     rsEVENTNOTPROCESSED = 2,
 };
 
-enum RsEvent : i32
-{
+enum RsEvent : i32 {
     rsCAMERASIZE = 0,
     rsCOMMANDLINE = 1,
     rsFILELOAD = 2,
@@ -63,16 +60,14 @@ enum RsEvent : i32
 
 typedef RsEventStatus (*RsInputEventHandler)(RsEvent event, void *param);
 
-struct RsInputDevice
-{
+struct RsInputDevice {
     RsInputDeviceType inputDeviceType;
     i32 used;
     RsInputEventHandler inputEventHandler;
 };
 CHECKSIZE(RsInputDevice, 0x0C, 0x10);
 
-struct RsGlobalType
-{
+struct RsGlobalType {
     const char *appName;
     i32 maximumWidth;
     i32 maximumHeight;
@@ -87,7 +82,7 @@ struct RsGlobalType
 };
 CHECKSIZE(RsGlobalType, 0x3C, 0x50);
 
-DECL_OBJECT_PLT_GLOBAL(RsGlobalType, RsGlobal, BYBIT(0x67910C, 0x850240) );
+DECL_OBJECT_PLT_GLOBAL(RsGlobalType, RsGlobal, BYBIT(0x67910C, 0x850240));
 #define RsGlobal RsGlobal()
 
 #endif // __AML_PSDK_SARSGLOBAL_H

@@ -1,7 +1,6 @@
 #pragma once
 
-enum eSurfaceType
-{
+enum eSurfaceType {
     SURFACE_DEFAULT = 0,
     SURFACE_TARMAC = 1,
     SURFACE_TARMAC_FUCKED = 2,

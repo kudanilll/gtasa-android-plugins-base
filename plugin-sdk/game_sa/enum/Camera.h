@@ -1,14 +1,8 @@
 #pragma once
 
-enum eSwitchType : unsigned short
-{
-    SWITCHTYPE_NONE,
-    SWITCHTYPE_INTERPOLATION,
-    SWITCHTYPE_JUMPCUT
-};
+enum eSwitchType : unsigned short { SWITCHTYPE_NONE, SWITCHTYPE_INTERPOLATION, SWITCHTYPE_JUMPCUT };
 
-enum eCamMode : short
-{
+enum eCamMode : short {
     MODE_NONE = 0x0,
     MODE_TOPDOWN = 0x1,
     MODE_GTACLASSIC = 0x2,

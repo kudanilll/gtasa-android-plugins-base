@@ -4,47 +4,47 @@
 #include <plugin-sdk/game_sa/events/Event.h>
 
 DECL_CLASS_BASED(CEventEditableResponse, CEvent)
-    // Construct/Deconstruct functions
-    DECL_CTORCALL(CEventEditableResponse, _ZN22CEventEditableResponseC2Ev);
+// Construct/Deconstruct functions
+DECL_CTORCALL(CEventEditableResponse, _ZN22CEventEditableResponseC2Ev);
 
-    // Virtual functions
-    virtual CEvent* CloneEditable() const;
+// Virtual functions
+virtual CEvent *CloneEditable() const;
 
-    // Member functions
-    DECL_THISCALL_SIMPLE(WillRespond, _ZNK22CEventEditableResponse11WillRespondEv, bool);
-    
-    DECL_THISCALL_HEAD(ComputeResponseTaskType, _ZN22CEventEditableResponse23ComputeResponseTaskTypeEP9CPedGroup, void, CPedGroup* pPedGroup);
-    DECL_THISCALL_TAIL(ComputeResponseTaskType, pPedGroup)
-    
+// Member functions
+DECL_THISCALL_SIMPLE(WillRespond, _ZNK22CEventEditableResponse11WillRespondEv, bool);
 
-    /*
+DECL_THISCALL_HEAD(ComputeResponseTaskType, _ZN22CEventEditableResponse23ComputeResponseTaskTypeEP9CPedGroup, void,
+                   CPedGroup *pPedGroup);
+DECL_THISCALL_TAIL(ComputeResponseTaskType, pPedGroup)
+
+/*
 DECL_THISCALL_HEAD(ComputeResponseTask, _ZN22CEventEditableResponse, void, CVector vecForce)
 
 
-    DECL_THISCALL_TAIL(ComputeResponseTask, vecForce)
-    
-    DECL_THISCALL_HEAD(ComputeResponseTask, _ZN22CEventEditableResponse, void, CVector vecForce)
-    DECL_THISCALL_TAIL(ComputeResponseTask, vecForce)
-    
-    DECL_THISCALL_HEAD(ComputeResponseTask, _ZN22CEventEditableResponse, void, CVector vecForce)
-    DECL_THISCALL_TAIL(ComputeResponseTask, vecForce)
-    
-    DECL_THISCALL_HEAD(ComputeResponseTask, _ZN22CEventEditableResponse, void, CVector vecForce)
-    DECL_THISCALL_TAIL(ComputeResponseTask, vecForce)
-    
-    DECL_THISCALL_HEAD(ComputeResponseTask, _ZN22CEventEditableResponse, void, CVector vecForce)
-    DECL_THISCALL_TAIL(ComputeResponseTask, vecForce)
-    
-    DECL_THISCALL_HEAD(ComputeResponseTask, _ZN22CEventEditableResponse, void, CVector vecForce)
-    DECL_THISCALL_TAIL(ComputeResponseTask, vecForce)
-    
-    DECL_THISCALL_HEAD(ComputeResponseTask, _ZN22CEventEditableResponse, void, CVector vecForce)
-    DECL_THISCALL_TAIL(ComputeResponseTask, vecForce)*/
+DECL_THISCALL_TAIL(ComputeResponseTask, vecForce)
 
-    // Member values
-    bool m_bWitnessedFirstHand;
-    short m_iTaskType;
-    short m_iFacialTaskType;
+DECL_THISCALL_HEAD(ComputeResponseTask, _ZN22CEventEditableResponse, void, CVector vecForce)
+DECL_THISCALL_TAIL(ComputeResponseTask, vecForce)
+
+DECL_THISCALL_HEAD(ComputeResponseTask, _ZN22CEventEditableResponse, void, CVector vecForce)
+DECL_THISCALL_TAIL(ComputeResponseTask, vecForce)
+
+DECL_THISCALL_HEAD(ComputeResponseTask, _ZN22CEventEditableResponse, void, CVector vecForce)
+DECL_THISCALL_TAIL(ComputeResponseTask, vecForce)
+
+DECL_THISCALL_HEAD(ComputeResponseTask, _ZN22CEventEditableResponse, void, CVector vecForce)
+DECL_THISCALL_TAIL(ComputeResponseTask, vecForce)
+
+DECL_THISCALL_HEAD(ComputeResponseTask, _ZN22CEventEditableResponse, void, CVector vecForce)
+DECL_THISCALL_TAIL(ComputeResponseTask, vecForce)
+
+DECL_THISCALL_HEAD(ComputeResponseTask, _ZN22CEventEditableResponse, void, CVector vecForce)
+DECL_THISCALL_TAIL(ComputeResponseTask, vecForce)*/
+
+// Member values
+bool m_bWitnessedFirstHand;
+short m_iTaskType;
+short m_iFacialTaskType;
 DECL_CLASS_END()
 
 #endif // __AML_PSDK_SAEVENTEDITABLERESPONSE_H

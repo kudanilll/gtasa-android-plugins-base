@@ -1,29 +1,26 @@
 #ifndef __AML_PSDK_SAOPERATINGSYSTEM_H
 #define __AML_PSDK_SAOPERATINGSYSTEM_H
 
-#include <plugin-sdk/game_sa/plugin.h>
-#include <plugin-sdk/game_sa/base/Lists.h>
 #include <jni.h>
+#include <plugin-sdk/game_sa/base/Lists.h>
+#include <plugin-sdk/game_sa/plugin.h>
 
 #define TOUCH_UNPRESS 1
 #define TOUCH_PRESS 2
 #define TOUCH_MOVE 3
 
-enum OSFileArchive : i32
-{
+enum OSFileArchive : i32 {
     OSFA_Application = 0x0,
     OSFA_DataMain = 0x1,
     OSFA_DataPatch = 0x2,
 };
-enum OSFileDataArea : i32
-{
+enum OSFileDataArea : i32 {
     OSFDA_Storage = 0x0,
     OSFDA_User = 0x1,
     OSFDA_MAX = 0x2,
 };
 
-enum OSKeyboardKey : i32
-{
+enum OSKeyboardKey : i32 {
     KK_ESCAPE = 0x0,
     KK_F1 = 0x1,
     KK_F2 = 0x2,
@@ -127,8 +124,7 @@ enum OSKeyboardKey : i32
     KK_MAX = 0x64,
 };
 
-enum OSEventType : i32
-{
+enum OSEventType : i32 {
     OSET_RequestExit = 0x0,
     OSET_KeyboardDown = 0x1,
     OSET_KeyboardUp = 0x2,
@@ -163,8 +159,7 @@ enum OSEventType : i32
     OSET_MAX = 0x1F,
 };
 
-enum OSFileError : i32
-{
+enum OSFileError : i32 {
     OSFE_NoError = 0x0,
     OSFE_FileNotFound = 0x1,
     OSFE_EndOfFile = 0x2,
@@ -174,8 +169,7 @@ enum OSFileError : i32
     OSFE_MAX = 0x6,
 };
 
-enum OSFileAccessType : i32
-{
+enum OSFileAccessType : i32 {
     OSFAT_Read = 0x0,
     OSFAT_Write = 0x1,
     OSFAT_ReadWrite = 0x2,
@@ -183,8 +177,7 @@ enum OSFileAccessType : i32
     OSFAT_MAX = 0x4,
 };
 
-enum OSGamepadType : i32
-{
+enum OSGamepadType : i32 {
     OSGT_Xbox360 = 0x0,
     OSGT_XperiaPlay = 0x1,
     OSGT_60beat = 0x2,
@@ -202,8 +195,7 @@ enum OSGamepadType : i32
     OSGT_AndroidTV = 0xE,
 };
 
-enum OSLanguageCode : i32
-{
+enum OSLanguageCode : i32 {
     OSLC_English_US = 0x0,
     OSLC_English_UK = 0x1,
     OSLC_English_Australia = 0x2,
@@ -227,15 +219,13 @@ enum OSLanguageCode : i32
     OSLC_Unknown = 0x14,
 };
 
-enum OSPointingDevice : i32
-{
+enum OSPointingDevice : i32 {
     OSPD_Invalid = -0x1,
     OSPD_Mouse = 0x1,
     OSPD_TouchScreen = 0x2,
 };
 
-enum OSDeviceChip : i32
-{
+enum OSDeviceChip : i32 {
     OSDC_A3 = 0x0,
     OSDC_A4 = 0x1,
     OSDC_A5 = 0x2,
@@ -258,8 +248,7 @@ enum OSDeviceChip : i32
     OSDC_UnknownAndroid = 0x13,
 };
 
-enum OSDefinedDevice : i32
-{
+enum OSDefinedDevice : i32 {
     OSDD_iPhone3GS = 0x0,
     OSDD_iPhone4 = 0x1,
     OSDD_iPhone4S = 0x2,
@@ -290,23 +279,20 @@ enum OSDefinedDevice : i32
     OSDD_UndefinedAndroid = 0x1B,
 };
 
-enum OSDeviceForm : i32
-{
+enum OSDeviceForm : i32 {
     OSDF_Tablet = 0x0,
     OSDF_Phone = 0x1,
     OSDF_MAX = 0x2,
 };
 
-enum OSThreadPriority : i32
-{
+enum OSThreadPriority : i32 {
     OSTP_LOW = 0x0,
     OSTP_NORMAL = 0x1,
     OSTP_HIGH = 0x2,
     OSTP_MAX = 0x3,
 };
 
-enum OSPointerState : i32
-{
+enum OSPointerState : i32 {
     OSPS_ButtonInvalid = -0x1,
     OSPS_ButtonReleased = 0x0,
     OSPS_ButtonUp = 0x1,
@@ -314,20 +300,16 @@ enum OSPointerState : i32
     OSPS_ButtonDown = 0x3,
 };
 
-struct ButtonStateChange
-{
-    int            buttonIndex;
+struct ButtonStateChange {
+    int buttonIndex;
     OSPointerState state;
-    int            x;
-    int            y;
-    double         timeStamp;
-    float          force;
+    int x;
+    int y;
+    double timeStamp;
+    float force;
 };
 
-
-template<unsigned int num>
-struct ButtonContainer
-{
+template <unsigned int num> struct ButtonContainer {
     OSPointerState curState[num];
     int curX;
     int curY;
@@ -345,13 +327,11 @@ struct ButtonContainer
     float WheelDelta;
 };
 
-struct DateTime
-{
+struct DateTime {
     int month, day, year, hour, minute, second, centisecond;
 };
 
-struct AND_TouchPoint
-{
+struct AND_TouchPoint {
     int x;
     int y;
     OSPointerState state;
@@ -360,7 +340,6 @@ struct AND_TouchPoint
     int currentUpdateCount;
 };
 
-
 typedef void *OSFile;
 typedef i64 OSDate;
 typedef void *OSMutex;
@@ -368,72 +347,85 @@ typedef void *OSSemaphore;
 typedef void *OSThreadHandle;
 typedef unsigned int (*OSThreadFunction)(void *);
 
-
-
 DECL_FASTCALL_SIMPLE_GLO(AND_DeviceIsTV, _Z14AND_DeviceIsTVv, bool);
 DECL_FASTCALL_SIMPLE_GLO(AND_DeviceLocale, _Z16AND_DeviceLocalev, int);
 DECL_FASTCALL_SIMPLE_GLO(AND_DeviceType, _Z14AND_DeviceTypev, int);
 DECL_FASTCALL_SIMPLE_GLO(AND_FileCleanup, _Z15AND_FileCleanupv, void);
 DECL_FASTCALL_SIMPLE_GLO(AND_FileDelete, _Z14AND_FileDeletePKc, int, const char *filename);
-DECL_FASTCALL_SIMPLE_GLO(AND_FileGetArchiveName, _Z22AND_FileGetArchiveName13OSFileArchive, char*, OSFileArchive type);
+DECL_FASTCALL_SIMPLE_GLO(AND_FileGetArchiveName, _Z22AND_FileGetArchiveName13OSFileArchive, char *, OSFileArchive type);
 DECL_FASTCALL_SIMPLE_GLO(AND_FileInitialize, _Z18AND_FileInitializev, void);
-DECL_FASTCALL_SIMPLE_GLO(AND_FileRename, _Z14AND_FileRenamePKcS0_i, int, const char *oldFilename, const char *newFilename, int overWrite);
+DECL_FASTCALL_SIMPLE_GLO(AND_FileRename, _Z14AND_FileRenamePKcS0_i, int, const char *oldFilename,
+                         const char *newFilename, int overWrite);
 DECL_FASTCALL_SIMPLE_GLO(AND_FileUpdate, _Z14AND_FileUpdated, void, double deltaTime);
-DECL_FASTCALL_SIMPLE_GLO(AND_GamepadUpdateAccelerometer, _Z30AND_GamepadUpdateAccelerometerfff, void, float x, float y, float z);
-DECL_FASTCALL_SIMPLE_GLO(AND_GetAndroidBuildinfo, _Z23AND_GetAndroidBuildinfoi, const char*, int index);
-DECL_FASTCALL_SIMPLE_GLO(AND_GetAppId, _Z12AND_GetAppIdv, const char*);
-DECL_FASTCALL_SIMPLE_GLO(AND_GetDeviceID, _Z15AND_GetDeviceIDv, const char*);
+DECL_FASTCALL_SIMPLE_GLO(AND_GamepadUpdateAccelerometer, _Z30AND_GamepadUpdateAccelerometerfff, void, float x, float y,
+                         float z);
+DECL_FASTCALL_SIMPLE_GLO(AND_GetAndroidBuildinfo, _Z23AND_GetAndroidBuildinfoi, const char *, int index);
+DECL_FASTCALL_SIMPLE_GLO(AND_GetAppId, _Z12AND_GetAppIdv, const char *);
+DECL_FASTCALL_SIMPLE_GLO(AND_GetDeviceID, _Z15AND_GetDeviceIDv, const char *);
 DECL_FASTCALL_SIMPLE_GLO(AND_GetDeviceInfo, _Z17AND_GetDeviceInfoi, int, int index);
-DECL_FASTCALL_SIMPLE_GLO(AND_GetJNI, _Z10AND_GetJNIv, void*);
-DECL_FASTCALL_SIMPLE_GLO(AND_GetJNIFunc, _Z14AND_GetJNIFuncv, void*);
-DECL_FASTCALL_SIMPLE_GLO(AND_GetObj, _Z10AND_GetObjv, void*);
+DECL_FASTCALL_SIMPLE_GLO(AND_GetJNI, _Z10AND_GetJNIv, void *);
+DECL_FASTCALL_SIMPLE_GLO(AND_GetJNIFunc, _Z14AND_GetJNIFuncv, void *);
+DECL_FASTCALL_SIMPLE_GLO(AND_GetObj, _Z10AND_GetObjv, void *);
 DECL_FASTCALL_SIMPLE_GLO(AND_GetSpecialBuildType, _Z23AND_GetSpecialBuildTypev, int);
 DECL_FASTCALL_SIMPLE_GLO(AND_IsAppInstalled, _Z18AND_IsAppInstalledPKc, bool, const char *app);
-DECL_FASTCALL_SIMPLE_GLO(AND_KeyboardEvent, _Z17AND_KeyboardEventbiib, void, bool pressed, int keyCode, int metaState, bool forceHandle);
-DECL_FASTCALL_SIMPLE_GLO(AND_KeyboardGetChar, _Z19AND_KeyboardGetChar13OSKeyboardKeyi, u32, OSKeyboardKey key, int setUpper);
+DECL_FASTCALL_SIMPLE_GLO(AND_KeyboardEvent, _Z17AND_KeyboardEventbiib, void, bool pressed, int keyCode, int metaState,
+                         bool forceHandle);
+DECL_FASTCALL_SIMPLE_GLO(AND_KeyboardGetChar, _Z19AND_KeyboardGetChar13OSKeyboardKeyi, u32, OSKeyboardKey key,
+                         int setUpper);
 DECL_FASTCALL_SIMPLE_GLO(AND_KeyboardSoftClosed, _Z22AND_KeyboardSoftClosedv, void);
 DECL_FASTCALL_SIMPLE_GLO(AND_OpenLink, _Z12AND_OpenLinkPKc, void, const char *link);
 DECL_FASTCALL_SIMPLE_GLO(AND_ScreenSetWakeLock, _Z21AND_ScreenSetWakeLockb, void, bool enabled);
 DECL_FASTCALL_SIMPLE_GLO(AND_TouchEvent, _Z14AND_TouchEventiiii, void, int actionType, int trackNum, int x, int y);
-DECL_FASTCALL_SIMPLE_GLO(AND_VibratePhoneEffect, _Z22AND_VibratePhoneEffecti, void, int effect);  // NOT IN 2.00 (32-bit): resolves to NULL on armeabi-v7a
+DECL_FASTCALL_SIMPLE_GLO(AND_VibratePhoneEffect, _Z22AND_VibratePhoneEffecti, void,
+                         int effect); // NOT IN 2.00 (32-bit): resolves to NULL on armeabi-v7a
 
-DECL_FASTCALL_SIMPLE_GLO(OS_ApplicationEvent, _Z19OS_ApplicationEvent11OSEventTypePv, void, OSEventType type, void *data);
-DECL_FASTCALL_SIMPLE_GLO(OS_ApplicationInitialize, _Z24OS_ApplicationInitializeiPPKc, bool, int argc, const char **argv);
+DECL_FASTCALL_SIMPLE_GLO(OS_ApplicationEvent, _Z19OS_ApplicationEvent11OSEventTypePv, void, OSEventType type,
+                         void *data);
+DECL_FASTCALL_SIMPLE_GLO(OS_ApplicationInitialize, _Z24OS_ApplicationInitializeiPPKc, bool, int argc,
+                         const char **argv);
 DECL_FASTCALL_SIMPLE_GLO(OS_ApplicationPreinit, _Z21OS_ApplicationPreinitv, void);
-DECL_FASTCALL_SIMPLE_GLO(OS_ApplicationStartup, _Z21OS_ApplicationStartupiiiPPKc, bool, int width, int height, int argc, const char **argv);
+DECL_FASTCALL_SIMPLE_GLO(OS_ApplicationStartup, _Z21OS_ApplicationStartupiiiPPKc, bool, int width, int height, int argc,
+                         const char **argv);
 DECL_FASTCALL_SIMPLE_GLO(OS_ApplicationTick, _Z18OS_ApplicationTickf, bool, float delta);
-DECL_FASTCALL_SIMPLE_GLO(OS_ConvertUTF16toUTF8, _Z21OS_ConvertUTF16toUTF8PtPhi, int, u16 *utf16, u8 *utf8, int bufferLen);
+DECL_FASTCALL_SIMPLE_GLO(OS_ConvertUTF16toUTF8, _Z21OS_ConvertUTF16toUTF8PtPhi, int, u16 *utf16, u8 *utf8,
+                         int bufferLen);
 DECL_FASTCALL_SIMPLE_GLO(OS_DebugBreak, _Z13OS_DebugBreakv, void);
 DECL_FASTCALL_SIMPLE_GLO(OS_DebugOut, _Z11OS_DebugOutPKc, void, const char *str);
 DECL_FASTCALL_SIMPLE_GLO(OS_DeviceIsTV, _Z13OS_DeviceIsTVv, bool);
 DECL_FASTCALL_SIMPLE_GLO(OS_FileClose, _Z12OS_FileClosePv, OSFileError, OSFile file);
-DECL_FASTCALL_SIMPLE_GLO(OS_FileDelete, _Z13OS_FileDelete14OSFileDataAreaPKc, OSFileError, OSFileDataArea area, const char *filename);
+DECL_FASTCALL_SIMPLE_GLO(OS_FileDelete, _Z13OS_FileDelete14OSFileDataAreaPKc, OSFileError, OSFileDataArea area,
+                         const char *filename);
 DECL_FASTCALL_SIMPLE_GLO(OS_FileFlush, _Z12OS_FileFlushPv, OSFileError, OSFile file);
-DECL_FASTCALL_SIMPLE_GLO(OS_FileGetArchiveName, _Z21OS_FileGetArchiveName13OSFileArchive, char*, OSFileArchive type);
-DECL_FASTCALL_SIMPLE_GLO(OS_FileGetDate, _Z14OS_FileGetDate14OSFileDataAreaPKc, OSDate, OSFileDataArea area, const char *filename);
+DECL_FASTCALL_SIMPLE_GLO(OS_FileGetArchiveName, _Z21OS_FileGetArchiveName13OSFileArchive, char *, OSFileArchive type);
+DECL_FASTCALL_SIMPLE_GLO(OS_FileGetDate, _Z14OS_FileGetDate14OSFileDataAreaPKc, OSDate, OSFileDataArea area,
+                         const char *filename);
 DECL_FASTCALL_SIMPLE_GLO(OS_FileGetPosition, _Z18OS_FileGetPositionPv, int, OSFile file);
 DECL_FASTCALL_SIMPLE_GLO(OS_FileGetState, _Z15OS_FileGetStatePv, OSFileError, OSFile file);
-DECL_FASTCALL_SIMPLE_GLO(OS_FileListUserFiles, _Z20OS_FileListUserFilesv, const char**);
+DECL_FASTCALL_SIMPLE_GLO(OS_FileListUserFiles, _Z20OS_FileListUserFilesv, const char **);
 DECL_FASTCALL_SIMPLE_GLO(OS_FileOpen, _Z11OS_FileOpen14OSFileDataAreaPPvPKc16OSFileAccessType, OSFileError,
-    OSFileDataArea area, OSFile *intoFile, const char *filename, OSFileAccessType access);
+                         OSFileDataArea area, OSFile *intoFile, const char *filename, OSFileAccessType access);
 DECL_FASTCALL_SIMPLE_GLO(OS_FileRead, _Z11OS_FileReadPvS_i, OSFileError, OSFile file, void *buffer, int numBytes);
-DECL_FASTCALL_SIMPLE_GLO(OS_FileRename, _Z13OS_FileRename14OSFileDataAreaPKcS1_b, OSFileError,
-    OSFileDataArea area, const char *oldFilename, const char *newFilename, bool overWrite);
+DECL_FASTCALL_SIMPLE_GLO(OS_FileRename, _Z13OS_FileRename14OSFileDataAreaPKcS1_b, OSFileError, OSFileDataArea area,
+                         const char *oldFilename, const char *newFilename, bool overWrite);
 DECL_FASTCALL_SIMPLE_GLO(OS_FileSetAsyncReadMultiple, _Z27OS_FileSetAsyncReadMultiplei, void, int val);
 DECL_FASTCALL_SIMPLE_GLO(OS_FileSetPosition, _Z18OS_FileSetPositionPvi, OSFileError, OSFile file, int position);
 DECL_FASTCALL_SIMPLE_GLO(OS_FileSize, _Z11OS_FileSizePv, int, OSFile file);
 DECL_FASTCALL_SIMPLE_GLO(OS_FileSubHandle, _Z16OS_FileSubHandlePvii, void, OSFile file, int offset, int length);
-DECL_FASTCALL_SIMPLE_GLO(OS_FileWrite, _Z12OS_FileWritePvPKvi, OSFileError, OSFile file, const void *buffer, int numBytes);
-DECL_FASTCALL_SIMPLE_GLO(OS_GamepadAccelerometer, _Z23OS_GamepadAccelerometerPfS_S_, void, float *x, float *y, float *z);
+DECL_FASTCALL_SIMPLE_GLO(OS_FileWrite, _Z12OS_FileWritePvPKvi, OSFileError, OSFile file, const void *buffer,
+                         int numBytes);
+DECL_FASTCALL_SIMPLE_GLO(OS_GamepadAccelerometer, _Z23OS_GamepadAccelerometerPfS_S_, void, float *x, float *y,
+                         float *z);
 DECL_FASTCALL_SIMPLE_GLO(OS_GamepadAxis, _Z14OS_GamepadAxisjj, float, unsigned int padId, unsigned int axisId);
 DECL_FASTCALL_SIMPLE_GLO(OS_GamepadButton, _Z16OS_GamepadButtonjj, bool, unsigned int padId, unsigned int buttonId);
-DECL_FASTCALL_SIMPLE_GLO(OS_GamepadIsConnected, _Z21OS_GamepadIsConnectedjP13OSGamepadType, bool, unsigned int padId, OSGamepadType *setType);
-DECL_FASTCALL_SIMPLE_GLO(OS_GamepadTouchpad, _Z18OS_GamepadTouchpadjjPfS_, bool, unsigned int padId, unsigned int touchId, float *x, float *y);
+DECL_FASTCALL_SIMPLE_GLO(OS_GamepadIsConnected, _Z21OS_GamepadIsConnectedjP13OSGamepadType, bool, unsigned int padId,
+                         OSGamepadType *setType);
+DECL_FASTCALL_SIMPLE_GLO(OS_GamepadTouchpad, _Z18OS_GamepadTouchpadjjPfS_, bool, unsigned int padId,
+                         unsigned int touchId, float *x, float *y);
 DECL_FASTCALL_SIMPLE_GLO(OS_GetDateTime, _Z14OS_GetDateTimeP8DateTime, void, DateTime *ret);
 DECL_FASTCALL_SIMPLE_GLO(OS_GetDeviceInfo, _Z16OS_GetDeviceInfoi, int, int index);
-DECL_FASTCALL_SIMPLE_GLO(OS_HTTPGet, _Z10OS_HTTPGetPKc, const char*, const char *url);
+DECL_FASTCALL_SIMPLE_GLO(OS_HTTPGet, _Z10OS_HTTPGetPKc, const char *, const char *url);
 DECL_FASTCALL_SIMPLE_GLO(OS_HTTPGetData, _Z14OS_HTTPGetDataPKcPPc, u32, const char *url, char **intoData);
-DECL_FASTCALL_SIMPLE_GLO(OS_HTTPPost, _Z11OS_HTTPPostPKc, const char*, const char *url);
+DECL_FASTCALL_SIMPLE_GLO(OS_HTTPPost, _Z11OS_HTTPPostPKc, const char *, const char *url);
 DECL_FASTCALL_SIMPLE_GLO(OS_KeyboardIsSoftVisible, _Z24OS_KeyboardIsSoftVisiblev, bool);
 DECL_FASTCALL_SIMPLE_GLO(OS_KeyboardRequest, _Z18OS_KeyboardRequesti, void, int show);
 DECL_FASTCALL_SIMPLE_GLO(OS_LanguageDeviceRegion, _Z23OS_LanguageDeviceRegionv, OSLanguageCode);
@@ -456,11 +448,13 @@ DECL_FASTCALL_SIMPLE_GLO(OS_SemaphorePost, _Z16OS_SemaphorePostPv, void, OSSemap
 DECL_FASTCALL_SIMPLE_GLO(OS_SemaphoreTryWait, _Z19OS_SemaphoreTryWaitPv, bool, OSSemaphore forSem);
 DECL_FASTCALL_SIMPLE_GLO(OS_SemaphoreWait, _Z16OS_SemaphoreWaitPv, void, OSSemaphore forSem);
 DECL_FASTCALL_SIMPLE_GLO(OS_ServiceAppCommand, _Z20OS_ServiceAppCommandPKcS0_, bool, const char *cmd, const char *args);
-DECL_FASTCALL_SIMPLE_GLO(OS_ServiceAppCommandValue, _Z25OS_ServiceAppCommandValuePKcS0_, int, const char *cmd, const char *args);
+DECL_FASTCALL_SIMPLE_GLO(OS_ServiceAppCommandValue, _Z25OS_ServiceAppCommandValuePKcS0_, int, const char *cmd,
+                         const char *args);
 DECL_FASTCALL_SIMPLE_GLO(OS_ServiceIsAppInstalled, _Z24OS_ServiceIsAppInstalledPKc, bool, const char *appName);
 DECL_FASTCALL_SIMPLE_GLO(OS_ServiceIsNetworkAvailable, _Z28OS_ServiceIsNetworkAvailablev, bool);
 DECL_FASTCALL_SIMPLE_GLO(OS_ServiceIsWifiAvailable, _Z25OS_ServiceIsWifiAvailablev, bool);
-DECL_FASTCALL_SIMPLE_GLO(OS_ServiceLocalNotification, _Z27OS_ServiceLocalNotificationiPKcS0_, void, int secondsToFire, const char *title, const char *message);
+DECL_FASTCALL_SIMPLE_GLO(OS_ServiceLocalNotification, _Z27OS_ServiceLocalNotificationiPKcS0_, void, int secondsToFire,
+                         const char *title, const char *message);
 DECL_FASTCALL_SIMPLE_GLO(OS_ServiceLocalNotificationCancel, _Z33OS_ServiceLocalNotificationCancelv, void);
 DECL_FASTCALL_SIMPLE_GLO(OS_ServiceOpenLink, _Z18OS_ServiceOpenLinkPKc, void, const char *link);
 DECL_FASTCALL_SIMPLE_GLO(OS_SetFilePathOffset, _Z20OS_SetFilePathOffsetPKc, void, const char *offset);
@@ -469,10 +463,11 @@ DECL_FASTCALL_SIMPLE_GLO(OS_SystemChip, _Z13OS_SystemChipv, OSDeviceChip);
 DECL_FASTCALL_SIMPLE_GLO(OS_SystemDevice, _Z15OS_SystemDevicev, OSDefinedDevice);
 DECL_FASTCALL_SIMPLE_GLO(OS_SystemForm, _Z13OS_SystemFormv, OSDeviceForm);
 DECL_FASTCALL_SIMPLE_GLO(OS_ThreadClose, _Z14OS_ThreadClosePv, void, OSThreadHandle thread);
-DECL_FASTCALL_SIMPLE_GLO(OS_ThreadGetValue, _Z17OS_ThreadGetValuev, void*);
+DECL_FASTCALL_SIMPLE_GLO(OS_ThreadGetValue, _Z17OS_ThreadGetValuev, void *);
 DECL_FASTCALL_SIMPLE_GLO(OS_ThreadIsRunning, _Z18OS_ThreadIsRunningPv, bool, OSThreadHandle thread);
 DECL_FASTCALL_SIMPLE_GLO(OS_ThreadLaunch, _Z15OS_ThreadLaunchPFjPvES_jPKci16OSThreadPriority, OSThreadHandle,
-    OSThreadFunction function, void *functionData, unsigned int processorAffinity, const char *threadName, int joinable, OSThreadPriority priority);
+                         OSThreadFunction function, void *functionData, unsigned int processorAffinity,
+                         const char *threadName, int joinable, OSThreadPriority priority);
 DECL_FASTCALL_SIMPLE_GLO(OS_ThreadMakeCurrent, _Z20OS_ThreadMakeCurrentv, void);
 DECL_FASTCALL_SIMPLE_GLO(OS_ThreadSetValue, _Z17OS_ThreadSetValuePv, void, void *withValue);
 DECL_FASTCALL_SIMPLE_GLO(OS_ThreadSleep, _Z14OS_ThreadSleepi, void, int uS);
@@ -481,16 +476,16 @@ DECL_FASTCALL_SIMPLE_GLO(OS_ThreadWait, _Z13OS_ThreadWaitPv, void, OSThreadHandl
 DECL_FASTCALL_SIMPLE_GLO(OS_TimeAccurate, _Z15OS_TimeAccuratev, double);
 DECL_FASTCALL_SIMPLE_GLO(OS_TimeMS, _Z9OS_TimeMSv, u32);
 
-DECL_FASTCALL_SIMPLE_GLO(GetJavaVM, GetJavaVM, JavaVM*);
+DECL_FASTCALL_SIMPLE_GLO(GetJavaVM, GetJavaVM, JavaVM *);
 
-DECL_OBJECT_ARRAY_PLT_GLOBAL(ButtonContainer<3>, pointers, BYBIT(0x676D24, 0x84BA90) );
-DECL_OBJECT_PLT_GLOBAL(ButtonContainer<KK_MAX>, keys, BYBIT(0x676F10, 0x84BE60) );
-DECL_OBJECT_ARRAY_PLT_GLOBAL(ButtonContainer<16>, gamepads, BYBIT(0x678160, 0x84E2D8) );
-DECL_OBJECT_ARRAY_PLT_GLOBAL(AND_TouchPoint, Points, BYBIT(0x679E94, 0x851D38) );
+DECL_OBJECT_ARRAY_PLT_GLOBAL(ButtonContainer<3>, pointers, BYBIT(0x676D24, 0x84BA90));
+DECL_OBJECT_PLT_GLOBAL(ButtonContainer<KK_MAX>, keys, BYBIT(0x676F10, 0x84BE60));
+DECL_OBJECT_ARRAY_PLT_GLOBAL(ButtonContainer<16>, gamepads, BYBIT(0x678160, 0x84E2D8));
+DECL_OBJECT_ARRAY_PLT_GLOBAL(AND_TouchPoint, Points, BYBIT(0x679E94, 0x851D38));
 
-//#define pointers pointers() // ugh... popular name.
-//#define keys keys() // same.
-//#define gamepads gamepads() // same. yup...
-//#define Points Points() // bruh.
+// #define pointers pointers() // ugh... popular name.
+// #define keys keys() // same.
+// #define gamepads gamepads() // same. yup...
+// #define Points Points() // bruh.
 
 #endif // __AML_PSDK_SAOPERATINGSYSTEM_H

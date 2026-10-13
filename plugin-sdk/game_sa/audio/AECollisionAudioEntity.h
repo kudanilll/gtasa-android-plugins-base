@@ -5,8 +5,7 @@
 
 struct CEntity;
 
-struct tCollisionAudioEntry
-{
+struct tCollisionAudioEntry {
     CEntity *pEntityA;
     CEntity *pEntityB;
     CAESound *pSound;
@@ -17,11 +16,11 @@ struct tCollisionAudioEntry
 };
 
 DECL_CLASS(CAECollisionAudioEntity)
-    CAEAudioEntity audio;
-    short m_CollisionSoundIDHistory[195];
-    short m_nLastBulletHitSoundID;
-    int m_nActiveCollisionSounds;
-    tCollisionAudioEntry m_CollisionSoundList[300];
+CAEAudioEntity audio;
+short m_CollisionSoundIDHistory[195];
+short m_nLastBulletHitSoundID;
+int m_nActiveCollisionSounds;
+tCollisionAudioEntry m_CollisionSoundList[300];
 DECL_CLASS_END()
 
 #endif // __AML_PSDK_SAAECOLLISIONAUDIOENTITY_H

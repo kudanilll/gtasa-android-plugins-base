@@ -1,7 +1,6 @@
 #pragma once
 
-enum eTaskType : int
-{
+enum eTaskType : int {
     TASK_INVALID = -1,
 
     // player tasks

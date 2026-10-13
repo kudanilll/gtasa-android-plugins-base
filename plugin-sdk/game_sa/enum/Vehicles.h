@@ -1,7 +1,6 @@
 #pragma once
 
-enum eVehicleType
-{
+enum eVehicleType {
     VEHICLE_AUTOMOBILE,
     VEHICLE_MTRUCK,
     VEHICLE_QUAD,
@@ -16,8 +15,7 @@ enum eVehicleType
     VEHICLE_TRAILER
 };
 
-enum VehicleUpgradePosn
-{
+enum VehicleUpgradePosn {
     UPGRADE_BONNET,
     UPGRADE_BONNET_LEFT,
     UPGRADE_BONNET_RIGHT,

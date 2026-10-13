@@ -3,8 +3,7 @@
 
 #include <plugin-sdk/game_sa/plugin.h>
 
-enum Commands : uint32_t
-{
+enum Commands : uint32_t {
     NOT_FLAG = 0x8000,
 
     NOP = 0x0000,

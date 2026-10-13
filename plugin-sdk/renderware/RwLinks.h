@@ -1,13 +1,11 @@
 #ifndef __AML_PSDK_RWLINKS_H
 #define __AML_PSDK_RWLINKS_H
 
-struct RwLLLink
-{
+struct RwLLLink {
     RwLLLink *next;
     RwLLLink *prev;
 };
-struct RwLinkList
-{
+struct RwLinkList {
     RwLLLink link;
 };
 

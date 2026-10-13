@@ -1,8 +1,8 @@
 #ifndef __AML_PSDK_RXPIPELINE_H
 #define __AML_PSDK_RXPIPELINE_H
 
-#include <plugin-sdk/sdk_base.h>
 #include <plugin-sdk/renderware/RwBase.h>
+#include <plugin-sdk/sdk_base.h>
 
 /* The pipeline internals are never touched from a mod -- every field below
  * that refers to them is a pointer, so a forward declaration is enough and
@@ -11,29 +11,27 @@ struct RxPipelineNode;
 struct RxPacket;
 struct RxPipelineRequiresCluster;
 
-enum rxEmbeddedPacketState : RwInt32
-{
+enum rxEmbeddedPacketState : RwInt32 {
     rxPKST_PACKETLESS = 0x0,
     rxPKST_UNUSED = 0x1,
     rxPKST_INUSE = 0x2,
     rxPKST_PENDING = 0x3,
 };
 
-struct RxPipeline
-{
-    RwBool                     locked;
-    RwUInt32                   numNodes;
-    RxPipelineNode            *nodes;
-    RwUInt32                   packetNumClusterSlots;
-    rxEmbeddedPacketState      embeddedPacketState;
-    RxPacket                  *embeddedPacket;
-    RwUInt32                   numInputRequirements;
+struct RxPipeline {
+    RwBool locked;
+    RwUInt32 numNodes;
+    RxPipelineNode *nodes;
+    RwUInt32 packetNumClusterSlots;
+    rxEmbeddedPacketState embeddedPacketState;
+    RxPacket *embeddedPacket;
+    RwUInt32 numInputRequirements;
     RxPipelineRequiresCluster *inputRequirements;
-    void                      *superBlock;
-    RwUInt32                   superBlockSize;
-    RwUInt32                   entryPoint;
-    RwUInt32                   pluginId;
-    RwUInt32                   pluginData;
+    void *superBlock;
+    RwUInt32 superBlockSize;
+    RwUInt32 entryPoint;
+    RwUInt32 pluginId;
+    RwUInt32 pluginData;
 };
 
 CHECKSIZE(RxPipeline, 0x34, 0x48);

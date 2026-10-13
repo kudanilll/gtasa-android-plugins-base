@@ -1,14 +1,13 @@
 #ifndef __AML_PSDK_SA2DEFFECT_H
 #define __AML_PSDK_SA2DEFFECT_H
 
-#include <plugin-sdk/renderware/RwVector.h>
 #include <plugin-sdk/renderware/RwRGBA.h>
+#include <plugin-sdk/renderware/RwVector.h>
 
 struct RwTexture;
 struct RpAtomic;
 
-enum e2dEffectType
-{
+enum e2dEffectType {
     EFFECT_LIGHT = 0,
     EFFECT_PARTICLE,
     EFFECT_ATTRACTOR = 3,
@@ -21,22 +20,20 @@ enum e2dEffectType
     EFFECT_ESCALATOR,
 };
 
-enum ePedAttractorType
-{
-    PED_ATTRACTOR_ATM            = 0, // Ped uses ATM(at day time only)
-    PED_ATTRACTOR_SEAT           = 1, // Ped sits(at day time only)
-    PED_ATTRACTOR_STOP           = 2, // Ped stands(at day time only)
-    PED_ATTRACTOR_PIZZA          = 3, // Ped stands for few seconds
-    PED_ATTRACTOR_SHELTER        = 4, // Ped goes away after spawning, but stands if weather is rainy
+enum ePedAttractorType {
+    PED_ATTRACTOR_ATM = 0,            // Ped uses ATM(at day time only)
+    PED_ATTRACTOR_SEAT = 1,           // Ped sits(at day time only)
+    PED_ATTRACTOR_STOP = 2,           // Ped stands(at day time only)
+    PED_ATTRACTOR_PIZZA = 3,          // Ped stands for few seconds
+    PED_ATTRACTOR_SHELTER = 4,        // Ped goes away after spawning, but stands if weather is rainy
     PED_ATTRACTOR_TRIGGER_SCRIPT = 5, // Launches an external script
-    PED_ATTRACTOR_LOOK_AT        = 6, // Ped looks at object, then goes away
-    PED_ATTRACTOR_SCRIPTED       = 7, // This type is not valid
-    PED_ATTRACTOR_PARK           = 8, // Ped lays(at day time only, ped goes away after 6 PM)
-    PED_ATTRACTOR_STEP           = 9  // Ped sits on steps
+    PED_ATTRACTOR_LOOK_AT = 6,        // Ped looks at object, then goes away
+    PED_ATTRACTOR_SCRIPTED = 7,       // This type is not valid
+    PED_ATTRACTOR_PARK = 8,           // Ped lays(at day time only, ped goes away after 6 PM)
+    PED_ATTRACTOR_STEP = 9            // Ped sits on steps
 };
 
-struct tEffectLight
-{
+struct tEffectLight {
     RwRGBA m_color;
     float m_fCoronaFarClip;
     float m_fPointlightRange;
@@ -55,13 +52,11 @@ struct tEffectLight
     RwTexture *m_pShadowTex;
 };
 
-struct tEffectParticle
-{
+struct tEffectParticle {
     char m_szName[24];
 };
 
-struct tEffectPedAttractor
-{
+struct tEffectPedAttractor {
     RwV3d m_vecQueueDir;
     RwV3d m_vecUseDir;
     RwV3d m_vecForwardDir;
@@ -72,8 +67,7 @@ struct tEffectPedAttractor
     char m_szScriptName[8];
 };
 
-struct tEffectEnEx
-{
+struct tEffectEnEx {
     float m_fEnterAngle;
     RwV2d m_vecSize;
     RwV3d m_vecExitPosn;
@@ -87,15 +81,12 @@ struct tEffectEnEx
     unsigned char m_nFlags2;
 };
 
-struct tEffectRoadsign
-{
+struct tEffectRoadsign {
     RwV2d m_vecSize;
     float m_afRotation[3];
-    union
-    {
+    union {
         unsigned short m_nFlags;
-        struct
-        {
+        struct {
             unsigned short nNumLines : 2;
             unsigned short nNumLetters : 2;
             unsigned short nPaletteID : 2;
@@ -105,22 +96,19 @@ struct tEffectRoadsign
     RpAtomic *m_pAtomic;
 };
 
-struct tEffectCoverPoint
-{
+struct tEffectCoverPoint {
     RwV2d m_vecDirection;
     signed char m_nType;
 };
 
-struct tEffectEscalator
-{
+struct tEffectEscalator {
     RwV3d m_vecBottom;
     RwV3d m_vecTop;
     RwV3d m_vecEnd;
     bool m_nDirection;
 };
 
-struct tEffectInterior
-{
+struct tEffectInterior {
     unsigned char m_nType;
     signed char m_nGroup;
     unsigned char m_nWidth;
@@ -142,27 +130,25 @@ struct tEffectInterior
     float m_rot;
 };
 
-struct tEffectTrigger
-{
+struct tEffectTrigger {
     int m_nIndex;
 };
 
 DECL_CLASS(C2dEffect)
-    // Member values
-    CVector m_vecPosn;
-    unsigned char m_nType; // see e2dEffectType
-    union
-    {
-        tEffectLight light;
-        tEffectParticle particle;
-        tEffectPedAttractor pedAttractor;
-        tEffectInterior interior;
-        tEffectEnEx enEx;
-        tEffectRoadsign roadsign;
-        tEffectTrigger trigger;
-        tEffectCoverPoint coverPoint;
-        tEffectEscalator escalator;
-    };
+// Member values
+CVector m_vecPosn;
+unsigned char m_nType; // see e2dEffectType
+union {
+    tEffectLight light;
+    tEffectParticle particle;
+    tEffectPedAttractor pedAttractor;
+    tEffectInterior interior;
+    tEffectEnEx enEx;
+    tEffectRoadsign roadsign;
+    tEffectTrigger trigger;
+    tEffectCoverPoint coverPoint;
+    tEffectEscalator escalator;
+};
 DECL_CLASS_END()
 CHECKSIZE(C2dEffect, 0x40, 0x40);
 

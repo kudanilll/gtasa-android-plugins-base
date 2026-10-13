@@ -1,7 +1,6 @@
 #pragma once
 
-enum eDecisionMakerType : int
-{
+enum eDecisionMakerType : int {
     UNKNOWN = -1,
 
     PED_GROUPMEMBER,

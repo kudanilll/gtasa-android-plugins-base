@@ -1,7 +1,6 @@
 #pragma once
 
-enum HIDMapping : i32
-{
+enum HIDMapping : i32 {
     HID_MAPPING_UNKNOWN = 0x0,
     HID_MAPPING_ATTACK = 0x1,
     HID_MAPPING_SPRINT = 0x2,

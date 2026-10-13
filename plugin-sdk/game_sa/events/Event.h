@@ -7,8 +7,7 @@ struct CPed;
 struct CPedGroup;
 struct CEntity;
 
-enum eEventType
-{
+enum eEventType {
     EVENT_NONE = 0,
     EVENT_VEHICLE_COLLISION = 1,
     EVENT_PED_COLLISION_WITH_PED = 2,
@@ -98,37 +97,37 @@ enum eEventType
     EVENT_STUCK_IN_AIR = 93,
     EVENT_DONT_JOIN_GROUP = 94,
     EVENT_PLAYER_CLOSE_BY = 95,
-    
+
     EVENT_TOTAL_NUM_EVENTS = 96
 };
 
 DECL_CLASS_VTABLE(CEvent)
-    // Construct/Deconstruct functions
-    DECL_CTORCALL(CEvent, _ZN6CEventC2Ev);
-    DECL_DTORCALL(CEvent, _ZN6CEventD2Ev);
-    DECL_NEWCALL(CEvent, BYBIT(_ZN6CEventnwEj, _ZN6CEventnwEm) );
-    DECL_DLCALL(CEvent, _ZN6CEventdlEPv);
+// Construct/Deconstruct functions
+DECL_CTORCALL(CEvent, _ZN6CEventC2Ev);
+DECL_DTORCALL(CEvent, _ZN6CEventD2Ev);
+DECL_NEWCALL(CEvent, BYBIT(_ZN6CEventnwEj, _ZN6CEventnwEm));
+DECL_DLCALL(CEvent, _ZN6CEventdlEPv);
 
-    // Virtual functions
-    virtual eEventType GetEventType() const;
-    virtual int GetEventPriority() const; // TODO: eEventPriorityList
-    virtual int GetLifeTime() const;
-    virtual CEvent* Clone() const;
-    virtual bool AffectsPed(CPed* pPed) const;
-    virtual bool AffectsPedGroup(CPedGroup* pPedGroup) const;
-    virtual bool IsCriminalEvent() const;
-    virtual void ReportCriminalEvent(CPed* pPed) const;
-    virtual bool HasEditableResponse() const;
-    virtual CEntity* GetSourceEntity() const;
-    virtual bool TakesPriorityOver(const CEvent& otherEvent) const;
-    virtual float GetLocalSoundLevel() const;
-    virtual bool DoInformVehiclreOccupants(CPed* pPed) const;
-    virtual bool IsValid(CPed* pPed) const;
-    virtual bool CanBeInterruptedBySameEvent() const;
+// Virtual functions
+virtual eEventType GetEventType() const;
+virtual int GetEventPriority() const; // TODO: eEventPriorityList
+virtual int GetLifeTime() const;
+virtual CEvent *Clone() const;
+virtual bool AffectsPed(CPed *pPed) const;
+virtual bool AffectsPedGroup(CPedGroup *pPedGroup) const;
+virtual bool IsCriminalEvent() const;
+virtual void ReportCriminalEvent(CPed *pPed) const;
+virtual bool HasEditableResponse() const;
+virtual CEntity *GetSourceEntity() const;
+virtual bool TakesPriorityOver(const CEvent &otherEvent) const;
+virtual float GetLocalSoundLevel() const;
+virtual bool DoInformVehiclreOccupants(CPed *pPed) const;
+virtual bool IsValid(CPed *pPed) const;
+virtual bool CanBeInterruptedBySameEvent() const;
 
-    // Member values
-    int m_iAccumulatedTime;
-    bool m_bIsPersistent;
+// Member values
+int m_iAccumulatedTime;
+bool m_bIsPersistent;
 DECL_CLASS_END()
 
 #endif // __AML_PSDK_SAEVENT_H

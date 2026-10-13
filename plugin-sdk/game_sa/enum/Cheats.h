@@ -11,8 +11,7 @@
 #include <plugin-sdk/game_sa/plugin.h>
 
 // Android cheat IDs include debug cheats before the regular cheats.
-enum eCheats
-{
+enum eCheats {
     CHEAT_WEAPON_SET1 = 0,
     CHEAT_WEAPON_SET2 = 1,
     CHEAT_WEAPON_SET3 = 2,
@@ -126,6 +125,5 @@ enum eCheats
     CHEAT_XBOX_HELPER = 110,
     TOTAL_CHEATS = 111
 };
-
 
 #endif // __AML_PSDK_SACHEATSENUM_H

@@ -4,137 +4,95 @@
 #include <math.h>
 #include <plugin-sdk/gta_base/Vector.h>
 
-struct CRect
-{
-    float left;          // x1
-    float top;           // max y for world bounds
-    float right;         // x2
-    float bottom;        // min y for world bounds
+struct CRect {
+    float left;   // x1
+    float top;    // max y for world bounds
+    float right;  // x2
+    float bottom; // min y for world bounds
 
-    CRect(float _left, float _top, float _right, float _bottom)
-    {
+    CRect(float _left, float _top, float _right, float _bottom) {
         left = _left;
         top = _top;
         right = _right;
         bottom = _bottom;
     }
-    CRect(CVector2D const pos, float size)
-    {
-        SetFromCenter(pos.x, pos.y, size);
-    }
+    CRect(CVector2D const pos, float size) { SetFromCenter(pos.x, pos.y, size); }
     CRect() { Init(); }
 
-    inline void Init()
-    {
+    inline void Init() {
         left = bottom = 1000000.0f;
         right = top = -1000000.0f;
     }
-    inline bool IsFlipped() const
-    {
-        return (left > right || bottom > top);
+    inline bool IsFlipped() const { return (left > right || bottom > top); }
+    inline void Restrict(CRect const &r) {
+        if (r.left < left)
+            left = r.left;
+        if (r.right > right)
+            right = r.right;
+        if (r.top > top)
+            top = r.top;
+        if (r.bottom < bottom)
+            bottom = r.bottom;
     }
-    inline void Restrict(CRect const& r)
-    {
-        if(r.left < left) left = r.left;
-        if(r.right > right) right = r.right;
-        if(r.top > top) top = r.top;
-        if(r.bottom < bottom) bottom = r.bottom;
-    }
-    inline void Grow(float l, float r, float t, float b)
-    {
+    inline void Grow(float l, float r, float t, float b) {
         left -= l;
         top += t;
         right += r;
         bottom -= b;
     }
-    inline void Translate(float x, float y)
-    {
+    inline void Translate(float x, float y) {
         left += x;
         right += x;
         bottom += y;
         top += y;
     }
-    inline void Reset()
-    {
-        left = right = bottom = top = 0.0f;
-    }
-    inline bool IsPointInside(CVector2D const& point) const
-    {
+    inline void Reset() { left = right = bottom = top = 0.0f; }
+    inline bool IsPointInside(CVector2D const &point) const {
         return (point.x >= left && point.x <= right && point.y >= bottom && point.y <= top);
     }
-    inline CVector2D GetCenter() const
-    {
-        return CVector2D(0.5f * (left + right), 0.5f * (top + bottom));
-    }
-    inline void Resize(float resizeX, float resizeY)
-    {
-        Grow(resizeX, resizeX, resizeY, resizeY);
-    }
-    inline void Grow(float resizeX, float resizeY)
-    {
-        Resize(resizeX, resizeY);
-    }
-    inline void SetFromCenter(float x, float y, float size)
-    {
+    inline CVector2D GetCenter() const { return CVector2D(0.5f * (left + right), 0.5f * (top + bottom)); }
+    inline void Resize(float resizeX, float resizeY) { Grow(resizeX, resizeX, resizeY, resizeY); }
+    inline void Grow(float resizeX, float resizeY) { Resize(resizeX, resizeY); }
+    inline void SetFromCenter(float x, float y, float size) {
         left = x - size;
         top = y + size;
         right = x + size;
         bottom = y - size;
     }
-    inline void GetCenter(float *x, float *y) const
-    {
+    inline void GetCenter(float *x, float *y) const {
         *x = 0.5f * (left + right);
         *y = 0.5f * (top + bottom);
     }
-    inline void GetCentre(float &x, float &y) const
-    {
-        GetCenter(&x, &y);
+    inline void GetCentre(float &x, float &y) const { GetCenter(&x, &y); }
+    inline void StretchToPoint(float x, float y) {
+        if (x < left)
+            left = x;
+        if (x > right)
+            right = x;
+        if (y > top)
+            top = y;
+        if (y < bottom)
+            bottom = y;
     }
-    inline void StretchToPoint(float x, float y)
-    {
-        if(x < left) left = x;
-        if(x > right) right = x;
-        if(y > top) top = y;
-        if(y < bottom) bottom = y;
-    }
-    inline CRect& Add(float x, float y)
-    {
+    inline CRect &Add(float x, float y) {
         StretchToPoint(x, y);
         return *this;
     }
-    inline CRect& operator+=(CVector2D const& point)
-    {
-        return Add(point.x, point.y);
-    }
-    inline CRect& operator+=(CRect const& r)
-    {
+    inline CRect &operator+=(CVector2D const &point) { return Add(point.x, point.y); }
+    inline CRect &operator+=(CRect const &r) {
         Restrict(r);
         return *this;
     }
-    inline bool IsInside(CVector2D const& point) const
-    {
-        return IsPointInside(point);
-    }
-    inline bool DoesIntersect(CVector2D const& v, float radius) const
-    {
+    inline bool IsInside(CVector2D const &point) const { return IsPointInside(point); }
+    inline bool DoesIntersect(CVector2D const &v, float radius) const {
         return !(v.x < left - radius || v.x > right + radius || v.y < bottom - radius || v.y > top + radius);
     }
-    inline bool DoesIntersect(CRect const& r) const
-    {
+    inline bool DoesIntersect(CRect const &r) const {
         return !(left > r.right || right < r.left || bottom > r.top || top < r.bottom);
     }
-    inline bool IsInvalid() const
-    {
-        return IsFlipped();
-    }
-    inline float Width() const
-    {
-        return fabsf(right - left);
-    }
-    inline float Height() const
-    {
-        return fabsf(top - bottom);
-    }
+    inline bool IsInvalid() const { return IsFlipped(); }
+    inline float Width() const { return fabsf(right - left); }
+    inline float Height() const { return fabsf(top - bottom); }
 };
 CHECKSIZE(CRect, 0x10, 0x10);
 
