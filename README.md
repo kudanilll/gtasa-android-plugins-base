@@ -16,6 +16,8 @@ The Plugin-SDK integrated into this project is sourced and adapted from [Android
 
 ```text
 base_plugins/
+├── .github/workflows/          # GitHub Actions CI/CD workflows
+│   └── release.yml             # Automated NDK build and GitHub Releases
 ├── .clang-format               # LLVM-based code formatting configuration
 ├── format.ps1 / format.cmd     # Script to auto-format entire codebase
 ├── Android.mk                  # NDK build configuration
