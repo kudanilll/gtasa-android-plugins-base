@@ -1,4 +1,4 @@
-# AML Mod Template with Plugin-SDK (GTA:SA Android)
+# AML Mod Template (GTA:SA Android)
 
 A starter template for building Android Mod Loader (AML) mods for GTA San Andreas on Android
 
@@ -8,7 +8,6 @@ The Plugin-SDK integrated into this project is sourced and adapted from [Android
 
 - **Integrated Plugin-SDK**:
   - Sourced from [AndroidModLoader/aml-psdk](https://github.com/AndroidModLoader/aml-psdk)
-  - Focused strictly on GTA:SA (`plugin-sdk/game_sa/`)
   - Clean absolute include paths (all relative `#include "../..."` and quoted paths normalized to `<plugin-sdk/...>`)
   - RenderWare types (`plugin-sdk/renderware/`), GTA base math & types (`plugin-sdk/gta_base/`), and event hook system (`Events::*`)
 - Supports **GTA: SA v2.00** and **GTA: SA v2.10 (64-bit)**
@@ -68,15 +67,15 @@ base_plugins/
 
 ## Credits & Attribution
 
-- **[AML Plugin SDK (aml-psdk)](https://github.com/AndroidModLoader/aml-psdk)** - Created by **RusJJ** and contributors.
-- **[Android Mod Loader (AML)](https://github.com/AndroidModLoader/AndroidModLoader)** - Android Mod Loader core and mod template.
-- **[DK22Pac/plugin-sdk](https://github.com/DK22Pac/plugin-sdk)** - Structure and naming inspiration for GTA plugin SDK.
-- **[stb_sprintf](https://github.com/nothings/stb)** - By Sean Barrett (stb).
+- **[AML Plugin SDK (aml-psdk)](https://github.com/AndroidModLoader/aml-psdk)** - Created by **RusJJ** and contributors
+- **[Android Mod Loader (AML)](https://github.com/AndroidModLoader/AndroidModLoader)** - Android Mod Loader core and mod template
+- **[DK22Pac/plugin-sdk](https://github.com/DK22Pac/plugin-sdk)** - Structure and naming inspiration for GTA plugin SDK
+- **[stb_sprintf](https://github.com/nothings/stb)** - By Sean Barrett (stb)
 
 ## License
 
 This project utilizes code under multiple open-source licenses:
 
-- **Mod Template & Base Code**: Licensed under the [MIT License](LICENSE) (Copyright © 2026 RusJJ).
-- **plugin-sdk/**: Sourced from [AndroidModLoader/aml-psdk](https://github.com/AndroidModLoader/aml-psdk) and licensed under the **[GNU General Public License v3.0 (GPLv3)](plugin-sdk/LICENSE)**.
-- **mod/thirdparty/stb_sprintf.h**: Dual-licensed under Public Domain and the MIT License.
+- **Mod Template & Base Code**: Licensed under the [MIT License](LICENSE) (Copyright © 2026 RusJJ)
+- **plugin-sdk/**: Sourced from [AndroidModLoader/aml-psdk](https://github.com/AndroidModLoader/aml-psdk) and licensed under the **[GNU General Public License v3.0 (GPLv3)](plugin-sdk/LICENSE)**
+- **mod/thirdparty/stb_sprintf.h**: Dual-licensed under Public Domain and the MIT License
