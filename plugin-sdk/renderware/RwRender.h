@@ -4,7 +4,10 @@
 #include <plugin-sdk/gta_base/DrawVertices.h>
 #include <plugin-sdk/renderware/RwMatrix.h>
 #include <plugin-sdk/renderware/RwVector.h>
+#include <plugin-sdk/renderware/RxPipeline.h>
 #include <plugin-sdk/sdk_base.h>
+
+struct RwRaster;
 
 enum RwPrimitiveType : u32 {
     rwPRIMTYPENAPRIMTYPE = 0, /**<Invalid primative type */
@@ -280,7 +283,132 @@ DECL_FASTCALL_SIMPLE_GLO(RwIm2DRenderIndexedPrimitive,
                          RwIm2DVertex *verts, i32 vertsNum, RwImVertexIndex *indices, i32 indicesNum);
 
 DECL_FASTCALL_SIMPLE_GLO(RwIm3DTransform, _Z15RwIm3DTransformP18RxObjSpace3DVertexjP11RwMatrixTagj, void *,
-                         RwIm2DVertex *verts, i32 vertsNum, RwMatrix *ltm, u32 flags);
+                         RwIm3DVertex *verts, RwUInt32 vertsNum, RwMatrix *ltm, RwUInt32 flags);
 DECL_FASTCALL_SIMPLE_GLO(RwIm3DEnd, _Z9RwIm3DEndv, RwBool);
+
+enum RwIm3DTransformFlags : RwInt32 {
+    rwIM3D_VERTEXUV = 1,
+    rwIM3D_ALLOPAQUE = 2,
+    rwIM3D_NOCLIP = 4,
+    rwIM3D_VERTEXXYZ = 8,
+    rwIM3D_VERTEXRGBA = 16,
+    rwIM3DTRANSFORMFLAGSFORCEENUMSIZEINT = 2147483647,
+};
+
+DECL_FASTCALL_SIMPLE_GLO(RwIm3DGetTransformPipeline, _Z26RwIm3DGetTransformPipelinev, RxPipeline *);
+DECL_FASTCALL_SIMPLE_GLO(RwIm3DGetRenderPipeline, _Z23RwIm3DGetRenderPipeline15RwPrimitiveType, RxPipeline *,
+                         RwPrimitiveType primType);
+DECL_FASTCALL_SIMPLE_GLO(RwIm3DRenderTriangle, _Z20RwIm3DRenderTriangleiii, RwBool, RwInt32 vert1, RwInt32 vert2,
+                         RwInt32 vert3);
+DECL_FASTCALL_SIMPLE_GLO(RwIm3DRenderPrimitive, _Z21RwIm3DRenderPrimitive15RwPrimitiveType, RwBool,
+                         RwPrimitiveType primType);
+DECL_FASTCALL_SIMPLE_GLO(RwIm3DRenderIndexedPrimitive, _Z28RwIm3DRenderIndexedPrimitive15RwPrimitiveTypePti, RwBool,
+                         RwPrimitiveType primType, RwImVertexIndex *indices, RwInt32 numIndices);
+DECL_FASTCALL_SIMPLE_GLO(RwIm3DSetTransformPipeline, _Z26RwIm3DSetTransformPipelineP10RxPipeline, RxPipeline *,
+                         RxPipeline *pipeline);
+DECL_FASTCALL_SIMPLE_GLO(RwIm3DSetRenderPipeline, _Z23RwIm3DSetRenderPipelineP10RxPipeline15RwPrimitiveType,
+                         RxPipeline *, RxPipeline *pipeline, RwPrimitiveType primType);
+DECL_FASTCALL_SIMPLE_GLO(RwIm3DRenderLine, _Z16RwIm3DRenderLineii, RwBool, RwInt32 vert1, RwInt32 vert2);
+
+DECL_FASTCALL_SIMPLE_GLO(RwOpenGLSetStencilClear, _Z23RwOpenGLSetStencilClearj, void, RwUInt32 value);
+DECL_FASTCALL_SIMPLE_GLO(RwOpenGLGetStencilClear, _Z23RwOpenGLGetStencilClearv, RwUInt32);
+
+#ifdef GTAVC
+inline void RwIm2DVertexSetScreenX(RwIm2DVertex *vertex, RwReal value) { vertex->x = value; }
+inline void RwIm2DVertexSetScreenY(RwIm2DVertex *vertex, RwReal value) { vertex->y = value; }
+inline void RwIm2DVertexSetScreenZ(RwIm2DVertex *vertex, RwReal value) { vertex->z = value; }
+inline RwReal RwIm2DVertexGetScreenX(RwIm2DVertex const *vertex) { return vertex->x; }
+inline RwReal RwIm2DVertexGetScreenY(RwIm2DVertex const *vertex) { return vertex->y; }
+inline RwReal RwIm2DVertexGetScreenZ(RwIm2DVertex const *vertex) { return vertex->z; }
+inline void RwIm2DVertexSetRecipCameraZ(RwIm2DVertex *vertex, RwReal value) { vertex->rhw = value; }
+inline RwReal RwIm2DVertexGetRecipCameraZ(RwIm2DVertex const *vertex) { return vertex->rhw; }
+
+inline void RwIm2DVertexSetU(RwIm2DVertex *vertex, RwReal u, RwReal recipZ) {
+    vertex->u = u * recipZ;
+    vertex->w = 0.0f;
+    vertex->q = recipZ;
+}
+inline void RwIm2DVertexSetV(RwIm2DVertex *vertex, RwReal v, RwReal recipZ) {
+    vertex->v = v * recipZ;
+    vertex->w = 0.0f;
+    vertex->q = recipZ;
+}
+inline void RwIm2DVertexSetIntRGBA(RwIm2DVertex *vertex, RwUInt32 red, RwUInt32 green, RwUInt32 blue, RwUInt32 alpha) {
+    vertex->color.Set((RwUInt8)red, (RwUInt8)green, (RwUInt8)blue, (RwUInt8)alpha);
+}
+inline void RwIm2DVertexSetRealRGBA(RwIm2DVertex *vertex, RwReal red, RwReal green, RwReal blue, RwReal alpha) {
+    RwIm2DVertexSetIntRGBA(vertex, (RwUInt32)red, (RwUInt32)green, (RwUInt32)blue, (RwUInt32)alpha);
+}
+inline RwUInt32 RwIm2DVertexGetRed(RwIm2DVertex const *vertex) { return vertex->r; }
+inline RwUInt32 RwIm2DVertexGetGreen(RwIm2DVertex const *vertex) { return vertex->g; }
+inline RwUInt32 RwIm2DVertexGetBlue(RwIm2DVertex const *vertex) { return vertex->b; }
+inline RwUInt32 RwIm2DVertexGetAlpha(RwIm2DVertex const *vertex) { return vertex->a; }
+
+inline void RwIm3DVertexSetPos(RwIm3DVertex *vertex, RwReal x, RwReal y, RwReal z) { vertex->objVertex.Set(x, y, z); }
+inline void RwIm3DVertexSetNormal(RwIm3DVertex *vertex, RwReal x, RwReal y, RwReal z) { vertex->normal.Set(x, y, z); }
+inline RwV3d *RwIm3DVertexGetPos(RwIm3DVertex *vertex) { return &vertex->objVertex; }
+inline RwV3d const *RwIm3DVertexGetPos(RwIm3DVertex const *vertex) { return &vertex->objVertex; }
+inline RwV3d *RwIm3DVertexGetNormal(RwIm3DVertex *vertex) { return &vertex->normal; }
+inline RwV3d const *RwIm3DVertexGetNormal(RwIm3DVertex const *vertex) { return &vertex->normal; }
+inline void RwIm3DVertexSetU(RwIm3DVertex *vertex, RwReal u) { vertex->u = u; }
+inline void RwIm3DVertexSetV(RwIm3DVertex *vertex, RwReal v) { vertex->v = v; }
+inline RwReal RwIm3DVertexGetU(RwIm3DVertex const *vertex) { return vertex->u; }
+inline RwReal RwIm3DVertexGetV(RwIm3DVertex const *vertex) { return vertex->v; }
+inline void RwIm3DVertexSetRGBA(RwIm3DVertex *vertex, RwUInt32 red, RwUInt32 green, RwUInt32 blue, RwUInt32 alpha) {
+    vertex->color.Set((RwUInt8)red, (RwUInt8)green, (RwUInt8)blue, (RwUInt8)alpha);
+}
+inline RwUInt32 RwIm3DVertexGetRed(RwIm3DVertex const *vertex) { return vertex->r; }
+inline RwUInt32 RwIm3DVertexGetGreen(RwIm3DVertex const *vertex) { return vertex->g; }
+inline RwUInt32 RwIm3DVertexGetBlue(RwIm3DVertex const *vertex) { return vertex->b; }
+inline RwUInt32 RwIm3DVertexGetAlpha(RwIm3DVertex const *vertex) { return vertex->a; }
+inline void RwIm3DVertexCopyRGBA(RwIm3DVertex *dest, RwIm3DVertex const *source) {
+    dest->emissiveColor = source->emissiveColor;
+}
+#endif
+
+enum RxRenderStateFlag : RwInt32 {
+    rxRENDERSTATEFLAG_TEXTUREPERSPECTIVE = 1,
+    rxRENDERSTATEFLAG_ZTESTENABLE = 2,
+    rxRENDERSTATEFLAG_ZWRITEENABLE = 4,
+    rxRENDERSTATEFLAG_VERTEXALPHAENABLE = 8,
+    rxRENDERSTATEFLAG_FOGENABLE = 16,
+    rxRENDERSTATEFLAGFORCEENUMSIZEINT = 2147483647,
+};
+
+enum RwFogType : RwInt32 {
+    rwFOGTYPENAFOGTYPE = 0,
+    rwFOGTYPELINEAR = 1,
+    rwFOGTYPEEXPONENTIAL = 2,
+    rwFOGTYPEEXPONENTIAL2 = 3,
+    rwFOGTYPEFORCEENUMSIZEINT = 2147483647,
+};
+
+struct RxRenderStateVector {
+    RwUInt32 Flags;
+    RwShadeMode ShadeMode;
+    RwBlendFunction SrcBlend;
+    RwBlendFunction DestBlend;
+    RwRaster *TextureRaster;
+    RwTextureAddressMode AddressModeU;
+    RwTextureAddressMode AddressModeV;
+    RwTextureFilterMode FilterMode;
+    RwRGBA BorderColor;
+    RwFogType FogType;
+    RwRGBA FogColor;
+};
+CHECKSIZE(RxRenderStateVector, 0x2C, 0x30);
+
+DECL_FASTCALL_SIMPLE_GLO(RxRenderStateVectorCreate, _Z25RxRenderStateVectorCreatei, RxRenderStateVector *,
+                         RwBool current);
+DECL_FASTCALL_SIMPLE_GLO(RxRenderStateVectorSetDefaultRenderStateVector,
+                         _Z46RxRenderStateVectorSetDefaultRenderStateVectorP19RxRenderStateVector,
+                         RxRenderStateVector *, RxRenderStateVector *rsvp);
+DECL_FASTCALL_SIMPLE_GLO(RxRenderStateVectorGetDefaultRenderStateVector,
+                         _Z46RxRenderStateVectorGetDefaultRenderStateVectorv, RxRenderStateVector const *);
+DECL_FASTCALL_SIMPLE_GLO(RxRenderStateVectorDestroy, _Z26RxRenderStateVectorDestroyP19RxRenderStateVector, void,
+                         RxRenderStateVector *rsvp);
+DECL_FASTCALL_SIMPLE_GLO(RxRenderStateVectorLoadDriverState,
+                         _Z34RxRenderStateVectorLoadDriverStateP19RxRenderStateVector, RxRenderStateVector *,
+                         RxRenderStateVector *rsvp);
 
 #endif // __AML_PSDK_RWIM2D_H

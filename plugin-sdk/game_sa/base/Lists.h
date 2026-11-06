@@ -1,24 +1,55 @@
 #ifndef __AML_PSDK_GTALISTS_H
 #define __AML_PSDK_GTALISTS_H
 
+#include <plugin-sdk/game_sa/anim/AnimBlock.h>
+#include <plugin-sdk/game_sa/plugin.h>
+#include <plugin-sdk/gta_base/Vector.h>
+
 struct CPtrNode {
     void *m_pVoid;
     CPtrNode *m_pNext;
 };
 
-struct CPtrNodeSingleLink : CPtrNode {};
+DECL_CLASS_BASED(CPtrNodeSingleLink, CPtrNode)
+// Construct/Deconstruct functions
+CPtrNodeSingleLink() {}
+explicit CPtrNodeSingleLink(void *item) { m_pVoid = item; }
+DECL_NEWCALL(CPtrNodeSingleLink, BYBIT(_ZN18CPtrNodeSingleLinknwEj, _ZN18CPtrNodeSingleLinknwEm));
+DECL_DLCALL(CPtrNodeSingleLink, _ZN18CPtrNodeSingleLinkdlEPv);
+DECL_CLASS_END()
 
-struct CPtrNodeDoubleLink : CPtrNode {
-    CPtrNodeDoubleLink *m_pPrevious;
-};
+DECL_CLASS_BASED(CPtrNodeDoubleLink, CPtrNode)
+// Construct/Deconstruct functions
+CPtrNodeDoubleLink() {}
+explicit CPtrNodeDoubleLink(void *item) { m_pVoid = item; }
+DECL_NEWCALL(CPtrNodeDoubleLink, BYBIT(_ZN18CPtrNodeDoubleLinknwEj, _ZN18CPtrNodeDoubleLinknwEm));
+DECL_DLCALL(CPtrNodeDoubleLink, _ZN18CPtrNodeDoubleLinkdlEPv);
 
-struct CPtrList {
-    CPtrNode *m_pHead;
-};
+CPtrNodeDoubleLink *m_pPrevious;
+DECL_CLASS_END()
 
-struct CPtrListDoubleLink : CPtrList {};
+DECL_CLASS(CPtrList)
+// Member functions
+DECL_THISCALL_SIMPLE(CountElements, _ZN8CPtrList13CountElementsEv, i32);
+DECL_THISCALL_HEAD(IsMemberOfList, _ZN8CPtrList14IsMemberOfListEPv, bool, void *data)
+DECL_THISCALL_TAIL(IsMemberOfList, data)
 
-struct CPtrListSingleLink : CPtrList {};
+CPtrNode *m_pHead;
+DECL_CLASS_END()
+
+DECL_CLASS_BASED(CPtrListDoubleLink, CPtrList)
+// Construct/Deconstruct functions
+DECL_DTORCALL(CPtrListDoubleLink, _ZN18CPtrListDoubleLinkD2Ev);
+
+// Member functions
+DECL_THISCALL_SIMPLE(Flush, _ZN18CPtrListDoubleLink5FlushEv, void);
+DECL_CLASS_END()
+
+DECL_CLASS_BASED(CPtrListSingleLink, CPtrList)
+// Member functions
+DECL_THISCALL_SIMPLE(Flush, _ZN18CPtrListSingleLink5FlushEv, void);
+
+DECL_CLASS_END()
 
 struct CSector {
     CPtrListSingleLink m_buildingPtrListArray;
@@ -29,20 +60,32 @@ struct CRepeatSector {
     CPtrListDoubleLink m_ptrListArray[3];
 };
 
-struct CEntryInfoNode {
-    CPtrListDoubleLink *m_pList;
-    CPtrNodeDoubleLink *m_pNode;
-    union {
-        CSector *m_pStandardSector;
-        CRepeatSector *m_pRepeatSector;
-    };
-    CEntryInfoNode *m_pPrevious;
-    CEntryInfoNode *m_pNext;
+template <class T, int N> struct CStore {
+    int m_nCount;
+    T m_objects[N];
 };
 
-struct CEntryInfoList {
-    CEntryInfoNode *m_pHead;
+DECL_CLASS(CEntryInfoNode)
+// Construct/Deconstruct functions
+DECL_NEWCALL(CEntryInfoNode, BYBIT(_ZN14CEntryInfoNodenwEj, _ZN14CEntryInfoNodenwEm));
+DECL_DLCALL(CEntryInfoNode, _ZN14CEntryInfoNodedlEPv);
+
+CPtrListDoubleLink *m_pList;
+CPtrNodeDoubleLink *m_pNode;
+union {
+    CSector *m_pStandardSector;
+    CRepeatSector *m_pRepeatSector;
 };
+CEntryInfoNode *m_pPrevious;
+CEntryInfoNode *m_pNext;
+DECL_CLASS_END()
+
+DECL_CLASS(CEntryInfoList)
+// Member functions
+DECL_THISCALL_SIMPLE(Flush, _ZN14CEntryInfoList5FlushEv, void);
+
+CEntryInfoNode *m_pHead;
+DECL_CLASS_END()
 
 struct CNodeAddress {
     unsigned short m_nAreaId;
@@ -78,10 +121,43 @@ struct CCarPathLinkAddress {
     short m_nAreaId : 6;
 };
 
-struct CNodeRoute {
-    int m_iRouteSize;
-    CNodeAddress m_routePoints[8];
-};
+DECL_CLASS(CNodeRoute)
+// Construct/Deconstruct functions
+CNodeRoute() : m_iRouteSize(0) {}
+DECL_NEWCALL(CNodeRoute, BYBIT(_ZN10CNodeRoutenwEj, _ZN10CNodeRoutenwEm));
+DECL_DLCALL(CNodeRoute, _ZN10CNodeRoutedlEPv);
+
+int m_iRouteSize;
+CNodeAddress m_routePoints[8];
+DECL_CLASS_END()
+
+DECL_CLASS(CPointRoute)
+// Construct/Deconstruct functions
+CPointRoute() : m_iRouteSize(0) {}
+DECL_NEWCALL(CPointRoute, BYBIT(_ZN11CPointRoutenwEj, _ZN11CPointRoutenwEm));
+DECL_DLCALL(CPointRoute, _ZN11CPointRoutedlEPv);
+
+int m_iRouteSize;
+CVector m_routePoints[8];
+DECL_CLASS_END()
+CHECKSIZE(CPointRoute, 0x64, 0x64);
+
+DECL_CLASS(CPatrolRoute)
+// Construct/Deconstruct functions
+CPatrolRoute() : m_iRouteSize(0) {}
+DECL_DTORCALL(CPatrolRoute, _ZN12CPatrolRouteD2Ev);
+DECL_NEWCALL(CPatrolRoute, BYBIT(_ZN12CPatrolRoutenwEj, _ZN12CPatrolRoutenwEm));
+DECL_DLCALL(CPatrolRoute, _ZN12CPatrolRoutedlEPv);
+
+// Member functions
+DECL_THISCALL_SIMPLE(Reverse, _ZN12CPatrolRoute7ReverseEv, void);
+
+// Member values
+int m_iRouteSize;
+CAnimNameDescriptor m_anims[8];
+CVector m_routePoints[8];
+DECL_CLASS_END()
+CHECKSIZE(CPatrolRoute, 0x1A4, 0x1A4);
 
 // Doubly-linked list node. The game preallocates a fixed pool of these and
 // moves them between the used list and the free list, which is why the list
@@ -165,93 +241,116 @@ template <class T> struct OSArray {
 #define TDBArray OSArray
 #define SArray OSArray
 
-struct ListItem_c {
-    ListItem_c() {
-        next = NULL;
-        prev = NULL;
+DECL_CLASS(ListItem_c)
+// Construct/Deconstruct functions
+DECL_CTORCALL_PROXY(ListItem_c, _ZN10ListItem_cC2Ev);
+DECL_DTORCALL(ListItem_c, _ZN10ListItem_cD2Ev);
+
+ListItem_c() {
+    next = NULL;
+    prev = NULL;
+}
+ListItem_c *next;
+ListItem_c *prev;
+DECL_CLASS_END()
+
+DECL_CLASS(List_c)
+// Construct/Deconstruct functions
+DECL_CTORCALL_PROXY(List_c, _ZN6List_cC2Ev);
+DECL_DTORCALL(List_c, _ZN6List_cD2Ev);
+
+List_c() {
+    last = NULL;
+    first = NULL;
+    count = 0;
+}
+ListItem_c *first;
+ListItem_c *last;
+int count;
+
+inline void AddItem(ListItem_c *pItem) {
+    ListItem_c *oldHead = first;
+
+    first = pItem;
+    pItem->prev = NULL;
+    pItem->next = oldHead;
+    if (oldHead) {
+        oldHead->prev = pItem;
+    } else {
+        last = pItem;
     }
-    ListItem_c *next;
-    ListItem_c *prev;
-};
-
-struct List_c {
-    List_c() {
-        last = NULL;
-        first = NULL;
-        count = 0;
+    ++count;
+}
+inline void RemoveItem(ListItem_c *pItem) {
+    if (pItem->next) {
+        pItem->next->prev = pItem->prev;
+    } else {
+        last = pItem->prev;
     }
-    ListItem_c *first;
-    ListItem_c *last;
-    int count;
 
-    inline void AddItem(ListItem_c *pItem) {
-        ListItem_c *oldHead = first;
-
-        first = pItem;
-        pItem->prev = NULL;
-        pItem->next = first;
-        if (oldHead) {
-            oldHead->prev = pItem;
-        } else {
-            last = pItem;
-        }
-        ++count;
+    if (pItem->prev) {
+        pItem->prev->next = pItem->next;
+    } else {
+        first = pItem->next;
     }
-    inline void RemoveItem(ListItem_c *pItem) {
-        if (pItem->next) {
-            pItem->next->prev = pItem->next;
+    --count;
+}
+inline ListItem_c *GetHead(void) { return first; }
+inline ListItem_c *RemoveHead(void) {
+    ListItem_c *oldHead = first;
+    if (oldHead) {
+        first = oldHead->next;
+        if (first) {
+            first->prev = NULL;
         } else {
-            last = pItem->prev;
+            last = NULL;
         }
-
-        if (pItem->prev) {
-            pItem->prev->next = pItem->next;
-        } else {
-            first = pItem->next;
-        }
+        oldHead->next = NULL;
+        oldHead->prev = NULL;
         --count;
     }
-    inline ListItem_c *GetHead(void) { return first; }
-    inline ListItem_c *RemoveHead(void) {
-        if (first) {
-            if (first == last) {
-                last = NULL;
-                first->prev = NULL;
-            } else {
-                first = first->next;
-                if (first)
-                    first->prev = NULL;
-            }
-            --count;
-        }
-        return first;
-    }
-    inline ListItem_c *GetNext(ListItem_c *pItem) { return pItem->next; }
-    inline ListItem_c *GetPrev(ListItem_c *pItem) { return pItem->prev; }
-    inline ListItem_c *GetItemOffset(bool bFromHead, int iOffset) {
-        ListItem_c *ret;
-        if (bFromHead) {
-            ret = first;
-            if (iOffset > 0) {
-                for (int i = 0; i < iOffset; ++i) {
-                    if (!ret)
-                        break;
-                    ret = ret->next;
-                }
-            }
-        } else {
-            ret = last;
-            if (iOffset > 0) {
-                for (int i = 0; i < iOffset; ++i) {
-                    if (!ret)
-                        break;
-                    ret = ret->prev;
-                }
+    return oldHead;
+}
+inline ListItem_c *GetNext(ListItem_c *pItem) { return pItem->next; }
+inline ListItem_c *GetPrev(ListItem_c *pItem) { return pItem->prev; }
+inline ListItem_c *GetItemOffset(bool bFromHead, int iOffset) {
+    ListItem_c *ret;
+    if (bFromHead) {
+        ret = first;
+        if (iOffset > 0) {
+            for (int i = 0; i < iOffset; ++i) {
+                if (!ret)
+                    break;
+                ret = ret->next;
             }
         }
-        return ret;
+    } else {
+        ret = last;
+        if (iOffset > 0) {
+            for (int i = 0; i < iOffset; ++i) {
+                if (!ret)
+                    break;
+                ret = ret->prev;
+            }
+        }
     }
-};
+    return ret;
+}
+
+// Member functions
+DECL_THISCALL_SIMPLE(RemoveAll, _ZN6List_c9RemoveAllEv, i32);
+DECL_THISCALL_SIMPLE(GetNumItems, _ZN6List_c11GetNumItemsEv, i32);
+DECL_THISCALL_HEAD(AppendItem, _ZN6List_c10AppendItemEP10ListItem_c, i32, ListItem_c *pListItem_c1)
+DECL_THISCALL_TAIL(AppendItem, pListItem_c1)
+DECL_THISCALL_HEAD(InsertAfterItem, _ZN6List_c15InsertAfterItemEP10ListItem_cS1_, i32, ListItem_c *pListItem_c1,
+                   ListItem_c *pListItem_c2)
+DECL_THISCALL_TAIL(InsertAfterItem, pListItem_c1, pListItem_c2)
+DECL_THISCALL_HEAD(InsertBeforeItem, _ZN6List_c16InsertBeforeItemEP10ListItem_cS1_, i32, ListItem_c *pListItem_c1,
+                   ListItem_c *pListItem_c2)
+DECL_THISCALL_TAIL(InsertBeforeItem, pListItem_c1, pListItem_c2)
+DECL_THISCALL_SIMPLE(RemoveTail, _ZN6List_c10RemoveTailEv, ListItem_c *);
+DECL_THISCALL_SIMPLE(GetTail, _ZN6List_c7GetTailEv, ListItem_c *);
+DECL_CLASS_END()
 
 template <typename ItemType> struct TList_c : public List_c {
     inline ItemType *GetHead(void) { return (ItemType *)(List_c::GetHead()); }

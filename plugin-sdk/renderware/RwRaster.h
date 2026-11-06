@@ -55,15 +55,29 @@ struct RwRaster {
     RwInt16 nOffsetX, nOffsetY;   /* Sub raster offset */
     RwUInt8 cType;                /* Type of raster */
     RwUInt8 cFlags;               /* Raster flags */
-    RwUInt8 cFormat;              /* Raster format */
+#ifdef GTAVC
+    RwUInt8 privateFlags;
+    RwUInt8 cFormat;
+    TextureDatabaseEntry *dbEntry;
+    RwUInt8 *originalPixels;
+    RwInt32 originalWidth;
+    RwInt32 originalHeight;
+    RwInt32 originalStride;
+#else
+    RwUInt8 cFormat; /* Raster format */
 
     RwInt32 originalWidth;
     RwInt32 originalHeight;
     TextureDatabaseEntry *dbEntry;
     RwUInt16 privateFlags; /* Raster private flags */
+#endif
 };
 
+#ifdef GTAVC
+CHECKSIZE(RwRaster, 0x38, 0x50);
+#else
 DECL_FASTCALL_SIMPLE_GLO(RwRasterSetKeepCPU, _Z18RwRasterSetKeepCPUb, void, bool keep);
+#endif
 DECL_FASTCALL_SIMPLE_GLO(RwRasterSetFromImage, _Z20RwRasterSetFromImageP8RwRasterP7RwImage, RwRaster *,
                          RwRaster *raster, RwImage *image);
 DECL_FASTCALL_SIMPLE_GLO(RwRGBAGetRasterPixel, _Z20RwRGBAGetRasterPixelP6RwRGBAP8RwRasterii, RwRGBA *, RwRGBA *rgbOut,
@@ -107,4 +121,21 @@ DECL_FASTCALL_SIMPLE_GLO(RwRasterLock, _Z12RwRasterLockP8RwRasterhi, RwUInt8 *, 
 DECL_FASTCALL_SIMPLE_GLO(RwRasterSetFreeListCreateParams, _Z31RwRasterSetFreeListCreateParamsii, void,
                          RwInt32 blockSize, RwInt32 numBlocksToPrealloc);
 
+inline RwInt32 RwRasterGetWidth(const RwRaster *raster) { return raster->width; }
+
+inline RwInt32 RwRasterGetHeight(const RwRaster *raster) { return raster->height; }
+
+inline RwInt32 RwRasterGetDepth(const RwRaster *raster) { return raster->depth; }
+
+inline RwInt32 RwRasterGetStride(const RwRaster *raster) { return raster->stride; }
+
+inline RwInt32 RwRasterGetFormat(const RwRaster *raster) { return (raster->cFormat & (rwRASTERFORMATMASK >> 8)) << 8; }
+
+inline RwInt32 RwRasterGetType(const RwRaster *raster) { return raster->cType & rwRASTERTYPEMASK; }
+
+inline RwRaster *RwRasterGetParent(const RwRaster *raster) { return raster->parent; }
+
+inline RwUInt8 *RwRasterGetPixels(const RwRaster *raster) { return raster->cpPixels; }
+
+inline RwUInt8 *RwRasterGetPalette(const RwRaster *raster) { return raster->palette; }
 #endif // __AML_PSDK_RWRASTER_H

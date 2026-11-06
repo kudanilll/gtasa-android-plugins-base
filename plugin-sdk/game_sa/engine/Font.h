@@ -1,6 +1,7 @@
 #ifndef __AML_PSDK_SAFONT_H
 #define __AML_PSDK_SAFONT_H
 
+#include <plugin-sdk/game_sa/engine/Sprite2d.h>
 #include <plugin-sdk/game_sa/plugin.h>
 #include <plugin-sdk/gta_base/GxtChar.h>
 #include <plugin-sdk/gta_base/RGBA.h>
@@ -14,6 +15,7 @@ struct tFontData {
     unsigned char m_spaceValue;
     unsigned char m_unpropValue;
 };
+CHECKSIZE(tFontData, 0xD2, 0xD2);
 
 enum eFontAlignment : unsigned char { ALIGN_CENTER, ALIGN_LEFT, ALIGN_RIGHT };
 
@@ -96,24 +98,24 @@ DECL_FASTCALL_SIMPLE(PrintChar, _ZN5CFont9PrintCharEfft, void, float x, float y,
 DECL_FASTCALL_SIMPLE(GetHeight, _ZN5CFont9GetHeightEb, float, bool UseRenderState);
 DECL_FASTCALL_SIMPLE(RenderFontBuffer, _ZN5CFont16RenderFontBufferEv, void);
 DECL_FASTCALL_SIMPLE(ComputeHeight, _ZN5CFont13ComputeHeightEf, float, float fHeight);
-DECL_FASTCALL_SIMPLE(ParseToken, _ZN5CFont10ParseTokenEPtR5CRGBAhPc, GxtChar *, GxtChar *pCharacters,
-                     CRGBA const &color, u8 shadow, char *latest_token);
+DECL_FASTCALL_SIMPLE(ParseToken, _ZN5CFont10ParseTokenEPtR5CRGBAhPc, GxtChar *, GxtChar *pCharacters, CRGBA &color,
+                     u8 shadow, char *latest_token);
 DECL_FASTCALL_SIMPLE(RenderString, _ZN5CFont12RenderStringEffPtS0_f, void, float x, float y, GxtChar *pCharacterStart,
                      GxtChar *pCharacterEnd, float PixelsToAdd);
 DECL_FASTCALL_SIMPLE(PrintStringFromBottom, _ZN5CFont21PrintStringFromBottomEffPt, void, float x, float Bottomy,
                      GxtChar *pCharacters);
-DECL_FASTCALL_SIMPLE(GetNumberLines, _ZN5CFont14GetNumberLinesEffPt, size_t, float x, float y, GxtChar *pCharacters);
+DECL_FASTCALL_SIMPLE(GetNumberLines, _ZN5CFont14GetNumberLinesEffPt, i16, float x, float y, GxtChar *pCharacters);
 DECL_FASTCALL_SIMPLE(PrintString1, _ZN5CFont11PrintStringEffPt, void, float x, float y, GxtChar *pCharacters);
 DECL_FASTCALL_SIMPLE(GetTextRect, _ZN5CFont11GetTextRectEP5CRectffPt, void, CRect *pRect, float x, float y,
                      GxtChar *pCharacters);
 DECL_FASTCALL_SIMPLE(ProcessStringToDisplay, _ZN5CFont22ProcessStringToDisplayEffPt, void, float x, float y,
                      GxtChar *pCharacters);
-DECL_FASTCALL_SIMPLE(ProcessCurrentString, _ZN5CFont20ProcessCurrentStringEhffPt, size_t, u8 PrintTheString, float x,
+DECL_FASTCALL_SIMPLE(ProcessCurrentString, _ZN5CFont20ProcessCurrentStringEhffPt, i16, u8 PrintTheString, float x,
                      float y, GxtChar *NewStringChars);
 DECL_FASTCALL_SIMPLE(GetStringWidth1, _ZN5CFont14GetStringWidthEPthh, float, GxtChar *pInCharacters, u8 bIncludeSpaces,
                      u8 bUsingWithScriptValues);
 DECL_FASTCALL_SIMPLE(GetNextSpace, _ZN5CFont12GetNextSpaceEPt, GxtChar *, GxtChar *pCharacters);
-DECL_FASTCALL_SIMPLE(SetColor, _ZN5CFont8SetColorE5CRGBA, void, CRGBA const &color);
+DECL_FASTCALL_SIMPLE(SetColor, _ZN5CFont8SetColorE5CRGBA, void, CRGBA color);
 DECL_FASTCALL_SIMPLE(GetStringWidth2, _ZN5CFont14GetStringWidthEPthhh, float, GxtChar *pCharacters, u8 bIncludeSpaces,
                      u8 bUsingWithScriptValues, u8 isAscii);
 DECL_FASTCALL_SIMPLE(FilterOutTokensFromString, _ZN5CFont25FilterOutTokensFromStringEPt, void, GxtChar *str);
@@ -126,13 +128,30 @@ DECL_FASTCALL_SIMPLE(SetWrapx, _ZN5CFont8SetWrapxEf, void, float x);
 DECL_FASTCALL_SIMPLE(SetCentreSize, _ZN5CFont13SetCentreSizeEf, void, float x);
 DECL_FASTCALL_SIMPLE(SetRightJustifyWrap, _ZN5CFont19SetRightJustifyWrapEf, void, float wrap);
 DECL_FASTCALL_SIMPLE(SetAlphaFade, _ZN5CFont12SetAlphaFadeEf, void, float alpha);
-DECL_FASTCALL_SIMPLE(SetDropColor, _ZN5CFont12SetDropColorE5CRGBA, void, CRGBA const &dropcolor);
+DECL_FASTCALL_SIMPLE(SetDropColor, _ZN5CFont12SetDropColorE5CRGBA, void, CRGBA dropcolor);
 DECL_FASTCALL_SIMPLE(SetEdge, _ZN5CFont7SetEdgeEa, void, i8 amount);
 DECL_FASTCALL_SIMPLE(SetProportional, _ZN5CFont15SetProportionalEh, void, u8 prop);
 DECL_FASTCALL_SIMPLE(SetBackground, _ZN5CFont13SetBackgroundEhh, void, u8 bg, u8 outline);
-DECL_FASTCALL_SIMPLE(SetBackgroundColor, _ZN5CFont18SetBackgroundColorE5CRGBA, void, CRGBA const &bgcolor);
+DECL_FASTCALL_SIMPLE(SetBackgroundColor, _ZN5CFont18SetBackgroundColorE5CRGBA, void, CRGBA bgcolor);
 DECL_FASTCALL_SIMPLE(SetJustify, _ZN5CFont10SetJustifyEh, void, u8 justify);
-DECL_FASTCALL_SIMPLE(SetOrientation, _ZN5CFont14SetOrientationEh, void, eFontAlignment orientation);
+DECL_FASTCALL_SIMPLE(SetOrientation, _ZN5CFont14SetOrientationEh, void, u8 orientation);
+
+// STATIC values
+DECL_OBJECT_ARRAY_PLT(CSprite2d, Sprite, BYBIT(0x678EC4, 0x84FDB0));
+DECL_OBJECT_ARRAY_PLT(CSprite2d, PS2Sprite, BYBIT(0x677030, 0x84C098));
+DECL_VALUE_PLT_U8(NewLine, BYBIT(0x6788B8, 0x84F190));
+DECL_VALUE_PLT_U8(PS2Symbol, BYBIT(0x676D28, 0x84BA98));
+// DECL_VALUE_PLT_U8(NewLine, BYBIT(0x, 0x));
+// DECL_VALUE_PLT_U8(PS2Symbol, BYBIT(0x, 0x));
+DECL_OBJECT_PLT(CFontDetails, Details, BYBIT(0x6797F4, 0x850FF0));
+DECL_OBJECT_PLT(CFontRenderState, RenderState, BYBIT(0x6792E8, 0x8505E8));
+// DECL_VALUE_PLT_U8(Sprite, BYBIT(0x, 0x));
+// DECL_VALUE_PLT_U8(PS2Sprite, BYBIT(0x, 0x));
+DECL_OBJECT_ARRAY_PLT(tFontData, Size, BYBIT(0x678234, 0x84E480));
+DECL_VALUE_PLT_U8(UsingJapaneseLanguage, BYBIT(0x677838, 0x84D098));
+DECL_VALUE_PLT_U8(UsingRussianLanguage, BYBIT(0x678730, 0x84EE88));
+DECL_VALUE_PLT_U8(UsingKoreanLanguage, BYBIT(0x679158, 0x8502D8));
+DECL_VALUE_PLT_U8(UsingEFIGSLanguage, BYBIT(0x679CF0, 0x8519F8));
 
 // Helper functions
 static inline GxtChar tmpString[512];
@@ -161,19 +180,6 @@ static inline void PCSetFontStyle(u8 style) {
     SetFontStyle(style);
     UsingRussianLanguage() = bakRussian;
 }
-
-// STATIC values
-// DECL_VALUE_PLT_U8(NewLine, BYBIT(0x, 0x));
-// DECL_VALUE_PLT_U8(PS2Symbol, BYBIT(0x, 0x));
-DECL_OBJECT_PLT(CFontDetails, Details, BYBIT(0x6797F4, 0x850FF0));
-DECL_OBJECT_PLT(CFontRenderState, RenderState, BYBIT(0x6792E8, 0x8505E8));
-// DECL_VALUE_PLT_U8(Sprite, BYBIT(0x, 0x));
-// DECL_VALUE_PLT_U8(PS2Sprite, BYBIT(0x, 0x));
-// DECL_VALUE_PLT_U8(Size, BYBIT(0x, 0x));
-DECL_VALUE_PLT_U8(UsingJapaneseLanguage, BYBIT(0x677838, 0x84D098));
-DECL_VALUE_PLT_U8(UsingRussianLanguage, BYBIT(0x678730, 0x84EE88));
-DECL_VALUE_PLT_U8(UsingKoreanLanguage, BYBIT(0x679158, 0x8502D8));
-DECL_VALUE_PLT_U8(UsingEFIGSLanguage, BYBIT(0x679CF0, 0x8519F8));
 DECL_CLASS_END()
 
 #define Details Details()
@@ -182,5 +188,9 @@ DECL_CLASS_END()
 #define UsingRussianLanguage UsingRussianLanguage()
 #define UsingKoreanLanguage UsingKoreanLanguage()
 #define UsingEFIGSLanguage UsingEFIGSLanguage()
+
+#define PS2Sprite PS2Sprite()
+#define NewLine NewLine()
+#define PS2Symbol PS2Symbol()
 
 #endif // __AML_PSDK_SAFONT_H

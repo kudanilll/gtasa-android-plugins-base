@@ -35,6 +35,8 @@ struct CRGBA {
         b = (intValue >> 8) & 0xFF;
         a = intValue & 0xFF;
     }
+    inline void Set(CRGBA const &rhs) { Set(rhs.r, rhs.g, rhs.b, rhs.a); }
+    inline void Set(CRGBA const &rhs, unsigned char alpha) { Set(rhs.r, rhs.g, rhs.b, alpha); }
     inline unsigned int ToInt() const { return a | (b << 8) | (g << 16) | (r << 24); }
     inline unsigned int ToIntARGB() const { return b | (g << 8) | (r << 16) | (a << 24); }
     inline void FromARGB(unsigned int intValue) {
@@ -42,6 +44,21 @@ struct CRGBA {
         r = (intValue >> 16) & 0xFF;
         g = (intValue >> 8) & 0xFF;
         b = intValue & 0xFF;
+    }
+    inline unsigned int ToIntABGR() const { return r | ((u32)g << 8) | ((u32)b << 16) | ((u32)a << 24); }
+    inline void FromABGR(unsigned int intValue) {
+        r = intValue & 0xFF;
+        g = (intValue >> 8) & 0xFF;
+        b = (intValue >> 16) & 0xFF;
+        a = (intValue >> 24) & 0xFF;
+    }
+    static inline CRGBA Lerp(CRGBA const &from, CRGBA const &to, float progress) {
+        if (!(progress > 0.0f))
+            return from;
+        if (progress >= 1.0f)
+            return to;
+        return CRGBA(from.r + (to.r - from.r) * progress, from.g + (to.g - from.g) * progress,
+                     from.b + (to.b - from.b) * progress, from.a + (to.a - from.a) * progress);
     }
     inline void Invert() { Set(255 - r, 255 - g, 255 - b); }
     inline CRGBA Inverted() const {
@@ -52,6 +69,7 @@ struct CRGBA {
     inline CRGBA ToRGB() const { return CRGBA(r, g, b, 255); }
 
     inline bool operator==(CRGBA const &rhs) const { return r == rhs.r && g == rhs.g && b == rhs.b && a == rhs.a; }
+    inline bool operator!=(CRGBA const &rhs) const { return !(*this == rhs); }
     inline void operator+=(const CRGBA &rhs) {
         r = std_min(r + rhs.r, 255);
         g = std_min(g + rhs.g, 255);

@@ -13,7 +13,7 @@ struct AlphaObjectInfo {
     RenderFunction RenderFn;
     float dist;
 };
-CHECKSIZE(AlphaObjectInfo, 0xC, 0x18); // 64-bit from the IDB; 32-bit measured from this layout
+CHECKSIZE(AlphaObjectInfo, 0xC, 0x18);
 
 struct CBaseModelInfo;
 struct CClumpModelInfo;
@@ -25,6 +25,20 @@ struct RwCamera;
 struct RwFrame;
 struct RwMatrix;
 struct RwV3d;
+
+struct tAtomicVisibilityPlugin {
+    i16 m_wModelId;
+    u16 m_wFlags;
+};
+CHECKSIZE(tAtomicVisibilityPlugin, 0x4, 0x4);
+
+struct tFrameVisibilityPlugin {
+    union {
+        uintptr_t m_nHierarchyId;
+        CClumpModelInfo *m_pModelInfo;
+    };
+};
+CHECKSIZE(tFrameVisibilityPlugin, 0x4, 0x8);
 
 DECL_CLASS(CVisibilityPlugins)
 // Functions
@@ -160,10 +174,10 @@ DECL_FASTCALL_SIMPLE(SetClumpAlpha, _ZN18CVisibilityPlugins13SetClumpAlphaEP7RpC
                      i32 alpha);
 DECL_FASTCALL_SIMPLE(InitAlphaAtomicList, _ZN18CVisibilityPlugins19InitAlphaAtomicListEv, void);
 DECL_FASTCALL_SIMPLE(InitAlphaEntityList, _ZN18CVisibilityPlugins19InitAlphaEntityListEv, void);
-DECL_FASTCALL_SIMPLE(RenderAtomic, _ZN18CVisibilityPlugins12RenderAtomicEPvf, void, RpAtomic *pObj, float dist);
+DECL_FASTCALL_SIMPLE(RenderAtomic, _ZN18CVisibilityPlugins12RenderAtomicEPvf, void, void *pObj, float dist);
 DECL_FASTCALL_SIMPLE(InsertEntityIntoSortedList, _ZN18CVisibilityPlugins26InsertEntityIntoSortedListEP7CEntityf, bool,
                      CEntity *pEntity, float dist);
-DECL_FASTCALL_SIMPLE(RenderEntity, _ZN18CVisibilityPlugins12RenderEntityEPvf, void, CEntity *pObj, float dist);
+DECL_FASTCALL_SIMPLE(RenderEntity, _ZN18CVisibilityPlugins12RenderEntityEPvf, void, void *pObj, float dist);
 DECL_FASTCALL_SIMPLE(InsertEntityIntoReallyDrawLastList,
                      _ZN18CVisibilityPlugins34InsertEntityIntoReallyDrawLastListEP7CEntityf, bool, CEntity *pEntity,
                      float dist);
@@ -176,7 +190,7 @@ DECL_FASTCALL_SIMPLE(InsertAtomicIntoReallyDrawLastList,
                      float dist);
 DECL_FASTCALL_SIMPLE(RenderAlphaAtomics, _ZN18CVisibilityPlugins18RenderAlphaAtomicsEv, void);
 DECL_FASTCALL_SIMPLE(RenderOrderedList, _ZN18CVisibilityPlugins17RenderOrderedListER9CLinkListINS_15AlphaObjectInfoEE,
-                     void, CLinkList<AlphaObjectInfo> *list);
+                     void, CLinkList<AlphaObjectInfo> &list);
 DECL_FASTCALL_SIMPLE(RenderBoatAlphaAtomics, _ZN18CVisibilityPlugins22RenderBoatAlphaAtomicsEv, void);
 DECL_FASTCALL_SIMPLE(RenderFadingEntities, _ZN18CVisibilityPlugins20RenderFadingEntitiesEv, void);
 DECL_FASTCALL_SIMPLE(RenderFadingUnderwaterEntities, _ZN18CVisibilityPlugins30RenderFadingUnderwaterEntitiesEv, void);
@@ -206,6 +220,7 @@ DECL_VALUE_PLT_FLT(ms_pedFadeDist, BYBIT(0x678AB4, 0x84F590));
 DECL_VALUE_PLT_FLT(ms_cullCompsDist, BYBIT(0x678E40, 0x84FCA8));
 DECL_VALUE_PLT_FLT(ms_cullBigCompsDist, BYBIT(0x679060, 0x8500E8));
 DECL_OBJECT_PLT(CLinkList<CPed *>, ms_weaponPedsForPC, BYBIT(0x679CF8, 0x851A08));
+DECL_VALUE_PLT_FLT(gVehicleDistanceFromCamera, BYBIT(0x67781C, 0x84D060));
 DECL_CLASS_END()
 
 #define ms_atomicPluginOffset ms_atomicPluginOffset()
@@ -228,5 +243,6 @@ DECL_CLASS_END()
 #define ms_cullCompsDist ms_cullCompsDist()
 #define ms_cullBigCompsDist ms_cullBigCompsDist()
 #define ms_weaponPedsForPC ms_weaponPedsForPC()
+#define gVehicleDistanceFromCamera gVehicleDistanceFromCamera()
 
 #endif // __AML_PSDK_SAVISIBILITYPLUGINS_H

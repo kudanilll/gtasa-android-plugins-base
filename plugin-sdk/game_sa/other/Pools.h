@@ -111,7 +111,7 @@ template <class A, class B = A> struct CPool {
 
         m_byteMap[m_nFirstFree].bEmpty = false;
         ++m_byteMap[m_nFirstFree].nId;
-        return &m_pObjects[m_nFirstFree];
+        return reinterpret_cast<A *>(&m_pObjects[m_nFirstFree]);
     }
 
     inline void CreateAtRef(int nRef) {
@@ -129,7 +129,7 @@ template <class A, class B = A> struct CPool {
     inline A *New(int nRef) {
         if (nRef < 0 || (nRef >> 8) >= m_nSize || !m_pObjects || !m_byteMap)
             return NULL;
-        A *result = &m_pObjects[nRef >> 8];
+        A *result = reinterpret_cast<A *>(&m_pObjects[nRef >> 8]);
         CreateAtRef(nRef);
         return result;
     }
@@ -183,9 +183,16 @@ typedef CPool<CTask, char[BYBIT(128, 168)]> CTaskPool;
 typedef CPool<CPedIntelligence> CPedIntelligencePool;
 typedef CPool<CPtrNodeSingleLink> CPtrNodeSingleLinkPool;
 typedef CPool<CPtrNodeDoubleLink> CPtrNodeDoubleLinkPool;
+typedef CPool<CEntryInfoNode> CEntryInfoNodePool;
+typedef CPool<CEvent, char[BYBIT(68, 88)]> CEventPool;
+typedef CPool<CNodeRoute> CNodeRoutePool;
+typedef CPool<CPointRoute> CPointRoutePool;
+typedef CPool<CPatrolRoute> CPatrolRoutePool;
 
-DECL_CLASS(CPools) // union
+DECL_CLASS(CPools)
 // STATIC functions
+DECL_FASTCALL_SIMPLE(CheckBuildingAtomics, _ZN6CPools20CheckBuildingAtomicsEv, i32);
+DECL_FASTCALL_SIMPLE(CheckPoolsEmpty, _ZN6CPools15CheckPoolsEmptyEv, void);
 DECL_FASTCALL_SIMPLE(Initialise, _ZN6CPools10InitialiseEv, void);
 DECL_FASTCALL_SIMPLE(ShutDown, _ZN6CPools8ShutDownEv, void);
 DECL_FASTCALL_SIMPLE(GetPedRef, _ZN6CPools9GetPedRefEP4CPed, i32, CPed *ped);
@@ -205,6 +212,15 @@ DECL_FASTCALL_SIMPLE(SavePedTasks, _ZN6CPools12SavePedTasksEv, bool);
 DECL_FASTCALL_SIMPLE(Load, _ZN6CPools4LoadEv, bool);
 DECL_FASTCALL_SIMPLE(LoadPedPool, _ZN6CPools11LoadPedPoolEv, bool);
 DECL_FASTCALL_SIMPLE(LoadPedTasks, _ZN6CPools12LoadPedTasksEv, bool);
+
+// STATIC values
+DECL_OBJECT_PLT(CEntryInfoNodePool *, ms_pEntryInfoNodePool, BYBIT(0x679C1C, 0x851850));
+DECL_OBJECT_PLT(CEventPool *, ms_pEventPool, BYBIT(0x6761CC, 0x84A3F8));
+DECL_OBJECT_PLT(CNodeRoutePool *, ms_pNodeRoutePool, BYBIT(0x676CC0, 0x84B9C8));
+DECL_OBJECT_PLT(CPointRoutePool *, ms_pPointRoutePool, BYBIT(0x676EB0, 0x84BDA0));
+DECL_OBJECT_PLT(CPatrolRoutePool *, ms_pPatrolRoutePool, BYBIT(0x679628, 0x850C60));
+
+// union
 
 // STATIC members
 DECL_OBJECT_PLT(CPedPool *, ms_pPedPool, BYBIT(0x676C90, 0x84B968));
@@ -229,5 +245,11 @@ DECL_CLASS_END()
 #define ms_pPedIntelligencePool ms_pPedIntelligencePool()
 #define ms_pPtrNodeSingleLinkPool ms_pPtrNodeSingleLinkPool()
 #define ms_pPtrNodeDoubleLinkPool ms_pPtrNodeDoubleLinkPool()
+
+#define ms_pEntryInfoNodePool ms_pEntryInfoNodePool()
+#define ms_pEventPool ms_pEventPool()
+#define ms_pNodeRoutePool ms_pNodeRoutePool()
+#define ms_pPointRoutePool ms_pPointRoutePool()
+#define ms_pPatrolRoutePool ms_pPatrolRoutePool()
 
 #endif // __AML_PSDK_SAPOOLS_H

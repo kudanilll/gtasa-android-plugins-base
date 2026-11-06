@@ -5,6 +5,7 @@
 #include <plugin-sdk/game_sa/plugin.h>
 
 struct RwTexture;
+struct RwRaster;
 struct TextureListingContainer;
 
 enum TextureDatabaseFormat : int32_t {
@@ -30,6 +31,11 @@ DECL_CLASS_END()
 #pragma pack(push, 1)
 DECL_CLASS(TextureDatabaseEntry)
 // Member functions
+DECL_FASTCALL_SIMPLE(FuncProxy_Equals, _ZNK20TextureDatabaseEntryeqERKS_, bool, const TextureDatabaseEntry *entry,
+                     const TextureDatabaseEntry &other);
+inline bool operator==(const TextureDatabaseEntry &other) const { return FuncProxy_Equals(this, other); }
+inline bool operator!=(const TextureDatabaseEntry &other) const { return !FuncProxy_Equals(this, other); }
+
 DECL_THISCALL_HEAD(LoadInstance, _ZN20TextureDatabaseEntry12LoadInstanceERK23TextureListingContainer, RwTexture *,
                    TextureListingContainer const &container)
 DECL_THISCALL_TAIL(LoadInstance, container)
@@ -79,15 +85,27 @@ DECL_CLASS_END()
 CHECKSIZE(TextureListing, 0x08, 0x08);
 
 DECL_CLASS(TextureListingContainer)
+// Construct/Deconstruct functions
+DECL_DTORCALL(TextureListingContainer, _ZN23TextureListingContainerD2Ev);
+
 TextureListing listing;
 void *data;
 unsigned int dataSize;
 bool ownsData;
+
+// Member functions
+DECL_THISCALL_HEAD(CreateRaster, _ZNK23TextureListingContainer12CreateRasterERK20TextureDatabaseEntry, RwRaster *,
+                   TextureDatabaseEntry const &arg1)
+DECL_THISCALL_TAIL(CreateRaster, arg1)
 DECL_CLASS_END()
 CHECKSIZE(TextureListingContainer, 0x11, 0x15);
 #pragma pack(pop)
 
 DECL_CLASS_VTABLE(TextureDatabase)
+TextureDatabase() = delete;
+// Construct/Deconstruct functions
+DECL_DTORCALL_VIRTUAL(TextureDatabase, _ZN15TextureDatabaseD2Ev, _ZN15TextureDatabase, _ZTV15TextureDatabase);
+
 // Member functions
 DECL_THISCALL_HEAD(LoadEntry, _ZN15TextureDatabase9LoadEntryEPcb, void, char *line, bool hashName)
 DECL_THISCALL_TAIL(LoadEntry, line, hashName)
@@ -122,6 +140,11 @@ TextureDatabaseFormat loadedFormat;
 DECL_CLASS_END()
 
 DECL_CLASS_BASED(TextureDatabaseRuntime, TextureDatabase)
+TextureDatabaseRuntime() = delete;
+// Construct/Deconstruct functions
+DECL_DTORCALL_VIRTUAL(TextureDatabaseRuntime, _ZN22TextureDatabaseRuntimeD2Ev, _ZN22TextureDatabaseRuntime,
+                      _ZTV22TextureDatabaseRuntime);
+
 // STATIC functions
 DECL_FASTCALL_SIMPLE(UpdateStreaming, _ZN22TextureDatabaseRuntime15UpdateStreamingEfb, void, float deltaTime,
                      bool flush);
@@ -142,8 +165,16 @@ DECL_FASTCALL_SIMPLE(GetDatabase, _ZN22TextureDatabaseRuntime11GetDatabaseEPKc, 
                      const char *withName);
 DECL_FASTCALL_SIMPLE(ListOverrun, _ZN22TextureDatabaseRuntime11ListOverrunEv, void);
 
+// STATIC values
+DECL_OBJECT_PLT(OSArray<TextureDatabaseRuntime *>, registered, BYBIT(0x679E74, 0x851CF8));
+DECL_OBJECT_PLT(OSArray<TextureDatabaseRuntime *>, loaded, BYBIT(0x679770, 0x850EE8));
+DECL_OBJECT_ARRAY_PLT(char, curParentName, BYBIT(0x679164, 0x8502F0));
+DECL_OBJECT_PLT(OSArray<RwTexture *>, detailTextures, BYBIT(0x675FD8, 0x84A020));
+DECL_VALUE_PLT_BOOL(isWriteMode, BYBIT(0x677274, 0x84C520));
+DECL_VALUE_PLT_U32(storedTexels, BYBIT(0x67672C, 0x84AEB0));
+
 // Member functions
-DECL_THISCALL_HEAD(GetEntry, _ZN22TextureDatabaseRuntime8GetEntryEPKcRb, int, const char *name, bool *hasSibling)
+DECL_THISCALL_HEAD(GetEntry, _ZN22TextureDatabaseRuntime8GetEntryEPKcRb, int, const char *name, bool &hasSibling)
 DECL_THISCALL_TAIL(GetEntry, name, hasSibling)
 
 DECL_THISCALL_HEAD(GetRWTexture, _ZN22TextureDatabaseRuntime12GetRWTextureEi, RwTexture *, int entryNum)
@@ -160,7 +191,7 @@ DECL_THISCALL_TAIL(CancelDeletion, index)
 
 DECL_THISCALL_SIMPLE(FullyLoad, _ZN22TextureDatabaseRuntime9FullyLoadEv, void);
 
-DECL_THISCALL_HEAD(DeleteTextures, _ZN22TextureDatabaseRuntime14DeleteTexturesEj, void, unsigned int toDelete)
+DECL_THISCALL_HEAD(DeleteTextures, _ZN22TextureDatabaseRuntime14DeleteTexturesEj, u32, unsigned int toDelete)
 DECL_THISCALL_TAIL(DeleteTextures, toDelete)
 
 DECL_THISCALL_HEAD(UpdateTextureStreaming, _ZN22TextureDatabaseRuntime22UpdateTextureStreamingEjj, u32,
@@ -195,5 +226,10 @@ TDBArray<unsigned int> hashOffsets;
 unsigned int numHashes;
 DECL_CLASS_END()
 CHECKSIZE(TextureDatabaseRuntime, 0xC8, 0x118);
+
+#define curParentName curParentName()
+#define detailTextures detailTextures()
+#define isWriteMode isWriteMode()
+#define storedTexels storedTexels()
 
 #endif // __AML_PSDK_SATEXTUREDATABASE_H

@@ -4,9 +4,72 @@
 #include <plugin-sdk/game_sa/base/Lists.h>
 #include <plugin-sdk/game_sa/plugin.h>
 #include <plugin-sdk/gta_base/Vector.h>
+#include <plugin-sdk/renderware/RwMatrix.h>
 #include <plugin-sdk/renderware/RwRGBA.h>
 
 struct FxSystem_c;
+
+DECL_CLASS(FxName32_t)
+// Member values
+char txt[32];
+DECL_CLASS_END()
+CHECKSIZE(FxName32_t, 0x20, 0x20);
+
+DECL_CLASS(EmissionInfo_t)
+// Member values
+float count;
+float radius;
+RwV3d sizeMin;
+RwV3d sizeMax;
+RwV2d speed;
+RwV3d dir;
+RwV2d angle;
+RwV2d life;
+RwV3d pos;
+float rot[2];
+float weather[4];
+DECL_CLASS_END()
+CHECKSIZE(EmissionInfo_t, 0x68, 0x68);
+
+DECL_CLASS(MovementInfo_t)
+// Member values
+RwV3d pos;
+RwV3d vel;
+float rot[4];
+u8 hasFloatInfo;
+u8 hasUnderwaterInfo;
+DECL_CLASS_END()
+CHECKSIZE(MovementInfo_t, 0x2c, 0x2c);
+
+DECL_CLASS(RenderInfo_t)
+// Member values
+RwRGBA colour;
+RwRGBA colour2;
+i32 colId;
+RwV2d size;
+RwV2d sizeBias;
+RwV4d spriteRect;
+i32 trailId;
+float trailTime;
+u8 hasAnimTextures;
+i8 currTexId;
+u8 hasHeatHaze;
+u8 isSelfLit;
+RwMatrix flatMat;
+u8 isFlat;
+u8 hasDir;
+u8 useVel;
+i8 smokeType;
+RwV3d dirVec;
+float smokeRed;
+float smokeGreen;
+float smokeBlue;
+float smokeAlpha;
+float smokeBright;
+float smokeSize;
+float smokeTime;
+DECL_CLASS_END()
+CHECKSIZE(RenderInfo_t, 0xa4, 0xa4);
 
 struct FxBox_c {
     FxBox_c() {
@@ -50,22 +113,38 @@ struct FxEmitterPrt_c : Particle_c {
     float m_currRot;
 };
 
-struct FxPrtMult_c {
-    FxPrtMult_c() {
-        m_color.red = m_color.green = m_color.blue = m_color.alpha = 1.0f;
-        m_fSize = m_fRotation = m_fLife = 1.0f;
-    }
+DECL_CLASS(FxPrtMult_c)
+// Construct/Deconstruct functions
+DECL_CTORCALL_PROXY(FxPrtMult_c1, _ZN11FxPrtMult_cC2Ev);
+DECL_CTORCALL_ARG_HEAD(FxPrtMult_c, _ZN11FxPrtMult_cC2Efffffff, float red, float green, float blue, float alpha,
+                       float size, float arg5, float lastFactor)
+DECL_CTORCALL_ARG_TAIL(red, green, blue, alpha, size, arg5, lastFactor)
 
-    RwRGBAReal m_color;
-    float m_fSize;
-    float m_fRotation;
-    float m_fLife;
-};
+FxPrtMult_c() {
+    m_color.red = m_color.green = m_color.blue = m_color.alpha = 1.0f;
+    m_fSize = m_fRotation = m_fLife = 1.0f;
+}
+
+RwRGBAReal m_color;
+float m_fSize;
+float m_fRotation;
+float m_fLife;
+
+// Member functions
+DECL_THISCALL_HEAD(SetUp, _ZN11FxPrtMult_c5SetUpEfffffff, void, float red, float green, float blue, float alpha,
+                   float size, float arg5, float lastFactor)
+DECL_THISCALL_TAIL(SetUp, red, green, blue, alpha, size, arg5, lastFactor)
+DECL_CLASS_END()
 
 DECL_CLASS(FxSphere_c)
 // Construct/Deconstruct functions
+DECL_CTORCALL_PROXY(FxSphere_c, _ZN10FxSphere_cC2Ev);
 FxSphere_c() { m_nNumPlanesPassed = 0; }
-DECL_NEWCALL(FxSphere_c, BYBIT(_ZN10FxSphere_cnwEji, _ZN10FxSphere_cnwEmi))
+DECL_FASTCALL_SIMPLE(FuncProxy_opnewFxSphere_c, BYBIT(_ZN10FxSphere_cnwEji, _ZN10FxSphere_cnwEmi), FxSphere_c *,
+                     size_t size, i32 useHeap);
+inline static FxSphere_c *Instantiate(size_t size = sizeof(FxSphere_c), i32 useHeap = 1) {
+    return FuncProxy_opnewFxSphere_c(size, useHeap);
+}
 DECL_DLCALL(FxSphere_c, _ZN10FxSphere_cdlEPv)
 
 // Member functions

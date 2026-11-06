@@ -22,13 +22,86 @@ struct CVehicle;
 struct CWanted;
 struct CTaskSimpleHoldEntity;
 
-struct CPedAcquaintance {
-    unsigned int m_nRespect;
-    unsigned int m_nLike;
-    unsigned int m_nIgnore;
-    unsigned int m_nDislike;
-    unsigned int m_nHate;
+DECL_CLASS(CAccident)
+// Member functions
+DECL_THISCALL_SIMPLE(IsFree, _ZNK9CAccident6IsFreeEv, bool);
+
+// Member values
+CPed *m_pInjuredPed;
+bool m_bBeingDealtWith;
+bool m_bHealed;
+DECL_CLASS_END()
+CHECKSIZE(CAccident, 0x8, 0x10);
+
+DECL_CLASS(CAccidentManager)
+enum { MAX_NUM_ACCIDENTS = 16 };
+
+// Construct/Deconstruct functions
+DECL_CTORCALL(CAccidentManager, _ZN16CAccidentManagerC2Ev);
+DECL_DTORCALL(CAccidentManager, _ZN16CAccidentManagerD2Ev);
+
+// Member functions
+DECL_THISCALL_HEAD(ReportAccident, _ZN16CAccidentManager14ReportAccidentEP4CPed, void, CPed *ped)
+DECL_THISCALL_TAIL(ReportAccident, ped)
+DECL_THISCALL_SIMPLE(ComputeNoOfFreeAccidents, _ZNK16CAccidentManager24ComputeNoOfFreeAccidentsEv, i32);
+DECL_THISCALL_HEAD(GetNearestFreeAccident, _ZN16CAccidentManager22GetNearestFreeAccidentERK7CVectorb, CAccident *,
+                   CVector const &pos, bool ignoreHeadless)
+DECL_THISCALL_TAIL(GetNearestFreeAccident, pos, ignoreHeadless)
+DECL_THISCALL_HEAD(GetNearestFreeAccidentExceptThisOne,
+                   _ZN16CAccidentManager35GetNearestFreeAccidentExceptThisOneERK7CVectorP9CAccidentb, CAccident *,
+                   CVector const &pos, CAccident *exceptThisOne, bool ignoreHeadless)
+DECL_THISCALL_TAIL(GetNearestFreeAccidentExceptThisOne, pos, exceptThisOne, ignoreHeadless)
+
+// Member values
+CAccident m_accidents[MAX_NUM_ACCIDENTS];
+DECL_CLASS_END()
+CHECKSIZE(CAccidentManager, 0x80, 0x100);
+
+DECL_FASTCALL_SIMPLE_GLO(GetAccidentManager, _Z18GetAccidentManagerv, CAccidentManager *);
+
+DECL_CLASS(CCoverPoint)
+enum {
+    COVUSE_LOWCOVER = 0,
+    COVUSE_WALLTOLEFT = 1,
+    COVUSE_WALLTORIGHT = 2,
 };
+
+// Member functions
+DECL_THISCALL_SIMPLE(CanAccomodateAnotherPed, _ZN11CCoverPoint23CanAccomodateAnotherPedEv, bool);
+DECL_THISCALL_HEAD(ReserveCoverPointForPed, _ZN11CCoverPoint23ReserveCoverPointForPedEP4CPed, void, CPed *pPed)
+DECL_THISCALL_TAIL(ReserveCoverPointForPed, pPed)
+DECL_THISCALL_HEAD(ReleaseCoverPointForPed, _ZN11CCoverPoint23ReleaseCoverPointForPedEP4CPed, void, CPed *pPed)
+DECL_THISCALL_TAIL(ReleaseCoverPointForPed, pPed)
+
+// Member values
+i8 m_Type;
+i8 m_Usage;
+u8 m_CoverDirection;
+CVector m_Coors;
+CEntity *m_pEntity;
+CPed *m_pPedsUsingThisCover[2];
+DECL_CLASS_END()
+CHECKSIZE(CCoverPoint, 0x1C, 0x28);
+
+DECL_CLASS(CPedAcquaintance)
+// Member functions
+DECL_THISCALL_HEAD(SetAcquaintances, _ZN13CAcquaintance16SetAcquaintancesEij, void, i32 arg1, u32 arg2)
+DECL_THISCALL_TAIL(SetAcquaintances, arg1, arg2)
+DECL_THISCALL_HEAD(GetAcquaintances, _ZNK13CAcquaintance16GetAcquaintancesEi, u32, i32 arg1)
+DECL_THISCALL_TAIL(GetAcquaintances, arg1)
+DECL_THISCALL_HEAD(SetAsAcquaintance, _ZN13CAcquaintance17SetAsAcquaintanceEij, void, i32 arg1, u32 arg2)
+DECL_THISCALL_TAIL(SetAsAcquaintance, arg1, arg2)
+DECL_THISCALL_HEAD(ClearAsAcquaintance, _ZN13CAcquaintance19ClearAsAcquaintanceEij, void, i32 arg1, u32 arg2)
+DECL_THISCALL_TAIL(ClearAsAcquaintance, arg1, arg2)
+DECL_THISCALL_HEAD(ClearAcquaintances, _ZN13CAcquaintance18ClearAcquaintancesEi, void, i32 arg1)
+DECL_THISCALL_TAIL(ClearAcquaintances, arg1)
+
+unsigned int m_nRespect;
+unsigned int m_nLike;
+unsigned int m_nIgnore;
+unsigned int m_nDislike;
+unsigned int m_nHate;
+DECL_CLASS_END()
 
 struct LimbOrientation {
     float m_fYaw;
@@ -40,17 +113,6 @@ struct LimbMovementInfo {
     float yawD;
     float maxPitch, minPitch;
     float pitchD;
-};
-
-enum eCopType : unsigned int {
-    COP_TYPE_CITYCOP = 0,
-    COP_TYPE_LAPDM1,
-    COP_TYPE_SWAT1,
-    COP_TYPE_SWAT2,
-    COP_TYPE_FBI,
-    COP_TYPE_ARMY,
-    COP_TYPE_MIAMIVICE,
-    COP_TYPE_CSHER
 };
 
 DECL_CLASS(CPedIK)
@@ -71,7 +133,6 @@ union {
 };
 
 // Construct functions
-CPedIK() {} // CPed holds one by value, so keep a default ctor available
 DECL_CTORCALL_ARG_HEAD(CPedIK, _ZN6CPedIKC2EP4CPed, CPed *pPed)
 DECL_CTORCALL_ARG_TAIL(pPed)
 
@@ -140,33 +201,22 @@ CHECKSIZE(CPedIK, 0x20, 0x28);
 
 DECL_CLASS_BASED(CPed, CPhysical)
 // Construct/Deconstruct functions
-CPed() {}
 DECL_CTORCALL_ARG_HEAD(CPed, _ZN4CPedC2Ej, u32 pedType)
 DECL_CTORCALL_ARG_TAIL(pedType)
-DECL_DTORCALL(CPed, _ZN4CPedD2Ev);
+DECL_DTORCALL_VIRTUAL(CPed, _ZN4CPedD2Ev, _ZN4CPed, _ZTV4CPed);
 DECL_NEWCALL(CPed, BYBIT(_ZN4CPednwEj, _ZN4CPednwEm));
 DECL_DLCALL(CPed, _ZN4CPeddlEPv);
 
 // Virtual functions
-virtual void SetMoveAnim();
-virtual bool Save();
-virtual bool Load();
+DECL_VIRTUALCALL_HEAD(CPed, SetMoveAnim, _ZTV4CPed, 24, void)
+DECL_VIRTUALCALL_TAIL()
+DECL_VIRTUALCALL_HEAD(CPed, Save, _ZTV4CPed, 25, bool)
+DECL_VIRTUALCALL_TAIL()
+DECL_VIRTUALCALL_HEAD(CPed, Load, _ZTV4CPed, 26, bool)
+DECL_VIRTUALCALL_TAIL()
 
-// Helper functions
-inline float GetHealth() { return m_fHealth; }
-inline float GetMaxHealth() { return m_fMaxHealth; }
-inline bool IsMaxHealth() { return (GetHealth() >= GetMaxHealth()); }
-inline void SetHealth(float hp) { m_fHealth = hp; }
-inline void AddHealth(float hp) { SetHealth(GetHealth() + hp); }
-inline void SetHealthSafe(float hp) {
-    if (hp < 0.0f)
-        m_fHealth = 0.0f;
-    else if (hp > GetMaxHealth())
-        m_fHealth = GetMaxHealth();
-    else
-        m_fHealth = hp;
-}
-inline void AddHealthSafe(float hp) { SetHealthSafe(GetHealth() + hp); }
+// STATIC values
+DECL_VALUE_PLT_U16(m_sGunFlashBlendStart, BYBIT(0x6782BC, 0x84E590));
 
 // Member functions
 DECL_THISCALL_SIMPLE(PedIsInvolvedInConversation, _ZN4CPed27PedIsInvolvedInConversationEv, bool);
@@ -445,6 +495,22 @@ DECL_THISCALL_TAIL(GetTransformedBonePosition, pos, boneId, updateSkinBones)
 DECL_THISCALL_HEAD(GiveObjectToPedToHold, _ZN4CPed21GiveObjectToPedToHoldEih, CEntity *, i32 modelId, u8 replaceObject)
 DECL_THISCALL_TAIL(GiveObjectToPedToHold, modelId, replaceObject)
 
+// Helper functions
+inline float GetHealth() { return m_fHealth; }
+inline float GetMaxHealth() { return m_fMaxHealth; }
+inline bool IsMaxHealth() { return (GetHealth() >= GetMaxHealth()); }
+inline void SetHealth(float hp) { m_fHealth = hp; }
+inline void AddHealth(float hp) { SetHealth(GetHealth() + hp); }
+inline void SetHealthSafe(float hp) {
+    if (hp < 0.0f)
+        m_fHealth = 0.0f;
+    else if (hp > GetMaxHealth())
+        m_fHealth = GetMaxHealth();
+    else
+        m_fHealth = hp;
+}
+inline void AddHealthSafe(float hp) { SetHealthSafe(GetHealth() + hp); }
+
 // Member values
 CAEPedAudioEntity m_pedAudio;
 CAEPedSpeechAudioEntity m_pedSpeech;
@@ -674,10 +740,9 @@ CHECKSIZE(CPed, 0x7A4, 0x988);
 
 DECL_CLASS_BASED(CCopPed, CPed)
 // Construct/Deconstruct functions
-CCopPed() {}
 DECL_CTORCALL_ARG_HEAD(CCopPed, _ZN7CCopPedC2E8eCopType, eCopType CopType)
 DECL_CTORCALL_ARG_TAIL(CopType)
-DECL_DTORCALL(CCopPed, _ZN7CCopPedD2Ev)
+DECL_DTORCALL_VIRTUAL(CCopPed, _ZN7CCopPedD2Ev, _ZN7CCopPed, _ZTV7CCopPed);
 
 // Member functions
 DECL_THISCALL_SIMPLE(ClearCriminalsToKill, _ZN7CCopPed20ClearCriminalsToKillEv, void);
@@ -701,6 +766,33 @@ CPed *m_apCriminalsToKill[5];
 bool m_bIAmDriver;
 DECL_CLASS_END()
 
+DECL_CLASS_BASED(CCivilianPed, CPed)
+DECL_CTORCALL_ARG_HEAD(CCivilianPed, _ZN12CCivilianPedC2E8ePedTypej, ePedType pedType, u32 modelIndex)
+DECL_CTORCALL_ARG_TAIL(pedType, modelIndex)
+DECL_DTORCALL_VIRTUAL(CCivilianPed, _ZN12CCivilianPedD2Ev, _ZN12CCivilianPed, _ZTV12CCivilianPed);
+DECL_NEWCALL(CCivilianPed, BYBIT(_ZN4CPednwEj, _ZN4CPednwEm));
+DECL_DLCALL(CCivilianPed, _ZN4CPeddlEPv);
+
+DECL_VIRTUALCALL_HEAD(CCivilianPed, ProcessControl, _ZTV12CCivilianPed, 11, void)
+DECL_VIRTUALCALL_TAIL()
+DECL_CLASS_END()
+CHECKSIZE(CCivilianPed, 0x7A4, 0x988);
+
+DECL_CLASS_BASED(CEmergencyPed, CPed)
+DECL_CTORCALL_ARG_HEAD(CEmergencyPed, _ZN13CEmergencyPedC2Ejj, u32 pedType, u32 modelIndex)
+DECL_CTORCALL_ARG_TAIL(pedType, modelIndex)
+DECL_DTORCALL_VIRTUAL(CEmergencyPed, _ZN4CPedD2Ev, _ZN13CEmergencyPed, _ZTV13CEmergencyPed);
+DECL_NEWCALL(CEmergencyPed, BYBIT(_ZN4CPednwEj, _ZN4CPednwEm));
+DECL_DLCALL(CEmergencyPed, _ZN4CPeddlEPv);
+
+DECL_VIRTUALCALL_HEAD(CEmergencyPed, ProcessControl, _ZTV13CEmergencyPed, 11, void)
+DECL_VIRTUALCALL_TAIL()
+
+DECL_THISCALL_HEAD(InRange, _ZN13CEmergencyPed7InRangeEP4CPed, bool, CPed *ped)
+DECL_THISCALL_TAIL(InRange, ped)
+DECL_CLASS_END()
+CHECKSIZE(CEmergencyPed, 0x7A4, 0x988);
+
 DECL_FASTCALL_SIMPLE_GLO(IsPedPointerValid, _Z17IsPedPointerValidP4CPed, bool, CPed *pPed);
 DECL_FASTCALL_SIMPLE_GLO(IsPedPointerValid_NotInWorld, _Z28IsPedPointerValid_NotInWorldP4CPed, bool, CPed *pPed);
 DECL_FASTCALL_SIMPLE_GLO(LOSBlockedBetweenPeds, _Z21LOSBlockedBetweenPedsP7CEntityS0_, bool, CEntity *pPed1,
@@ -709,5 +801,7 @@ DECL_FASTCALL_SIMPLE_GLO(SetPedAtomicVisibilityCB, _Z24SetPedAtomicVisibilityCBP
                          RwObject *pObject, void *pData);
 DECL_FASTCALL_SIMPLE_GLO(RecurseFrameChildrenVisibilityCB, _Z32RecurseFrameChildrenVisibilityCBP7RwFramePv, RwFrame *,
                          RwFrame *pFrame, void *pData);
+
+#define m_sGunFlashBlendStart m_sGunFlashBlendStart()
 
 #endif // __AML_PSDK_SAPED_H

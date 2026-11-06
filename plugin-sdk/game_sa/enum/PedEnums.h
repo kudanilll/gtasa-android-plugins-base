@@ -35,6 +35,17 @@ enum ePedType : unsigned int {
     PED_TYPE_MISSION8
 };
 
+enum eCopType : unsigned int {
+    COP_TYPE_CITYCOP = 0,
+    COP_TYPE_LAPDM1 = 1,
+    COP_TYPE_SWAT1 = 2,
+    COP_TYPE_SWAT2 = 3,
+    COP_TYPE_FBI = 4,
+    COP_TYPE_ARMY = 5,
+    COP_TYPE_MIAMIVICE = 6,
+    COP_TYPE_CSHER = 7,
+};
+
 enum ePedState : unsigned int {
     PEDSTATE_NONE,
     PEDSTATE_IDLE,
@@ -184,3 +195,36 @@ enum ePedCreatedBy : unsigned char {
 };
 
 enum MoveLimbResult { CANT_REACH_TARGET = 0, HAVENT_REACHED_TARGET, REACHED_TARGET };
+
+enum ePedPieceTypes {
+    PED_COL_SPHERE_LEG = 0,
+    PED_COL_SPHERE_MID = 1,
+    PED_COL_SPHERE_HEAD = 2,
+    PED_SPHERE_CHEST = 3,
+    PED_SPHERE_MIDSECTION = 4,
+    PED_SPHERE_UPPERARM_L = 5,
+    PED_SPHERE_UPPERARM_R = 6,
+    PED_SPHERE_LEG_L = 7,
+    PED_SPHERE_LEG_R = 8,
+    PED_SPHERE_HEAD = 9
+};
+
+enum eAcquaintanceType {
+    ACQUAINTANCE_TYPE_PED_RESPECT = 0,
+    ACQUAINTANCE_TYPE_PED_LIKE = 1,
+    ACQUAINTANCE_TYPE_PED_IGNORE = 2,
+    ACQUAINTANCE_TYPE_PED_DISLIKE = 3,
+    ACQUAINTANCE_TYPE_PED_HATE = 4,
+    MAX_NUM_ACQUAINTANCE_TYPES = 5,
+};
+
+enum ePlayerClothesRules {
+    CUTSCENE_REPLACE = 0,
+    CLOTHES_REPLACE = 1,
+    CLOTHES_TEXTURE = 2,
+    HIDE_CLOTHES = 3,
+    IGNORE_REMOVE = 4,
+    IGNORE_ADD = 5,
+    EXCLUSIVE_REMOVE = 6,
+    EXCLUSIVE_ADD = 7,
+};

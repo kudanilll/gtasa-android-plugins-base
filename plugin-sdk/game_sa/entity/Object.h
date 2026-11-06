@@ -14,12 +14,11 @@ enum eObjectType : unsigned char { OBJECT_UNKNOWN, OBJECT_MISSION = 2, OBJECT_TE
 DECL_CLASS_BASED(CObject, CPhysical)
 // Construct/Deconstruct functions
 DECL_CTORCALL(CObject, _ZN7CObjectC2Ev);
-DECL_FASTCALL_SIMPLE(FuncProxy_ctorCObject1, _ZN7CObjectC2Eib, void, CObject *object, i32 modelId, bool bCreate);
-DECL_FASTCALL_SIMPLE(FuncProxy_ctorCObject2, _ZN7CObjectC2EP12CDummyObject, void, CObject *object,
-                     CDummyObject *dummyObj);
-CObject(i32 modelId, bool bCreate) { FuncProxy_ctorCObject1(this, modelId, bCreate); }
-CObject(CDummyObject *dummyObj) { FuncProxy_ctorCObject2(this, dummyObj); }
-DECL_DTORCALL(CObject, _ZN7CObjectD2Ev);
+DECL_CTORCALL_NAMED_ARG_HEAD(CObject1, CObject, _ZN7CObjectC2Eib, i32 modelId, bool bCreate)
+DECL_CTORCALL_ARG_TAIL(modelId, bCreate)
+DECL_CTORCALL_NAMED_ARG_HEAD(CObject2, CObject, _ZN7CObjectC2EP12CDummyObject, CDummyObject *dummyObj)
+DECL_CTORCALL_ARG_TAIL(dummyObj)
+DECL_DTORCALL_VIRTUAL(CObject, _ZN7CObjectD2Ev, _ZN7CObject, _ZTV7CObject);
 DECL_NEWCALL(CObject, BYBIT(_ZN7CObjectnwEj, _ZN7CObjectnwEm));
 DECL_DLCALL(CObject, _ZN7CObjectdlEPv);
 DECL_FASTCALL_SIMPLE(InstantiateAt, BYBIT(_ZN7CObjectnwEji, _ZN7CObjectnwEmi), CObject *, size_t size, i32 poolRef);
@@ -36,6 +35,13 @@ DECL_FASTCALL_SIMPLE(DeleteAllTempObjects, _ZN7CObject20DeleteAllTempObjectsEv, 
 DECL_FASTCALL_SIMPLE(DeleteAllTempObjectsInArea, _ZN7CObject26DeleteAllTempObjectsInAreaE7CVectorf, void, CVector point,
                      float radius);
 DECL_FASTCALL_SIMPLE(DeleteAllMissionObjects, _ZN7CObject23DeleteAllMissionObjectsEv, void);
+
+// STATIC values
+DECL_OBJECT_PLT(u16, nNoTempObjects, BYBIT(0x677F68, 0x84DEF0));
+DECL_OBJECT_SYM(i16, nBodyCastHealth, _ZN7CObject15nBodyCastHealthE);
+DECL_OBJECT_PLT(float, fDistToNearestTree, BYBIT(0x676FC4, 0x84BFC0));
+DECL_OBJECT_PLT(bool, bArea51SamSiteDisabled, BYBIT(0x678368, 0x84E6E8));
+DECL_OBJECT_PLT(bool, bAircraftCarrierSamSiteDisabled, BYBIT(0x679D88, 0x851B28));
 
 // Member functions
 DECL_THISCALL_SIMPLE(Init, _ZN7CObject4InitEv, void);
@@ -78,13 +84,6 @@ DECL_THISCALL_SIMPLE(LockDoor, _ZN7CObject8LockDoorEv, void);
 DECL_THISCALL_SIMPLE(DoBurnEffect, _ZN7CObject12DoBurnEffectEv, void);
 DECL_THISCALL_SIMPLE(Save, _ZN7CObject4SaveEv, bool);
 DECL_THISCALL_SIMPLE(Load, _ZN7CObject4LoadEv, bool);
-
-// STATIC values
-DECL_OBJECT_SYM(u16, nNoTempObjects, _ZN7CObject14nNoTempObjectsE);
-DECL_OBJECT_SYM(i16, nBodyCastHealth, _ZN7CObject15nBodyCastHealthE);
-DECL_OBJECT_SYM(float, fDistToNearestTree, _ZN7CObject18fDistToNearestTreeE);
-DECL_OBJECT_SYM(bool, bArea51SamSiteDisabled, _ZN7CObject22bArea51SamSiteDisabledE);
-DECL_OBJECT_SYM(bool, bAircraftCarrierSamSiteDisabled, _ZN7CObject31bAircraftCarrierSamSiteDisabledE);
 
 // Member values
 CPtrNodeDoubleLink *m_pControlCodeList;
@@ -153,6 +152,11 @@ DECL_CLASS_END()
 CHECKSIZE(CObject, 0x184, 0x1F8);
 
 DECL_CLASS_BASED(CHandObject, CObject)
+// Construct/Deconstruct functions
+DECL_CTORCALL_ARG_HEAD(CHandObject, _ZN11CHandObjectC2EiP4CPedb, i32 modelId, CPed *pPed, bool bLeft)
+DECL_CTORCALL_ARG_TAIL(modelId, pPed, bLeft)
+DECL_DTORCALL_VIRTUAL(CHandObject, _ZN7CObjectD2Ev, _ZN11CHandObject, _ZTV11CHandObject);
+
 CPed *m_pPed;
 int m_nBoneIndex;
 RwTexture *m_pTexture;
@@ -160,6 +164,10 @@ unsigned char m_bUpdatedMatricesArray;
 DECL_CLASS_END()
 
 DECL_CLASS_BASED(CCutsceneObject, CObject)
+// Construct/Deconstruct functions
+DECL_CTORCALL(CCutsceneObject, _ZN15CCutsceneObjectC2Ev);
+DECL_DTORCALL_VIRTUAL(CCutsceneObject, _ZN15CCutsceneObjectD2Ev, _ZN15CCutsceneObject, _ZTV15CCutsceneObject);
+
 union {
     RwFrame *m_pAttachTo;
     int m_nAttachBone; // this one if m_pAttachmentObject != 0

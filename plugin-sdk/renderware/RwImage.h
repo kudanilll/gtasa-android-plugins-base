@@ -81,9 +81,44 @@ DECL_FASTCALL_SIMPLE_GLO(RwImageCreateResample, _Z21RwImageCreateResamplePK7RwIm
 
 DECL_FASTCALL_SIMPLE_GLO(RtBMPImageWrite, _Z15RtBMPImageWriteP7RwImagePKc, RwImage *, RwImage *image,
                          const RwChar *imageName);
+#ifdef GTAVC
+DECL_FASTCALL_SIMPLE_GLO(RtPNGImageWrite, RtPNGImageWrite, RwImage *, RwImage *image, const RwChar *imageName);
+#else
 DECL_FASTCALL_SIMPLE_GLO(RtPNGImageWrite, _Z15RtPNGImageWriteP7RwImagePKc, RwImage *, RwImage *image,
                          const RwChar *imageName);
+#endif
 DECL_FASTCALL_SIMPLE_GLO(RtBMPImageRead, _Z14RtBMPImageReadPKc, RwImage *, const RwChar *imageName);
+#ifdef GTAVC
+DECL_FASTCALL_SIMPLE_GLO(RtPNGImageRead, RtPNGImageRead, RwImage *, const RwChar *imageName);
+#else
 DECL_FASTCALL_SIMPLE_GLO(RtPNGImageRead, _Z14RtPNGImageReadPKc, RwImage *, const RwChar *imageName);
+#endif
+
+inline RwInt32 RwImageGetWidth(const RwImage *image) { return image->width; }
+
+inline RwInt32 RwImageGetHeight(const RwImage *image) { return image->height; }
+
+inline RwInt32 RwImageGetDepth(const RwImage *image) { return image->depth; }
+
+inline RwInt32 RwImageGetStride(const RwImage *image) { return image->stride; }
+
+inline RwImage *RwImageSetStride(RwImage *image, RwInt32 value) {
+    image->stride = value;
+    return image;
+}
+
+inline RwImage *RwImageSetPixels(RwImage *image, RwUInt8 *value) {
+    image->cpPixels = value;
+    return image;
+}
+
+inline RwUInt8 *RwImageGetPixels(const RwImage *image) { return image->cpPixels; }
+
+inline RwImage *RwImageSetPalette(RwImage *image, RwRGBA *value) {
+    image->palette = value;
+    return image;
+}
+
+inline RwRGBA *RwImageGetPalette(const RwImage *image) { return image->palette; }
 
 #endif // __AML_PSDK_RWIMAGE_H

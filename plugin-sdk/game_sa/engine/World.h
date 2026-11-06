@@ -3,9 +3,11 @@
 
 #include <plugin-sdk/game_sa/base/ColModel.h>
 #include <plugin-sdk/game_sa/base/Lists.h>
+#include <plugin-sdk/game_sa/enum/LevelName.h>
 #include <plugin-sdk/game_sa/other/PlayerInfo.h>
 #include <plugin-sdk/game_sa/plugin.h>
 #include <plugin-sdk/gta_base/Vector.h>
+#include <plugin-sdk/renderware/RwVector.h>
 
 struct CEntity;
 struct CSector;
@@ -16,9 +18,27 @@ struct CBox;
 struct CMatrix;
 struct CVehicle;
 struct CPed;
+struct CPhysical;
+
+DECL_CLASS(CWorldScan)
+// STATIC functions
+DECL_FASTCALL_SIMPLE(ScanWorld, _ZN10CWorldScan9ScanWorldEP5RwV2diPFviiE, void, RwV2d *points, i32 numPoints,
+                     void (*callback)(i32, i32));
+DECL_FASTCALL_SIMPLE(SetExtraRectangleToScan, _ZN10CWorldScan23SetExtraRectangleToScanEffff, void, float left,
+                     float right, float bottom, float top);
+DECL_CLASS_END()
+CHECKSIZE(CWorldScan, 0x1, 0x1);
 
 DECL_CLASS(CWorld)
 // STATIC functions
+DECL_FASTCALL_SIMPLE(CheckBlockListIntegrity, _ZN6CWorld23CheckBlockListIntegrityEv, void);
+DECL_FASTCALL_SIMPLE(TestForBuildingsOnTopOfEachOther1, _ZN6CWorld32TestForBuildingsOnTopOfEachOtherEv, void);
+DECL_FASTCALL_SIMPLE(TestForBuildingsOnTopOfEachOther2, _ZN6CWorld32TestForBuildingsOnTopOfEachOtherER8CPtrList, void,
+                     CPtrList &ptrList);
+DECL_FASTCALL_SIMPLE(TestForUnusedModels1, _ZN6CWorld19TestForUnusedModelsEv, void);
+DECL_FASTCALL_SIMPLE(HandleCollisionZoneChange, _ZN6CWorld25HandleCollisionZoneChangeE10eLevelNameS0_, void,
+                     eLevelName arg1, eLevelName arg2);
+DECL_FASTCALL_SIMPLE(DoZoneTestForChaser, _ZN6CWorld19DoZoneTestForChaserEP9CPhysical, void, CPhysical *pCPhysical1);
 DECL_FASTCALL_SIMPLE(ResetLineTestOptions, _ZN6CWorld20ResetLineTestOptionsEv, void);
 DECL_FASTCALL_SIMPLE(Initialise, _ZN6CWorld10InitialiseEv, void);
 DECL_FASTCALL_SIMPLE(ShutDown, _ZN6CWorld8ShutDownEv, void);
@@ -228,6 +248,22 @@ DECL_FASTCALL_SIMPLE(FindUnsuspectingTargetCar, _ZN6CWorld25FindUnsuspectingTarg
 DECL_FASTCALL_SIMPLE(FindUnsuspectingTargetPed, _ZN6CWorld25FindUnsuspectingTargetPedE7CVectorS0_, CPed *,
                      CVector Coors, CVector AimTowardsCoors);
 
+inline static u16 GetCurrentScanCode() { return ms_nCurrentScanCode(); }
+inline static CSector *GetSector(i32 x, i32 y) { return &ms_aSectors()[y * 120 + x]; }
+inline static CRepeatSector *GetRepeatSector(i32 x, i32 y) { return &ms_aRepeatSectors()[y * 16 + x]; }
+inline static CPtrListSingleLink *GetLodPtrList(i32 x, i32 y) { return &ms_aLodPtrLists()[y * 30 + x]; }
+inline static void AdvanceCurrentScanCode() {
+    if (++ms_nCurrentScanCode() == 0) {
+        ClearScanCodes();
+        ms_nCurrentScanCode() = 1;
+    }
+}
+
+// STATIC values
+DECL_VALUE_PLT_U8(bDoingCarCollisions, BYBIT(0x678710, 0x84EE48));
+DECL_OBJECT_PLT(CVector, SnookerTableMax, BYBIT(0x679318, 0x850648));
+DECL_OBJECT_PLT(CVector, SnookerTableMin, BYBIT(0x6775E8, 0x84CC00));
+
 // STATIC members
 DECL_OBJECT_ARRAY_PLT(CPlayerInfo, Players, BYBIT(0x6783C8, 0x84E7A8));
 DECL_VALUE_PLT_U8(PlayerInFocus, BYBIT(0x679B5C, 0x8516D8));
@@ -263,5 +299,9 @@ DECL_CLASS_END()
 #define ms_listMovingEntityPtrs ms_listMovingEntityPtrs()
 #define ms_listObjectsWithControlCode ms_listObjectsWithControlCode()
 #define ms_nCurrentScanCode ms_nCurrentScanCode()
+
+#define bDoingCarCollisions bDoingCarCollisions()
+#define SnookerTableMax SnookerTableMax()
+#define SnookerTableMin SnookerTableMin()
 
 #endif // __AML_PSDK_SAWORLD_H

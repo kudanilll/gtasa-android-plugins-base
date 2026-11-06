@@ -17,28 +17,33 @@ struct CGarageFlags {
 };
 CHECKSIZE(CGarageFlags, 0x1, 0x1); // 64-bit from the IDB; 32-bit measured from this layout
 
-struct CStoredCar {
-    float CoorX;
-    float CoorY;
-    float CoorZ;
-    u32 FlagsLocal;
-    u16 Bits;
-    u16 ModelIndex;
-    i16 CarMods[15];
-    u8 Colour1;
-    u8 Colour2;
-    u8 Colour3;
-    u8 Colour4;
-    u8 RadioStation;
-    i8 Comp1;
-    i8 Comp2;
-    i8 BombOnBoard;
-    i8 PaintJob;
-    i8 m_nNitroBoosts;
-    i8 iFrontX;
-    i8 iFrontY;
-    i8 iFrontZ;
-};
+DECL_CLASS(CStoredCar)
+// Member functions
+DECL_THISCALL_HEAD(StoreCar, _ZN10CStoredCar8StoreCarEP8CVehicle, void, CVehicle *pCVehicle1)
+DECL_THISCALL_TAIL(StoreCar, pCVehicle1)
+DECL_THISCALL_SIMPLE(RestoreCar, _ZN10CStoredCar10RestoreCarEv, CVehicle *);
+
+float CoorX;
+float CoorY;
+float CoorZ;
+u32 FlagsLocal;
+u16 Bits;
+u16 ModelIndex;
+i16 CarMods[15];
+u8 Colour1;
+u8 Colour2;
+u8 Colour3;
+u8 Colour4;
+u8 RadioStation;
+i8 Comp1;
+i8 Comp2;
+i8 BombOnBoard;
+i8 PaintJob;
+i8 m_nNitroBoosts;
+i8 iFrontX;
+i8 iFrontY;
+i8 iFrontZ;
+DECL_CLASS_END()
 CHECKSIZE(CStoredCar, 0x40, 0x40); // 64-bit from the IDB; 32-bit measured from this layout
 
 struct CAEDoorAudioEntity;

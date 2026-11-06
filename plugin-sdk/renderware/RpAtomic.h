@@ -6,6 +6,7 @@
 #include <plugin-sdk/renderware/RpGeometry.h>
 #include <plugin-sdk/renderware/RpMaterial.h>
 #include <plugin-sdk/renderware/RpWorld.h>
+#include <plugin-sdk/renderware/RwFrame.h>
 #include <plugin-sdk/renderware/RwMatrix.h>
 #include <plugin-sdk/renderware/RwObject.h>
 #include <plugin-sdk/renderware/RwResource.h>
@@ -22,6 +23,12 @@ enum RpAtomicFlag : RwInt32 {
 
 enum RpAtomicSetGeomFlag : RwInt32 {
     rpATOMICSAMEBOUNDINGSPHERE = 0x1, /**< Skip recomputing the bounding sphere */
+};
+
+enum RpInterpolatorFlag : RwInt32 {
+    rpINTERPOLATORDIRTYINSTANCE = 0x1,
+    rpINTERPOLATORDIRTYSPHERE = 0x2,
+    rpINTERPOLATORNOFRAMEDIRTY = 0x4,
 };
 
 struct RpInterpolator {
@@ -49,6 +56,11 @@ struct RpAtomic {
     RwLinkList llWorldSectorsInAtomic;
     RxPipeline *pipeline;
 };
+
+#ifdef GTAVC
+CHECKSIZE(RpInterpolator, 0x14, 0x14);
+CHECKSIZE(RpAtomic, 0x70, 0xA8);
+#endif
 
 DECL_FASTCALL_SIMPLE_GLO(AtomicDefaultRenderCallBack, _Z27AtomicDefaultRenderCallBackP8RpAtomic, RpAtomic *,
                          RpAtomic *atomic);
@@ -90,7 +102,106 @@ DECL_FASTCALL_SIMPLE_GLO(RpAtomicForAllWorldSectors,
                          RpAtomic *atomic, RpWorldSectorCallBack callback, void *data);
 DECL_FASTCALL_SIMPLE_GLO(RpAtomicSetDefaultPipeline, _Z26RpAtomicSetDefaultPipelineP10RxPipeline, RxPipeline *,
                          RxPipeline *pipeline);
+#ifdef GTASA
 DECL_FASTCALL_SIMPLE_GLO(RpAtomicConvertGeometryToTL, _Z27RpAtomicConvertGeometryToTLP8RpAtomic, u8, RpAtomic *pAtomic);
 DECL_FASTCALL_SIMPLE_GLO(RpAtomicConvertGeometryToTS, _Z27RpAtomicConvertGeometryToTSP8RpAtomic, u8, RpAtomic *pAtomic);
+#endif
+
+inline RpGeometry *RpAtomicGetGeometry(const RpAtomic *atomic) { return atomic->geometry; }
+
+inline RpClump *RpAtomicGetClump(const RpAtomic *atomic) { return atomic->clump; }
+
+inline RwFrame *RpAtomicGetFrame(const RpAtomic *atomic) { return atomic->object.object.frame; }
+
+inline RwUInt32 RpAtomicGetFlags(const RpAtomic *atomic) { return atomic->object.object.flags; }
+
+inline RpAtomicCallBackRender RpAtomicGetRenderCallBack(const RpAtomic *atomic) { return atomic->renderCallBack; }
+
+inline RpAtomic *RpAtomicSetFlags(RpAtomic *atomic, RwUInt32 flags) {
+    atomic->object.object.flags = (RwUInt8)flags;
+    return atomic;
+}
+
+inline RpAtomic *RpAtomicRender(RpAtomic *atomic) { return atomic->renderCallBack(atomic); }
+
+inline void RpAtomicSetRenderCallBack(RpAtomic *atomic, RpAtomicCallBackRender callback) {
+    atomic->renderCallBack = callback ? callback : AtomicDefaultRenderCallBack;
+}
+
+inline RpInterpolator *RpAtomicGetInterpolator(RpAtomic *atomic) { return &atomic->interpolator; }
+
+inline RwSphere *RpAtomicGetBoundingSphere(RpAtomic *atomic) {
+    if (atomic->interpolator.flags & rpINTERPOLATORDIRTYSPHERE)
+        _rpAtomicResyncInterpolatedSphere(atomic);
+    return &atomic->boundingSphere;
+}
+
+inline RwInt32 RpInterpolatorGetStartMorphTarget(const RpInterpolator *interpolator) {
+    return interpolator->startMorphTarget;
+}
+
+inline RwInt32 RpInterpolatorGetEndMorphTarget(const RpInterpolator *interpolator) {
+    return interpolator->endMorphTarget;
+}
+
+inline RwReal RpInterpolatorGetValue(const RpInterpolator *interpolator) { return interpolator->position; }
+
+inline RwReal RpInterpolatorGetScale(const RpInterpolator *interpolator) { return interpolator->time; }
+
+inline RpInterpolator *RpInterpolatorSetStartMorphTarget(RpInterpolator *interpolator, RwInt32 target,
+                                                         RpAtomic *atomic) {
+    interpolator->startMorphTarget = (RwInt16)target;
+    interpolator->flags |= rpINTERPOLATORDIRTYINSTANCE | rpINTERPOLATORDIRTYSPHERE;
+    if (!(interpolator->flags & rpINTERPOLATORNOFRAMEDIRTY)) {
+        RwFrame *frame = RpAtomicGetFrame(atomic);
+        if (frame)
+            RwFrameUpdateObjects(frame);
+    }
+    return interpolator;
+}
+
+inline RpInterpolator *RpInterpolatorSetEndMorphTarget(RpInterpolator *interpolator, RwInt32 target, RpAtomic *atomic) {
+    interpolator->endMorphTarget = (RwInt16)target;
+    interpolator->flags |= rpINTERPOLATORDIRTYINSTANCE | rpINTERPOLATORDIRTYSPHERE;
+    if (!(interpolator->flags & rpINTERPOLATORNOFRAMEDIRTY)) {
+        RwFrame *frame = RpAtomicGetFrame(atomic);
+        if (frame)
+            RwFrameUpdateObjects(frame);
+    }
+    return interpolator;
+}
+
+inline RpInterpolator *RpInterpolatorSetValue(RpInterpolator *interpolator, RwReal value, RpAtomic *atomic) {
+    interpolator->position = value;
+    interpolator->flags |= rpINTERPOLATORDIRTYINSTANCE | rpINTERPOLATORDIRTYSPHERE;
+    if (!(interpolator->flags & rpINTERPOLATORNOFRAMEDIRTY)) {
+        RwFrame *frame = RpAtomicGetFrame(atomic);
+        if (frame)
+            RwFrameUpdateObjects(frame);
+    }
+    return interpolator;
+}
+
+inline RpInterpolator *RpInterpolatorSetScale(RpInterpolator *interpolator, RwReal scale, RpAtomic *atomic) {
+    interpolator->time = scale;
+    interpolator->recipTime = 1.0f / scale;
+    interpolator->flags |= rpINTERPOLATORDIRTYINSTANCE | rpINTERPOLATORDIRTYSPHERE;
+    if (!(interpolator->flags & rpINTERPOLATORNOFRAMEDIRTY)) {
+        RwFrame *frame = RpAtomicGetFrame(atomic);
+        if (frame)
+            RwFrameUpdateObjects(frame);
+    }
+    return interpolator;
+}
+
+inline RpAtomic *RpAtomicSetPipeline(RpAtomic *atomic, RxPipeline *pipeline) {
+    atomic->pipeline = pipeline;
+    return atomic;
+}
+
+inline const RpAtomic *RpAtomicGetPipeline(const RpAtomic *atomic, RxPipeline **pipeline) {
+    *pipeline = atomic->pipeline;
+    return atomic;
+}
 
 #endif // __AML_PSDK_RPATOMIC_H

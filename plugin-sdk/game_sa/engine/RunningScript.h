@@ -292,4 +292,8 @@ unsigned char m_bIsMission;
 DECL_CLASS_END()
 CHECKSIZE(CRunningScript, 0x100, 0x130);
 
+DECL_OBJECT_ARRAY_PLT_GLOBAL(tScriptParam, ScriptParams, BYBIT(0x676F7C, 0x84BF38));
+
+#define ScriptParams ScriptParams()
+
 #endif // __AML_PSDK_SARUNNINGSCRIPT_H

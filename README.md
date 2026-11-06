@@ -54,7 +54,7 @@ base_plugins/
 
    ```powershell
    ./format.ps1
-   # atau double-click format.cmd
+   # or double-click format.cmd
    ```
 
 3. Run the build script:

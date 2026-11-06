@@ -105,9 +105,9 @@ DECL_FASTCALL_SIMPLE(GetDependentTexture, _ZN8CClothes19GetDependentTextureEi, e
 DECL_FASTCALL_SIMPLE(LoadClothesFile, _ZN8CClothes15LoadClothesFileEv, void);
 
 // STATIC values
-DECL_OBJECT_ARRAY_SYM(u32, ms_clothesRules, _ZN8CClothes15ms_clothesRulesE);
-DECL_OBJECT_SYM(u32, ms_numRuleTags, _ZN8CClothes14ms_numRuleTagsE);
-DECL_OBJECT_SYM(i32, ms_clothesImageId, _ZN8CClothes17ms_clothesImageIdE);
+DECL_OBJECT_ARRAY_PLT(u32, ms_clothesRules, BYBIT(0x677DE4, 0x84DBE8));
+DECL_OBJECT_PLT(u32, ms_numRuleTags, BYBIT(0x67722C, 0x84C490));
+DECL_OBJECT_PLT(i32, ms_clothesImageId, BYBIT(0x678108, 0x84E228));
 DECL_CLASS_END()
 CHECKSIZE(CClothes, 0x1, 0x1);
 
@@ -133,6 +133,14 @@ DECL_FASTCALL_SIMPLE(BlendGeometry1, _ZN15CClothesBuilder13BlendGeometryEP7RpClu
                      float arg7);
 DECL_FASTCALL_SIMPLE(BlendGeometry2, _ZN15CClothesBuilder13BlendGeometryEP7RpClumpPKcS3_ff, RpGeometry *,
                      RpClump *clump, char const *arg2, char const *arg3, float arg4, float arg5);
+inline static RpGeometry *BlendGeometry(RpClump *clump, char const *name, char const *name2, char const *name3,
+                                        float factorA, float factorB, float factorC) {
+    return BlendGeometry1(clump, name, name2, name3, factorA, factorB, factorC);
+}
+inline static RpGeometry *BlendGeometry(RpClump *clump, char const *name, char const *name2, float factorA,
+                                        float factorB) {
+    return BlendGeometry2(clump, name, name2, factorA, factorB);
+}
 DECL_FASTCALL_SIMPLE(CopyGeometry, _ZN15CClothesBuilder12CopyGeometryEP7RpClumpPKcS3_, RpGeometry *, RpClump *clump,
                      char const *arg2, char const *arg3);
 DECL_FASTCALL_SIMPLE(
@@ -155,6 +163,17 @@ DECL_FASTCALL_SIMPLE(BlendTextures2, _ZN15CClothesBuilder13BlendTexturesEP9RwTex
 DECL_FASTCALL_SIMPLE(BlendTextures3, _ZN15CClothesBuilder13BlendTexturesEP9RwTextureS1_S1_fffiS1_, void,
                      RwTexture *texture1, RwTexture *texture2, RwTexture *texture3, float factorA, float factorB,
                      float factorC, i32 arg7, RwTexture *texture4);
+inline static void BlendTextures(RwTexture *texture1, RwTexture *texture2, float factorA, float factorB, i32 arg5) {
+    BlendTextures1(texture1, texture2, factorA, factorB, arg5);
+}
+inline static void BlendTextures(RwTexture *texture1, RwTexture *texture2, RwTexture *texture3, float factorA,
+                                 float factorB, float factorC, i32 arg7) {
+    BlendTextures2(texture1, texture2, texture3, factorA, factorB, factorC, arg7);
+}
+inline static void BlendTextures(RwTexture *texture1, RwTexture *texture2, RwTexture *texture3, float factorA,
+                                 float factorB, float factorC, i32 arg7, RwTexture *texture4) {
+    BlendTextures3(texture1, texture2, texture3, factorA, factorB, factorC, arg7, texture4);
+}
 DECL_FASTCALL_SIMPLE(ReducePaletteSize, _ZN15CClothesBuilder17ReducePaletteSizeEP9RwTexturei, void, RwTexture *texture,
                      i32 numColorsToReduce);
 DECL_FASTCALL_SIMPLE(InitPaletteOctTree, _ZN15CClothesBuilder18InitPaletteOctTreeEi, void, i32 numColors);
@@ -169,10 +188,10 @@ DECL_FASTCALL_SIMPLE(PutOnClothes, _ZN15CClothesBuilder12PutOnClothesEP9RwTextur
                      RwTexture *texture2, bool arg3);
 
 // STATIC values
-DECL_OBJECT_SYM(CPedClothesDesc const *, ms_pOldClothesState, _ZN15CClothesBuilder19ms_pOldClothesStateE);
-DECL_OBJECT_SYM(bool, ms_ratiosHaveChanged, _ZN15CClothesBuilder20ms_ratiosHaveChangedE);
-DECL_OBJECT_SYM(bool, ms_geometryHasChanged, _ZN15CClothesBuilder21ms_geometryHasChangedE);
-DECL_OBJECT_SYM(bool, ms_textureHasChanged, _ZN15CClothesBuilder20ms_textureHasChangedE);
+DECL_OBJECT_PLT(CPedClothesDesc const *, ms_pOldClothesState, BYBIT(0x678648, 0x84ECB8));
+DECL_OBJECT_PLT(bool, ms_ratiosHaveChanged, BYBIT(0x6765FC, 0x84AC50));
+DECL_OBJECT_PLT(bool, ms_geometryHasChanged, BYBIT(0x67941C, 0x850850));
+DECL_OBJECT_PLT(bool, ms_textureHasChanged, BYBIT(0x677BE8, 0x84D7F0));
 DECL_CLASS_END()
 CHECKSIZE(CClothesBuilder, 0x1, 0x1);
 

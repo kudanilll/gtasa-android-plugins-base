@@ -1,6 +1,7 @@
 #ifndef __AML_PSDK_SA2DEFFECT_H
 #define __AML_PSDK_SA2DEFFECT_H
 
+#include <plugin-sdk/game_sa/plugin.h>
 #include <plugin-sdk/renderware/RwRGBA.h>
 #include <plugin-sdk/renderware/RwVector.h>
 
@@ -134,7 +135,23 @@ struct tEffectTrigger {
     int m_nIndex;
 };
 
+struct CRoadsignAttrFlags {
+    u16 nNumLines : 2;
+    u16 nNumLetters : 2;
+    u16 nPaletteID : 2;
+};
+CHECKSIZE(CRoadsignAttrFlags, 2, 2);
+
 DECL_CLASS(C2dEffect)
+// STATIC functions
+DECL_FASTCALL_SIMPLE(PluginAttach, _ZN9C2dEffect12PluginAttachEv, bool);
+DECL_FASTCALL_SIMPLE(Roadsign_GetNumLinesFromFlags, _ZN9C2dEffect29Roadsign_GetNumLinesFromFlagsE18CRoadsignAttrFlags,
+                     u16, CRoadsignAttrFlags arg1);
+DECL_FASTCALL_SIMPLE(Roadsign_GetNumLettersFromFlags,
+                     _ZN9C2dEffect31Roadsign_GetNumLettersFromFlagsE18CRoadsignAttrFlags, u16, CRoadsignAttrFlags arg1);
+DECL_FASTCALL_SIMPLE(Roadsign_GetPaletteIDFromFlags, _ZN9C2dEffect30Roadsign_GetPaletteIDFromFlagsE18CRoadsignAttrFlags,
+                     u16, CRoadsignAttrFlags arg1);
+
 // Member values
 CVector m_vecPosn;
 unsigned char m_nType; // see e2dEffectType

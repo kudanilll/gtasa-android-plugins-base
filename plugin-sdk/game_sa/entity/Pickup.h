@@ -63,6 +63,7 @@ DECL_THISCALL_HEAD(ExtractAmmoFromPickup, _ZN7CPickup21ExtractAmmoFromPickupEP10
 DECL_THISCALL_TAIL(ExtractAmmoFromPickup, pPlayerPed)
 
 inline void SetCoors(CVector posn) { m_vecPos.Set(posn); }
+inline void SetPosn(float x, float y, float z) { SetCoors(CVector(x, y, z)); }
 inline CVector GetCoors() const { return CVector(GetCoorsX(), GetCoorsY(), GetCoorsZ()); }
 inline float GetCoorsX() const { return m_vecPos.x / 8.0f; }
 inline float GetCoorsY() const { return m_vecPos.y / 8.0f; }

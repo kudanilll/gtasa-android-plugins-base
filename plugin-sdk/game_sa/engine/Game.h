@@ -1,6 +1,7 @@
 #ifndef __AML_PSDK_SAGAME_H
 #define __AML_PSDK_SAGAME_H
 
+#include <plugin-sdk/game_sa/plugin.h>
 #include <plugin-sdk/renderware/RwMatrix.h>
 
 DECL_CLASS(CGame)

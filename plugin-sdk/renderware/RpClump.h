@@ -13,6 +13,8 @@ struct RpClump;
 struct RpAtomic;
 struct RpWorld;
 
+typedef RpAtomic *(*LoadAtomicCallback)(RpAtomic *atomic);
+
 struct RpClumpChunkInfo {
     RwInt32 numAtomics;
     RwInt32 numLights;
@@ -29,13 +31,21 @@ struct RpClump {
     RwUInt16 pad;
 };
 
+#ifdef GTAVC
+CHECKSIZE(RpClumpChunkInfo, 0xC, 0xC);
+CHECKSIZE(RpClump, 0x30, 0x60);
+#endif
+
 DECL_FASTCALL_SIMPLE_GLO(_rpClumpClose, _Z13_rpClumpClosePvii, void *, void *instance, RwInt32 offset, RwInt32 size);
+#ifdef GTASA
 DECL_FASTCALL_SIMPLE_GLO_PLT(ClumpTidyDestroyClump, BYBIT(0x213C15, 0x2B9E28), void, void *object, void *data);
 DECL_FASTCALL_SIMPLE_GLO_PLT(ClumpTidyDestroyAtomic, BYBIT(0x213C19, 0x2B9E2C), void, void *object, void *data);
+#endif
 DECL_FASTCALL_SIMPLE_GLO(RpClumpSetFreeListCreateParams, _Z30RpClumpSetFreeListCreateParamsii, void, RwInt32 blockSize,
                          RwInt32 numBlocksToPrealloc);
 DECL_FASTCALL_SIMPLE_GLO(_rpClumpOpen, _Z12_rpClumpOpenPvii, void *, void *instance, RwInt32 offset, RwInt32 size);
 DECL_FASTCALL_SIMPLE_GLO(_rpClumpRegisterExtensions, _Z26_rpClumpRegisterExtensionsv, RwBool, void);
+#ifdef GTASA
 DECL_FASTCALL_SIMPLE_GLO_PLT(ClumpInitCameraExt, BYBIT(0x213D9D, 0x2B9FC8), void *, void *object,
                              RwInt32 offsetInObject, RwInt32 sizeInObject);
 DECL_FASTCALL_SIMPLE_GLO_PLT(ClumpDeInitCameraExt, BYBIT(0x213DB5, 0x2B9FE0), void *, void *object,
@@ -44,6 +54,7 @@ DECL_FASTCALL_SIMPLE_GLO_PLT(ClumpInitLightExt, BYBIT(0x213DB9, 0x2B9FE4), void 
                              RwInt32 sizeInObject);
 DECL_FASTCALL_SIMPLE_GLO_PLT(ClumpDeInitLightExt, BYBIT(0x213DD1, 0x2B9FFC), void *, void *object,
                              RwInt32 offsetInObject, RwInt32 sizeInObject);
+#endif
 DECL_FASTCALL_SIMPLE_GLO(RpClumpGetNumAtomics, _Z20RpClumpGetNumAtomicsP7RpClump, RwInt32, RpClump *clump);
 DECL_FASTCALL_SIMPLE_GLO(RpClumpForAllAtomics, _Z20RpClumpForAllAtomicsP7RpClumpPFP8RpAtomicS2_PvES3_, RpClump *,
                          RpClump *clump, RpAtomicCallBack callback, void *pData);
@@ -63,7 +74,9 @@ DECL_FASTCALL_SIMPLE_GLO(RpClumpClone, _Z12RpClumpCloneP7RpClump, RpClump *, RpC
 DECL_FASTCALL_SIMPLE_GLO(RpClumpDestroy, _Z14RpClumpDestroyP7RpClump, RwBool, RpClump *clump);
 DECL_FASTCALL_SIMPLE_GLO(RpClumpSetCallBack, _Z18RpClumpSetCallBackP7RpClumpPFS0_S0_PvE, RpClump *, RpClump *clump,
                          RpClumpCallBack callback);
+#ifdef GTASA
 DECL_FASTCALL_SIMPLE_GLO_PLT(ClumpCallBack, BYBIT(0x214779, 0x2BAC78), RpClump *, RpClump *clump, void *data);
+#endif
 DECL_FASTCALL_SIMPLE_GLO(RpClumpGetCallBack, _Z18RpClumpGetCallBackPK7RpClump, RpClumpCallBack, const RpClump *clump);
 DECL_FASTCALL_SIMPLE_GLO(RpClumpRemoveAtomic, _Z19RpClumpRemoveAtomicP7RpClumpP8RpAtomic, RpClump *, RpClump *clump,
                          RpAtomic *atomic);
@@ -92,5 +105,34 @@ DECL_FASTCALL_SIMPLE_GLO(RpClumpSetStreamAlwaysCallBack, _Z30RpClumpSetStreamAlw
                          RwUInt32 pluginID, RwPluginDataChunkAlwaysCallBack alwaysCB);
 DECL_FASTCALL_SIMPLE_GLO(RpClumpValidatePlugins, _Z22RpClumpValidatePluginsPK7RpClump, RwBool, const RpClump *clump);
 DECL_FASTCALL_SIMPLE_GLO(RpClumpGetWorld, _Z15RpClumpGetWorldPK7RpClump, RpWorld *, const RpClump *clump);
+
+DECL_FASTCALL_SIMPLE_GLO(RpClumpGetPluginOffset, _Z22RpClumpGetPluginOffsetj, RwInt32, RwUInt32 pluginID);
+
+DECL_FASTCALL_SIMPLE_GLO(RpClumpGtaStreamRead, _Z20RpClumpGtaStreamReadP8RwStream, RpClump *, RwStream *pStream);
+
+DECL_FASTCALL_SIMPLE_GLO(RpClumpGtaCancelStream, _Z22RpClumpGtaCancelStreamv, void);
+
+DECL_FASTCALL_SIMPLE_GLO(RpClumpGtaStreamRead1, _Z21RpClumpGtaStreamRead1P8RwStream, bool, RwStream *pStream);
+
+DECL_FASTCALL_SIMPLE_GLO(RpClumpGtaStreamRead2, _Z21RpClumpGtaStreamRead2P8RwStream, RpClump *, RwStream *pStream);
+
+DECL_FASTCALL_SIMPLE_GLO(RpClumpStreamReadAtomics, _Z24RpClumpStreamReadAtomicsP8RwStreamPFP8RpAtomicS2_E, bool,
+                         RwStream *pStream, LoadAtomicCallback atomCB);
+
+DECL_FASTCALL_SIMPLE_GLO(RpClumpGetBoundingSphere, _Z24RpClumpGetBoundingSphereP7RpClumpP8RwSphereb, RpClump *,
+                         RpClump *pClump, RwSphere *pSphere, bool bUseLTM);
+
+#ifdef GTASA
+DECL_FASTCALL_SIMPLE_GLO(RpClumpConvertGeometryToTL, _Z26RpClumpConvertGeometryToTLP7RpClump, u8, RpClump *pClump);
+
+DECL_FASTCALL_SIMPLE_GLO(RpClumpConvertGeometryToTS, _Z26RpClumpConvertGeometryToTSP7RpClump, u8, RpClump *pClump);
+#endif
+
+inline RwFrame *RpClumpGetFrame(const RpClump *clump) { return clump->object.frame; }
+
+inline RpClump *RpClumpSetFrame(RpClump *clump, RwFrame *frame) {
+    clump->object.frame = frame;
+    return clump;
+}
 
 #endif // __AML_PSDK_RPCLUMP_H

@@ -12,7 +12,7 @@ struct RtQuat;
 DECL_CLASS_BASED(CPhysical, CEntity)
 // Construct/Deconstruct functions
 DECL_CTORCALL(CPhysical, _ZN9CPhysicalC2Ev);
-DECL_DTORCALL(CPhysical, _ZN9CPhysicalD2Ev);
+DECL_DTORCALL_VIRTUAL(CPhysical, _ZN9CPhysicalD2Ev, _ZN9CPhysical, _ZTV9CPhysical);
 
 // Static functions
 DECL_FASTCALL_SIMPLE(PlacePhysicalRelativeToOtherPhysical,
@@ -33,7 +33,7 @@ DECL_THISCALL_SIMPLE(ApplyAirResistance, _ZN9CPhysical18ApplyAirResistanceEv, vo
 DECL_THISCALL_SIMPLE(SkipPhysics, _ZN9CPhysical11SkipPhysicsEv, void);
 DECL_THISCALL_SIMPLE(CheckCollision_SimpleCar, _ZN9CPhysical24CheckCollision_SimpleCarEv, bool);
 DECL_THISCALL_SIMPLE(CheckCollision, _ZN9CPhysical14CheckCollisionEv, bool);
-DECL_THISCALL_SIMPLE(GetHasCollidedWithAnyObject, _ZN9CPhysical27GetHasCollidedWithAnyObjectEv, void);
+DECL_THISCALL_SIMPLE(GetHasCollidedWithAnyObject, _ZN9CPhysical27GetHasCollidedWithAnyObjectEv, bool);
 DECL_THISCALL_SIMPLE(PositionAttachedEntity, _ZN9CPhysical22PositionAttachedEntityEv, void);
 DECL_THISCALL_SIMPLE(DettachAutoAttachedEntity, _ZN9CPhysical25DettachAutoAttachedEntityEv, void);
 DECL_THISCALL_SIMPLE(GetLightingTotal, _ZNK9CPhysical16GetLightingTotalEv, float);
@@ -70,7 +70,7 @@ DECL_THISCALL_HEAD(ApplyFrictionForce, _ZN9CPhysical18ApplyFrictionForceE7CVecto
                    CVector vecOffset)
 DECL_THISCALL_TAIL(ApplyFrictionForce, vecForce, vecOffset)
 
-DECL_THISCALL_HEAD(ProcessCollisionSectorList, _ZN9CPhysical26ProcessCollisionSectorListEii, void, i32 x, i32 y)
+DECL_THISCALL_HEAD(ProcessCollisionSectorList, _ZN9CPhysical26ProcessCollisionSectorListEii, bool, i32 x, i32 y)
 DECL_THISCALL_TAIL(ProcessCollisionSectorList, x, y)
 
 DECL_THISCALL_HEAD(ProcessCollisionSectorList_SimpleCar,
@@ -78,7 +78,7 @@ DECL_THISCALL_HEAD(ProcessCollisionSectorList_SimpleCar,
                    CRepeatSector *pSectorList)
 DECL_THISCALL_TAIL(ProcessCollisionSectorList_SimpleCar, pSectorList)
 
-DECL_THISCALL_HEAD(ProcessShiftSectorList, _ZN9CPhysical22ProcessShiftSectorListEii, void, i32 x, i32 y)
+DECL_THISCALL_HEAD(ProcessShiftSectorList, _ZN9CPhysical22ProcessShiftSectorListEii, bool, i32 x, i32 y)
 DECL_THISCALL_TAIL(ProcessShiftSectorList, x, y)
 
 DECL_THISCALL_HEAD(TestCollision, _ZN9CPhysical13TestCollisionEb, bool, bool bApplySpeed)
@@ -105,12 +105,12 @@ DECL_THISCALL_HEAD(ApplyCollisionAlt, _ZN9CPhysical17ApplyCollisionAltEP7CEntity
 DECL_THISCALL_TAIL(ApplyCollisionAlt, pEntity, colPoint, fImpulseMagnitude, vecMoveInc, vecTurnInc)
 
 DECL_THISCALL_HEAD(ApplySoftCollision, _ZN9CPhysical18ApplySoftCollisionEP7CEntityR9CColPointRf, bool, CEntity *pEntity,
-                   CColPoint *colPoint, float *fImpulseMagnitude)
+                   CColPoint &colPoint, float &fImpulseMagnitude)
 DECL_THISCALL_TAIL(ApplySoftCollision, pEntity, colPoint, fImpulseMagnitude)
 
 DECL_THISCALL_NAMED_HEAD(ApplySoftCollision1, ApplySoftCollision, _ZN9CPhysical18ApplySoftCollisionEPS_R9CColPointRfS3_,
-                         bool, CPhysical *pPhysical, CColPoint *colPoint, float *fImpulseMagnitudeA,
-                         float *fImpulseMagnitudeB)
+                         bool, CPhysical *pPhysical, CColPoint &colPoint, float &fImpulseMagnitudeA,
+                         float &fImpulseMagnitudeB)
 DECL_THISCALL_TAIL(ApplySoftCollision1, pPhysical, colPoint, fImpulseMagnitudeA, fImpulseMagnitudeB)
 
 DECL_THISCALL_HEAD(ApplySpringCollision, _ZN9CPhysical20ApplySpringCollisionEfR7CVectorS1_ffRf, bool,
@@ -139,7 +139,7 @@ DECL_THISCALL_NAMED_HEAD(ApplyFriction2, ApplyFriction, _ZN9CPhysical13ApplyFric
                          CPhysical *pPhysical, float fAdhesiveLimit, CColPoint &colPoint)
 DECL_THISCALL_TAIL(ApplyFriction2, pPhysical, fAdhesiveLimit, colPoint)
 
-DECL_THISCALL_HEAD(RemoveRefsToEntity, _ZN9CPhysical18RemoveRefsToEntityEP7CEntity, int, CEntity *pEntity)
+DECL_THISCALL_HEAD(RemoveRefsToEntity, _ZN9CPhysical18RemoveRefsToEntityEP7CEntity, void, CEntity *pEntity)
 DECL_THISCALL_TAIL(RemoveRefsToEntity, pEntity)
 
 DECL_THISCALL_HEAD(ApplyScriptCollision, _ZN9CPhysical20ApplyScriptCollisionE7CVectorffPS0_, float,
@@ -167,7 +167,8 @@ DECL_THISCALL_HEAD(CanPhysicalBeDamaged, _ZN9CPhysical20CanPhysicalBeDamagedE11e
 DECL_THISCALL_TAIL(CanPhysicalBeDamaged, WeaponUsed, pBeingShotAt)
 
 // Virtual functions
-virtual int ProcessEntityCollision(CEntity *entity, CColPoint *colPoint);
+DECL_VIRTUALCALL_HEAD(CPhysical, ProcessEntityCollision, _ZTV9CPhysical, 23, int, CEntity *entity, CColPoint *colPoint)
+DECL_VIRTUALCALL_TAIL(entity, colPoint)
 
 // Helper functions
 inline float GetSpeedUnits() { return m_vecMoveSpeed.Magnitude(); }

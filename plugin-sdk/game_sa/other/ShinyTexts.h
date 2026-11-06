@@ -43,8 +43,8 @@ DECL_FASTCALL_SIMPLE(RegisterOne, _ZN11CShinyTexts11RegisterOneE7CVectorS0_S0_S0
                      float Range);
 
 // STATIC values
-DECL_OBJECT_ARRAY_SYM(CShinyText, aShinyTexts, _ZN11CShinyTexts11aShinyTextsE);
-DECL_OBJECT_SYM(i32, NumShinyTexts, _ZN11CShinyTexts13NumShinyTextsE);
+DECL_OBJECT_ARRAY_PLT(CShinyText, aShinyTexts, BYBIT(0x679AC0, 0x8515A0));
+DECL_OBJECT_PLT(i32, NumShinyTexts, BYBIT(0x6779F8, 0x84D418));
 
 DECL_CLASS_END()
 
