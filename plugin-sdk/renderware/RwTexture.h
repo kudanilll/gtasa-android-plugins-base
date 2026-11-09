@@ -46,9 +46,7 @@ DECL_FASTCALL_SIMPLE_GLO(RwTextureDestroy, _Z16RwTextureDestroyP9RwTexture, RwBo
 DECL_FASTCALL_SIMPLE_GLO(RwTextureGenerateMipmapName, _Z27RwTextureGenerateMipmapNamePcS_hi, RwBool, char *, char *, u8,
                          int);
 DECL_FASTCALL_SIMPLE_GLO(RwTextureGetAutoMipmapping, _Z26RwTextureGetAutoMipmappingv, RwBool);
-#ifdef GTASA
 DECL_FASTCALL_SIMPLE_GLO(RwTextureGetFindCallBack, _Z24RwTextureGetFindCallBackv, RwTextureCallBackFind);
-#endif
 DECL_FASTCALL_SIMPLE_GLO(RwTextureGetMipmapGenerationCallBack, _Z36RwTextureGetMipmapGenerationCallBackv,
                          RwTextureCallBackMipmapGeneration);
 DECL_FASTCALL_SIMPLE_GLO(RwTextureGetMipmapNameCallBack, _Z30RwTextureGetMipmapNameCallBackv,
@@ -67,10 +65,8 @@ DECL_FASTCALL_SIMPLE_GLO(RwTextureRegisterPluginStream,
                          RwPluginDataChunkReadCallBack, RwPluginDataChunkWriteCallBack,
                          RwPluginDataChunkGetSizeCallBack);
 DECL_FASTCALL_SIMPLE_GLO(RwTextureSetAutoMipmapping, _Z26RwTextureSetAutoMipmappingi, RwBool, int);
-#ifdef GTASA
 DECL_FASTCALL_SIMPLE_GLO(RwTextureSetFindCallBack, _Z24RwTextureSetFindCallBackPFP9RwTexturePKcE, RwBool,
                          RwTextureCallBackFind);
-#endif
 DECL_FASTCALL_SIMPLE_GLO(RwTextureSetFreeListCreateParams, _Z32RwTextureSetFreeListCreateParamsii, void, int, int);
 DECL_FASTCALL_SIMPLE_GLO(RwTextureSetMaskName, _Z20RwTextureSetMaskNameP9RwTexturePKc, RwTexture *, RwTexture *,
                          char const *);
@@ -92,7 +88,6 @@ DECL_FASTCALL_SIMPLE_GLO(RwTextureStreamRead, _Z19RwTextureStreamReadP8RwStream,
 DECL_FASTCALL_SIMPLE_GLO(RwTextureStreamWrite, _Z20RwTextureStreamWritePK9RwTextureP8RwStream, const RwTexture *,
                          RwTexture const *, RwStream *);
 DECL_FASTCALL_SIMPLE_GLO(RwTextureValidatePlugins, _Z24RwTextureValidatePluginsPK9RwTexture, RwBool, RwTexture const *);
-
 DECL_FASTCALL_SIMPLE_GLO(RwTexDictionaryCreate, _Z21RwTexDictionaryCreatev, RwTexDictionary *);
 DECL_FASTCALL_SIMPLE_GLO(RwTexDictionaryDestroy, _Z22RwTexDictionaryDestroyP15RwTexDictionary, RwBool,
                          RwTexDictionary *dict);
@@ -102,11 +97,9 @@ DECL_FASTCALL_SIMPLE_GLO(RwTexDictionaryRemoveTexture, _Z28RwTexDictionaryRemove
                          RwTexture *texture);
 DECL_FASTCALL_SIMPLE_GLO(RwTexDictionaryFindNamedTexture, _Z31RwTexDictionaryFindNamedTextureP15RwTexDictionaryPKc,
                          RwTexture *, RwTexDictionary *dict, const char *name);
-#ifdef GTASA
 DECL_FASTCALL_SIMPLE_GLO(RwTexDictionaryFindHashNamedTexture,
                          _Z35RwTexDictionaryFindHashNamedTextureP15RwTexDictionaryj, RwTexture *, RwTexDictionary *dict,
                          RwUInt32 key);
-#endif
 DECL_FASTCALL_SIMPLE_GLO(RwTexDictionaryGetNumTextures, _Z29RwTexDictionaryGetNumTexturesP15RwTexDictionary, RwInt32,
                          RwTexDictionary *dict);
 DECL_FASTCALL_SIMPLE_GLO(RwTexDictionaryGetTextureByIndex, _Z32RwTexDictionaryGetTextureByIndexP15RwTexDictionaryi,
@@ -128,31 +121,23 @@ DECL_FASTCALL_SIMPLE_GLO(RwTexDictionaryStreamGetSize, _Z28RwTexDictionaryStream
                          const RwTexDictionary *dict);
 DECL_FASTCALL_SIMPLE_GLO(RwTexDictionaryGtaStreamRead, _Z28RwTexDictionaryGtaStreamReadP8RwStream, RwTexDictionary *,
                          RwStream *stream);
-
 DECL_FASTCALL_SIMPLE_GLO(RwTexDictionaryRegisterPluginStream,
                          _Z35RwTexDictionaryRegisterPluginStreamjPFP8RwStreamS0_iPviiEPFS0_S0_iPKviiEPFiS5_iiE, RwInt32,
                          RwUInt32 pluginID, RwPluginDataChunkReadCallBack readCB,
                          RwPluginDataChunkWriteCallBack writeCB, RwPluginDataChunkGetSizeCallBack getSizeCB);
-
 DECL_FASTCALL_SIMPLE_GLO(RwTexDictionarySetStreamAlwaysCallBack, _Z38RwTexDictionarySetStreamAlwaysCallBackjPFiPviiE,
                          RwInt32, RwUInt32 pluginID, RwPluginDataChunkAlwaysCallBack alwaysCB);
-
 DECL_FASTCALL_SIMPLE_GLO(RwTexDictionaryGetPluginOffset, _Z30RwTexDictionaryGetPluginOffsetj, RwInt32,
                          RwUInt32 pluginID);
-
 DECL_FASTCALL_SIMPLE_GLO(RwTexDictionaryRegisterPlugin, _Z29RwTexDictionaryRegisterPluginijPFPvS_iiES1_PFS_S_PKviiE,
                          RwInt32, RwInt32 size, RwUInt32 pluginID, RwPluginObjectConstructor constructCB,
                          RwPluginObjectDestructor destructCB, RwPluginObjectCopy copyCB);
-
 DECL_FASTCALL_SIMPLE_GLO(RwTexDictionarySetFreeListCreateParams, _Z38RwTexDictionarySetFreeListCreateParamsii, void,
                          RwInt32 blockSize, RwInt32 numBlocksToPrealloc);
-
 DECL_FASTCALL_SIMPLE_GLO(RwTexDictionaryValidatePlugins, _Z30RwTexDictionaryValidatePluginsPK15RwTexDictionary, RwBool,
                          RwTexDictionary const *dict);
-
 DECL_FASTCALL_SIMPLE_GLO(RwTexDictionaryGtaStreamRead1, _Z29RwTexDictionaryGtaStreamRead1P8RwStream, RwTexDictionary *,
                          RwStream *pStream);
-
 DECL_FASTCALL_SIMPLE_GLO(RwTexDictionaryGtaStreamRead2, _Z29RwTexDictionaryGtaStreamRead2P8RwStreamP15RwTexDictionary,
                          RwTexDictionary *, RwStream *pStream, RwTexDictionary *texDict);
 

@@ -113,10 +113,4 @@ DECL_FASTCALL_SIMPLE_GLO(RwMemNative32, _Z13RwMemNative32Pvj, void *, void *memo
 DECL_FASTCALL_SIMPLE_GLO(RwMemRealToFloat32, _Z18RwMemRealToFloat32Pvj, void *, void *memory, RwUInt32 size);
 DECL_FASTCALL_SIMPLE_GLO(RwMemFloat32ToReal, _Z18RwMemFloat32ToRealPvj, void *, void *memory, RwUInt32 size);
 
-#ifdef GTAVC
-inline RwStream *RwStreamWriteChunkHeader(RwStream *stream, RwInt32 type, RwInt32 size) {
-    return _rwStreamWriteVersionedChunkHeader(stream, type, size, 0x34005, 0xFFFF);
-}
-#endif
-
 #endif // __AML_PSDK_RWSTREAM_H

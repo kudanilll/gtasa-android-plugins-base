@@ -67,16 +67,12 @@ DECL_FASTCALL_SIMPLE_GLO(RwBBoxInitialize, _Z16RwBBoxInitializeP6RwBBoxPK5RwV3d,
                          RwV3d const *vertex);
 DECL_FASTCALL_SIMPLE_GLO(RwBBoxContainsPoint, _Z19RwBBoxContainsPointPK6RwBBoxPK5RwV3d, RwBool, RwBBox const *boundBox,
                          RwV3d const *vertex);
-#ifdef GTASA
 DECL_FASTCALL_SIMPLE_GLO(RwV3dTransformVector, _Z20RwV3dTransformVectorP5RwV3dPKS_PK11RwMatrixTag, RwV3d *,
                          RwV3d *vectorOut, RwV3d const *vectorIn, RwMatrix const *matrix);
-#endif
 DECL_FASTCALL_SIMPLE_GLO(RwV2dLength, _Z11RwV2dLengthPK5RwV2d, RwReal, RwV2d const *in);
 DECL_FASTCALL_SIMPLE_GLO(RwV2dNormalize, _Z14RwV2dNormalizeP5RwV2dPKS_, RwReal, RwV2d *out, RwV2d const *in);
-#ifdef GTASA
 DECL_FASTCALL_SIMPLE_GLO(RwV3dTransformPoint, _Z19RwV3dTransformPointP5RwV3dPKS_PK11RwMatrixTag, RwV3d *,
                          RwV3d *pointOut, RwV3d const *pointIn, RwMatrix const *matrix);
-#endif
 DECL_FASTCALL_SIMPLE_GLO(RwV3dLength, _Z11RwV3dLengthPK5RwV3d, RwReal, RwV3d const *in);
 DECL_FASTCALL_SIMPLE_GLO(RwV3dNormalize, _Z14RwV3dNormalizeP5RwV3dPKS_, RwReal, RwV3d *out, RwV3d const *in);
 DECL_FASTCALL_SIMPLE_GLO(RwBBoxCalculate, _Z15RwBBoxCalculateP6RwBBoxPK5RwV3di, RwBBox *, RwBBox *boundBox,
@@ -97,14 +93,5 @@ inline void RwV3dIncrementScaled(RwV3d *out, RwV3d const *in, RwReal scale) { *o
 inline void RwV3dNegate(RwV3d *out, RwV3d const *in) { *out = *in * -1.0f; }
 inline RwReal RwV3dDotProduct(RwV3d const *a, RwV3d const *b) { return a->Dot(*b); }
 inline void RwV3dCrossProduct(RwV3d *out, RwV3d const *a, RwV3d const *b) { *out = a->Cross(*b); }
-
-#ifdef GTAVC
-inline RwV3d *RwV3dTransformVector(RwV3d *vectorOut, RwV3d const *vectorIn, RwMatrix const *matrix) {
-    return RwV3dTransformVectors(vectorOut, vectorIn, 1, matrix);
-}
-inline RwV3d *RwV3dTransformPoint(RwV3d *pointOut, RwV3d const *pointIn, RwMatrix const *matrix) {
-    return RwV3dTransformPoints(pointOut, pointIn, 1, matrix);
-}
-#endif
 
 #endif // __AML_PSDK_RWVECTOR_H

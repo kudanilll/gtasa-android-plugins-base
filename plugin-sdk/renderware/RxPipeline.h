@@ -400,10 +400,6 @@ DECL_OBJECT_SYM(RxClusterDefinition, RxClRGBAs, RxClRGBAs);
 #define RxClIndices RxClIndices()
 #define RxClRGBAs RxClRGBAs()
 
-#ifdef GTAVC
-DECL_VALUE_PLT_I32_GLOBAL(_rxPipelineMaxNodes, BYBIT(0x394A24, 0x577538));
-#else
 DECL_VALUE_PLT_I32_GLOBAL(_rxPipelineMaxNodes, BYBIT(0x67991C, 0x851258));
-#endif
 
 #endif // __AML_PSDK_RXPIPELINE_H

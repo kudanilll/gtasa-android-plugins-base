@@ -108,50 +108,26 @@ DECL_FASTCALL_SIMPLE_GLO(RpHAnimFrameGetID, _Z17RpHAnimFrameGetIDP7RwFrame, RwIn
 DECL_FASTCALL_SIMPLE_GLO(RpHAnimFrameSetID, _Z17RpHAnimFrameSetIDP7RwFramei, RwBool, RwFrame *frame, RwInt32 id);
 DECL_FASTCALL_SIMPLE_GLO(RpHAnimIDGetIndex, _Z17RpHAnimIDGetIndexP16RpHAnimHierarchyi, RwInt32,
                          RpHAnimHierarchy *hierarchy, RwInt32 id);
-
 DECL_FASTCALL_SIMPLE_GLO(RpHAnimPluginAttach, _Z19RpHAnimPluginAttachv, RwBool);
 DECL_FASTCALL_SIMPLE_GLO(RpHAnimHierarchySetFreeListCreateParams, _Z39RpHAnimHierarchySetFreeListCreateParamsii, void,
                          RwInt32 blockSize, RwInt32 numBlocksToPrealloc);
-#ifdef GTAVC
-DECL_FASTCALL_SIMPLE_GLO(RpHAnimKeyFrameStreamGetSize, _Z28RpHAnimKeyFrameStreamGetSizeP15RtAnimAnimation, RwInt32,
-                         RtAnimAnimation *animation);
-#else
 DECL_FASTCALL_SIMPLE_GLO(RpHAnimKeyFrameStreamGetSize, _Z28RpHAnimKeyFrameStreamGetSizePK15RtAnimAnimation, RwInt32,
                          RtAnimAnimation const *animation);
-#endif
 DECL_FASTCALL_SIMPLE_GLO(RpHAnimKeyFrameMulRecip, _Z23RpHAnimKeyFrameMulRecipPvS_, void, void *pVoidFrame,
                          void *pVoidStart);
 DECL_FASTCALL_SIMPLE_GLO(RpHAnimKeyFrameBlend, _Z20RpHAnimKeyFrameBlendPvS_S_f, void, void *pVoidOut, void *pVoidIn1,
                          void *pVoidIn2, RwReal fAlpha);
 DECL_FASTCALL_SIMPLE_GLO(RpHAnimKeyFrameApply, _Z20RpHAnimKeyFrameApplyPvS_, void, void *pMatrix, void *pVoidIFrame);
-#ifdef GTAVC
-DECL_FASTCALL_SIMPLE_GLO(RpHAnimKeyFrameInterpolate, _Z26RpHAnimKeyFrameInterpolatePvS_S_f, void, void *pVoidOut,
-                         void *pVoidIn1, void *pVoidIn2, RwReal time);
-#else
 DECL_FASTCALL_SIMPLE_GLO(RpHAnimKeyFrameInterpolate, _Z26RpHAnimKeyFrameInterpolatePvS_S_fS_, void, void *pVoidOut,
                          void *pVoidIn1, void *pVoidIn2, RwReal time, void *customData);
-#endif
-#ifdef GTAVC
-DECL_FASTCALL_SIMPLE_GLO(RpHAnimKeyFrameStreamWrite, _Z26RpHAnimKeyFrameStreamWriteP15RtAnimAnimationP8RwStream, RwBool,
-                         RtAnimAnimation *pAnimation, RwStream *stream);
-#else
 DECL_FASTCALL_SIMPLE_GLO(RpHAnimKeyFrameStreamWrite, _Z26RpHAnimKeyFrameStreamWritePK15RtAnimAnimationP8RwStream,
                          RwBool, RtAnimAnimation const *pAnimation, RwStream *stream);
-#endif
 DECL_FASTCALL_SIMPLE_GLO(RpHAnimKeyFrameStreamRead, _Z25RpHAnimKeyFrameStreamReadP8RwStreamP15RtAnimAnimation,
                          RtAnimAnimation *, RwStream *stream, RtAnimAnimation *pAnimation);
 DECL_FASTCALL_SIMPLE_GLO(RpHAnimKeyFrameAdd, _Z18RpHAnimKeyFrameAddPvS_S_, void, void *pVoidOut, void *pVoidIn1,
                          void *pVoidIn2);
 
-#ifdef GTAVC
-DECL_OBJECT_PLT_GLOBAL(RpHAnimAtomicGlobalVars, RpHAnimAtomicGlobals, BYBIT(0x394c98, 0x577a00));
-#else
 DECL_OBJECT_PLT_GLOBAL(RpHAnimAtomicGlobalVars, RpHAnimAtomicGlobals, BYBIT(0x676C5C, 0x84B900));
-#endif
-
-#ifdef GTAVC
-enum RpHAnimHierarchyNodeFlag : RwInt32 { rpHANIMPUSHPARENTMATRIX = 0x2, rpHANIMPOPPARENTMATRIX = 0x1 };
-#endif
 
 inline RpHAnimHierarchyFlag RpHAnimHierarchyGetFlags(const RpHAnimHierarchy *hierarchy) {
     return static_cast<RpHAnimHierarchyFlag>(hierarchy->flags);

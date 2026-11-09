@@ -80,9 +80,7 @@ DECL_FASTCALL_SIMPLE_GLO(RwMatrixTransform, _Z17RwMatrixTransformP11RwMatrixTagP
 DECL_FASTCALL_SIMPLE_GLO(RwMatrixTranslate, _Z17RwMatrixTranslateP11RwMatrixTagPK5RwV3d15RwOpCombineType, RwMatrix *,
                          RwMatrix *matrix, const RwV3d *translation, RwOpCombineType combineOp);
 DECL_FASTCALL_SIMPLE_GLO(RwMatrixUpdate, _Z14RwMatrixUpdateP11RwMatrixTag, RwMatrix *, RwMatrix *matrix);
-#ifdef GTASA
 DECL_FASTCALL_SIMPLE_GLO(TestMatrix, _Z10TestMatrixP11RwMatrixTag, void, RwMatrix *pTempMatrix);
-#endif
 DECL_FASTCALL_SIMPLE_GLO(RwEngineGetMatrixTolerances, _Z27RwEngineGetMatrixTolerancesP17RwMatrixTolerance, RwBool,
                          RwMatrixTolerance *const tolerance);
 DECL_FASTCALL_SIMPLE_GLO(RwEngineSetMatrixTolerances, _Z27RwEngineSetMatrixTolerancesPK17RwMatrixTolerance, RwBool,

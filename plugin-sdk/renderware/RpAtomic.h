@@ -57,11 +57,6 @@ struct RpAtomic {
     RxPipeline *pipeline;
 };
 
-#ifdef GTAVC
-CHECKSIZE(RpInterpolator, 0x14, 0x14);
-CHECKSIZE(RpAtomic, 0x70, 0xA8);
-#endif
-
 DECL_FASTCALL_SIMPLE_GLO(AtomicDefaultRenderCallBack, _Z27AtomicDefaultRenderCallBackP8RpAtomic, RpAtomic *,
                          RpAtomic *atomic);
 DECL_FASTCALL_SIMPLE_GLO(_rpAtomicResyncInterpolatedSphere, _Z33_rpAtomicResyncInterpolatedSphereP8RpAtomic, void,
@@ -102,10 +97,8 @@ DECL_FASTCALL_SIMPLE_GLO(RpAtomicForAllWorldSectors,
                          RpAtomic *atomic, RpWorldSectorCallBack callback, void *data);
 DECL_FASTCALL_SIMPLE_GLO(RpAtomicSetDefaultPipeline, _Z26RpAtomicSetDefaultPipelineP10RxPipeline, RxPipeline *,
                          RxPipeline *pipeline);
-#ifdef GTASA
 DECL_FASTCALL_SIMPLE_GLO(RpAtomicConvertGeometryToTL, _Z27RpAtomicConvertGeometryToTLP8RpAtomic, u8, RpAtomic *pAtomic);
 DECL_FASTCALL_SIMPLE_GLO(RpAtomicConvertGeometryToTS, _Z27RpAtomicConvertGeometryToTSP8RpAtomic, u8, RpAtomic *pAtomic);
-#endif
 
 inline RpGeometry *RpAtomicGetGeometry(const RpAtomic *atomic) { return atomic->geometry; }
 

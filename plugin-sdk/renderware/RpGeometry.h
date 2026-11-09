@@ -112,14 +112,6 @@ struct RpGeometry {
 
 typedef void (*RpGeometrySortByMaterialCallBack)(const RpGeometry *, RpGeometry *, RwUInt16 *, RwUInt16);
 
-#ifdef GTAVC
-CHECKSIZE(RpTriangle, 0x8, 0x8);
-CHECKSIZE(RwTexCoords, 0x8, 0x8);
-CHECKSIZE(RpMorphTarget, 0x1C, 0x28);
-CHECKSIZE(RpGeometryChunkInfo, 0x10, 0x10);
-CHECKSIZE(RpGeometry, 0x64, 0xA8);
-#endif
-
 DECL_FASTCALL_SIMPLE_GLO(UseSkinning, _Z11UseSkinningPK10RpGeometry, bool, const RpGeometry *geometry);
 DECL_FASTCALL_SIMPLE_GLO(_rpGeometryOpen, _Z15_rpGeometryOpenPvii, void *, void *instance, RwInt32 offset,
                          RwInt32 size);
@@ -197,7 +189,6 @@ DECL_FASTCALL_SIMPLE_GLO(_rpGeometryNativeRead, _Z21_rpGeometryNativeReadP8RwStr
                          RwStream *stream, RpGeometry *geometry);
 DECL_FASTCALL_SIMPLE_GLO(_rpGeometryNativeSize, _Z21_rpGeometryNativeSizePK10RpGeometry, RwInt32,
                          const RpGeometry *geometry);
-#ifdef GTASA
 DECL_FASTCALL_SIMPLE_GLO(ConstructGeometryArray, _ZN15CClothesBuilder22ConstructGeometryArrayEPP10RpGeometryPjfff, void,
                          RpGeometry **ppGeometry, uint32_t *pModelKeys, float normal, float fatness, float strength);
 // CClothesBuilder::BlendGeometry is overloaded, and DECL_FASTCALL_SIMPLE_GLO
@@ -216,6 +207,7 @@ inline RpGeometry *BlendGeometry(RpClump *pClump, const char *pName1, const char
 inline RpGeometry *BlendGeometry(RpClump *pClump, const char *pName1, const char *pName2, float r1, float r2) {
     return BlendGeometry2(pClump, pName1, pName2, r1, r2);
 }
+
 DECL_FASTCALL_SIMPLE_GLO(CopyGeometry, _ZN15CClothesBuilder12CopyGeometryEP7RpClumpPKcS3_, RpGeometry *,
                          RpClump *pClump, const char *pName1, const char *pName2);
 DECL_FASTCALL_SIMPLE_GLO_PLT(RpGeometry2dEffectConstructor, BYBIT(0x59C959, 0x6C0CE4), void *, void *pGeometry,
@@ -233,8 +225,6 @@ DECL_FASTCALL_SIMPLE_GLO_PLT(RpGeometry2dEffectStreamGetSize, BYBIT(0x59CE93, 0x
 DECL_FASTCALL_SIMPLE_GLO(RpGeometryReplaceOldMaterialWithNewMaterial,
                          _Z43RpGeometryReplaceOldMaterialWithNewMaterialP10RpGeometryP10RpMaterialS2_, u8,
                          RpGeometry *pGeometry, RpMaterial *pOldMaterial, RpMaterial *pNewMaterial);
-#endif
-
 DECL_FASTCALL_SIMPLE_GLO(RpMorphTargetCalcBoundingSphere,
                          _Z31RpMorphTargetCalcBoundingSpherePK13RpMorphTargetP8RwSphere, RpMorphTarget const *,
                          RpMorphTarget const *morphTarget, RwSphere *boundingSphere);

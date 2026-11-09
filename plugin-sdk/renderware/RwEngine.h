@@ -78,10 +78,7 @@ inline void RwFree(void *memory) { RwOsGetMemoryInterface()->rwfree(memory); }
 inline void *RwRealloc(void *memory, size_t size) { return RwOsGetMemoryInterface()->rwrealloc(memory, size); }
 inline void *RwCalloc(size_t count, size_t size) { return RwOsGetMemoryInterface()->rwcalloc(count, size); }
 
-#ifdef GTAVC
-DECL_OBJECT_PLT_GLOBAL(RwGlobals *, RwEngineInstance, BYBIT(0x3969C4, 0x57B388));
-#elif defined(GTASA)
 DECL_OBJECT_PLT_GLOBAL(RwGlobals *, RwEngineInstance, BYBIT(0x67897C, 0x84F318));
-#endif
+
 #define RwEngineInstance RwEngineInstance()
 #endif // __AML_PSDK_RWENGINE_H
