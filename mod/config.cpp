@@ -1,11 +1,11 @@
+#include "config.h"
+#include "amlmod.h"
+
 #ifndef DONT_USE_STB
-#include <mod/thirdparty/stb_sprintf.h>
+#include <mod/thirdparty/stb/stb_sprintf.h>
 #define sprintf stbsp_sprintf
 #define snprintf stbsp_snprintf
 #endif
-
-#include "amlmod.h"
-#include "config.h"
 
 #if defined(__AML)
 extern ICFG *icfg;

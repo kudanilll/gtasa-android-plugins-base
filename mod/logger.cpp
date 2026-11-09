@@ -1,14 +1,15 @@
+#include "logger.h"
+#include <android/log.h>
+#include <string.h>
+
 #ifndef DONT_USE_STB
 #ifndef DONT_IMPLEMENT_STB
 #define STB_SPRINTF_IMPLEMENTATION
 #endif
-#include <mod/thirdparty/stb_sprintf.h>
+#include <mod/thirdparty/stb/stb_sprintf.h>
 
 #define vsnprintf stbsp_vsnprintf
 #endif
-#include "logger.h"
-#include <android/log.h>
-#include <string.h>
 
 Logger::Logger() {
     strncpy(m_szTag, "AML Mod", sizeof(m_szTag));

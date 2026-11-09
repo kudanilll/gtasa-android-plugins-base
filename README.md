@@ -1,84 +1,34 @@
-# AML Mod Template (GTA:SA Android)
+# AML mod template for GTA SA Android
 
-A starter template for building Android Mod Loader (AML) mods for GTA San Andreas on Android
-
-The Plugin-SDK integrated into this project is sourced and adapted from [AndroidModLoader/aml-psdk](https://github.com/AndroidModLoader/aml-psdk) by RusJJ
+A template for building GTA San Andreas Android plugins with Android Mod Loader (AML).
 
 ## Features
 
-- **Integrated Plugin-SDK**:
-  - Sourced from [AndroidModLoader/aml-psdk](https://github.com/AndroidModLoader/aml-psdk)
-  - Clean absolute include paths (all relative `#include "../..."` and quoted paths normalized to `<plugin-sdk/...>`)
-  - RenderWare types (`plugin-sdk/renderware/`), GTA base math & types (`plugin-sdk/gta_base/`), and event hook system (`Events::*`)
-- Supports **GTA: SA v2.00** and **GTA: SA v2.10 (64-bit)**
+- Integrated GTA SA Plugin-SDK and RenderWare support.
+- Dear ImGui 1.93.1 WIP with a RenderWare renderer and touch input.
+- External Image loading through `stb_image`.
+- ARM32 (`armeabi-v7a`) and ARM64 (`arm64-v8a`) build targets for GTA SA v2.00/v2.10.
+- Build and formatting scripts, plus a GitHub Actions workflow.
 
-## Project Structure
+## Build
 
-```text
-base_plugins/
-├── .github/workflows/          # GitHub Actions CI/CD workflows
-│   └── release.yml             # Automated NDK build and GitHub Releases
-├── .clang-format               # LLVM-based code formatting configuration
-├── format.ps1 / format.cmd     # Script to auto-format entire codebase
-├── Android.mk                  # NDK build configuration
-├── Application.mk              # ABI & STL configuration
-├── build.ps1                   # PowerShell build script
-├── NDKPath.txt                 # Path to Android NDK
-├── main.cpp                    # Mod entry point & in-game HUD example
-├── mod/                        # AML core library (amlmod.h, logger, config)
-└── plugin-sdk/                 # Integrated GTA:SA Plugin-SDK (from aml-psdk)
-    ├── LICENSE                 # GNU General Public License v3.0 (GPLv3)
-    ├── game_sa/                # GTA:SA specific classes, engine, events, entity
-    ├── gta_base/               # Basic math & color types (Vector, Rect, RGBA, etc.)
-    ├── renderware/             # RenderWare engine structures (RwTexture, RpAtomic, etc.)
-    ├── sdk_base.h              # Base address & symbol resolution
-    ├── sdk_basetypes.h         # Common types & macros
-    └── sdk_callevents.h        # Hooking & event dispatch system
+Set the Android NDK path in `NDKPath.txt`, then run:
+
+```powershell
+.\build.ps1
 ```
 
-## Requirements
+The compiled libraries are saved to:
 
-- Android NDK (r21 or newer)
-- C++17 or newer
-- PowerShell (Windows PowerShell or PowerShell 7+)
+- `libs/armeabi-v7a/libmodtemplate.so`
+- `libs/arm64-v8a/libmodtemplate.so`
 
-## Setup & Build
+Copy the `.so` for your game's ABI to the AML mods folder.
 
-1. Set your NDK root path in `NDKPath.txt`:
+## Credits
 
-   ```text
-   D:\Android\Sdk\ndk\27.1.12297006
-   ```
-
-2. Format code (optional):
-
-   ```powershell
-   ./format.ps1
-   # or double-click format.cmd
-   ```
-
-3. Run the build script:
-
-   ```powershell
-   ./build.ps1
-   ```
-
-4. Built shared libraries (`libmodtemplate.so`) will output to:
-   - `libs/armeabi-v7a/libmodtemplate.so`
-   - `libs/arm64-v8a/libmodtemplate.so`
-
-## Credits & Attribution
-
-- **[AML Plugin SDK (aml-psdk)](https://github.com/AndroidModLoader/aml-psdk)** - Created by **RusJJ** and contributors
-- **[Android Mod Loader (AML)](https://github.com/AndroidModLoader/AndroidModLoader)** - Android Mod Loader core and mod template
-- **[DK22Pac/plugin-sdk](https://github.com/DK22Pac/plugin-sdk)** - Structure and naming inspiration for GTA plugin SDK
-- **[stb_sprintf](https://github.com/nothings/stb_sprintf/blob/main/stb_sprintf.h)** - By Sean Barrett (stb)
-- **[stb_image](https://github.com/nothings/stb/blob/master/stb_image.h)** - By Sean Barrett (stb)
-
-## License
-
-This project utilizes code under multiple open-source licenses:
-
-- **Mod Template & Base Code**: Licensed under the [MIT License](LICENSE) (Copyright © 2026 RusJJ)
-- **plugin-sdk/**: Sourced from [AndroidModLoader/aml-psdk](https://github.com/AndroidModLoader/aml-psdk) and licensed under the **[GNU General Public License v3.0 (GPLv3)](plugin-sdk/LICENSE)**
-- **mod/thirdparty/STB_LICENSE**: Dual-licensed under Public Domain and the MIT License
+- [AML](https://github.com/AndroidModLoader/AndroidModLoader) and [aml-psdk](https://github.com/AndroidModLoader/aml-psdk): RusJJ and contributors.
+- [Dear ImGui](https://github.com/ocornut/imgui): Omar Cornut and contributors. [MIT](mod/thirdparty/imgui/LICENSE.txt).
+- [stb](https://github.com/nothings/stb): Sean Barrett and contributors. [License](mod/thirdparty/stb/STB_LICENSE).
+- RenderWare integration references: [SA-MP Mobile v2.10](https://github.com/noobcooder-sys/SA-MP-Mobile-Client-GTA-SA-2.10-) and [build69-gtasa2.0](https://github.com/0xcds4r/build69-gtasa2.0).
+- Base template: [MIT](LICENSE). Plugin-SDK: [GPLv3](plugin-sdk/LICENSE).
