@@ -72,7 +72,8 @@ base_plugins/
 - **[AML Plugin SDK (aml-psdk)](https://github.com/AndroidModLoader/aml-psdk)** - Created by **RusJJ** and contributors
 - **[Android Mod Loader (AML)](https://github.com/AndroidModLoader/AndroidModLoader)** - Android Mod Loader core and mod template
 - **[DK22Pac/plugin-sdk](https://github.com/DK22Pac/plugin-sdk)** - Structure and naming inspiration for GTA plugin SDK
-- **[stb_sprintf](https://github.com/nothings/stb)** - By Sean Barrett (stb)
+- **[stb_sprintf](https://github.com/nothings/stb_sprintf/blob/main/stb_sprintf.h)** - By Sean Barrett (stb)
+- **[stb_image](https://github.com/nothings/stb/blob/master/stb_image.h)** - By Sean Barrett (stb)
 
 ## License
 
@@ -80,4 +81,4 @@ This project utilizes code under multiple open-source licenses:
 
 - **Mod Template & Base Code**: Licensed under the [MIT License](LICENSE) (Copyright © 2026 RusJJ)
 - **plugin-sdk/**: Sourced from [AndroidModLoader/aml-psdk](https://github.com/AndroidModLoader/aml-psdk) and licensed under the **[GNU General Public License v3.0 (GPLv3)](plugin-sdk/LICENSE)**
-- **mod/thirdparty/stb_sprintf.h**: Dual-licensed under Public Domain and the MIT License
+- **mod/thirdparty/STB_LICENSE**: Dual-licensed under Public Domain and the MIT License
