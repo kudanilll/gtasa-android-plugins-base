@@ -23,6 +23,7 @@ struct CPedDamageResponse;
 struct CWanted;
 struct CFire;
 struct CAudioEngine;
+enum OSEventType : i32;
 
 struct Events {
     B32MACRO(typedef CVehicle *VehicleLifetimeReturn;)
@@ -148,6 +149,8 @@ struct Events {
     EVENT_SYM_BEFORE(cutsceneDeleteEvent, void, (), _ZN12CCutsceneMgr18DeleteCutsceneDataEv);
     EVENT_SYM(pauseAllSoundsEvent, void, (CAudioEngine * audio), _ZN12CAudioEngine14PauseAllSoundsEv);
     EVENT_SYM(resumeAllSoundsEvent, void, (CAudioEngine * audio), _ZN12CAudioEngine15ResumeAllSoundsEv);
+    // App lifecycle (OSET_Pause when the game goes to the background, OSET_Resume when it returns). Game thread.
+    EVENT_SYM(applicationEvent, void, (OSEventType type, void *data), _Z19OS_ApplicationEvent11OSEventTypePv, 0, 1);
     EVENT_SYM(radioRetuneEvent, void, (CAudioEngine * audio, i8 stationId), _ZN12CAudioEngine11RetuneRadioEa, 0, 1);
     EVENT_SYM(forceWeatherEvent, void, (i16 weatherType), _ZN8CWeather12ForceWeatherEs, 0);
     EVENT_SYM(forceWeatherNowEvent, void, (i16 weatherType), _ZN8CWeather15ForceWeatherNowEs, 0);

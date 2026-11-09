@@ -2,27 +2,18 @@
 
 #include <mod/thirdparty/imgui/imgui.h>
 
-// User callback function type for drawing custom ImGui windows
+// Called every rendered frame between ImGui::NewFrame() and ImGui::Render().
+// The callback owns all UI policy: which windows exist, and when they are shown.
 typedef void (*ImGui_RenderCallback)();
 
-// Initializes ImGui, RenderWare rendering backend, and hooks touch & render loop automatically.
-// buttonPath: optional path to a custom PNG/JPG button icon. If NULL, automatically searches
-// for button.png or button.jpg in the game files/data directory, falling back to a "MENU" button.
-bool ImGui_ImplRenderWare_Init(ImGui_RenderCallback renderCallback = nullptr, const char *buttonPath = nullptr);
+// Creates this plugin's ImGui context and resolves RenderWare symbols. The first plugin to initialize hooks
+// touch, 2D render, pause-menu render and RenderWare shutdown; later plugins share those hooks, and the plugin
+// whose window is touched draws on top. Touches inside ImGui windows go to ImGui; all others reach the game.
+bool ImGui_ImplRenderWare_Init(ImGui_RenderCallback renderCallback = nullptr);
 
-// Shuts down ImGui, cleans up textures, and restores original hooks
+// Destroys the ImGui context and its textures. Hooks stay installed and pass input through to the game.
 void ImGui_ImplRenderWare_Shutdown();
 
-// Query or change menu window visibility
-bool ImGui_ImplRenderWare_IsMenuOpen();
-void ImGui_ImplRenderWare_SetMenuOpen(bool open);
-void ImGui_ImplRenderWare_ToggleMenu();
-
-// Floating toggle button configuration
-void ImGui_ImplRenderWare_SetButtonVisible(bool visible);
-void ImGui_ImplRenderWare_SetButtonSize(float width, float height);
-
-// Low-level renderer APIs (for developers who manage their own render loop)
+// Low-level renderer APIs (for developers who manage their own ImGui context and frame loop)
 bool ImGui_ImplRenderWare_InitRenderer();
-bool ImGui_ImplRenderWare_NewFrame(int width, int height, float deltaTime);
 bool ImGui_ImplRenderWare_RenderDrawData(ImDrawData *drawData);

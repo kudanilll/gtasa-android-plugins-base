@@ -1,8 +1,9 @@
 #include "imgui_impl_renderware.h"
+#include "imgui_shared.h"
 
 #include <mod/amlmod.h>
+#include <mod/interface.h>
 #include <mod/logger.h>
-#include <mod/texture_loader.h>
 #include <plugin-sdk/game_sa/Events.h>
 #include <plugin-sdk/game_sa/base/Timer.h>
 #include <plugin-sdk/game_sa/engine/RsGlobal.h>
@@ -12,12 +13,12 @@
 #include <plugin-sdk/renderware/RwRaster.h>
 #include <plugin-sdk/renderware/RwRender.h>
 
+#include <mod/thirdparty/imgui/imgui_internal.h>
+
 #include <algorithm>
 #include <cmath>
-#include <cstdio>
 #include <cstring>
 #include <memory>
-#include <mutex>
 #include <vector>
 
 namespace {
@@ -25,31 +26,15 @@ using DrawIndexedFn = RwBool (*)(i32, RwIm2DVertex *, i32, RwImVertexIndex *, i3
 using ScissorFn = void (*)(CRect &);
 using DefinedState2dFn = void (*)();
 
-struct TouchEvent {
-    int type;
-    int finger;
-    float x;
-    float y;
-};
-
-// Global state
+// Client: this plugin's own ImGui context. Every plugin built from this template is a client.
 bool g_bInitialized = false;
-bool g_bMenuOpen = false;
-bool g_bButtonVisible = true;
-float g_CustomButtonW = 0.0f;
-float g_CustomButtonH = 0.0f;
-float g_CurrentButtonX = 0.0f;
-float g_CurrentButtonY = 0.0f;
-float g_CurrentButtonW = 0.0f;
-float g_CurrentButtonH = 0.0f;
-
 ImGuiContext *g_pImGuiContext = nullptr;
 ImGui_RenderCallback g_UserRenderCallback = nullptr;
-RwTexture *g_pButtonTexture = nullptr;
-char g_szButtonPath[512] = {0};
+const ImGuiShared::API *g_pSharedAPI = nullptr;
+ImGuiShared::Handle g_hClient = 0;
 
-std::mutex g_InputMutex;
-std::vector<TouchEvent> g_TouchEvents;
+// Provider: used only by the first plugin to initialize; it owns the hooks and cross-plugin focus.
+ImGuiShared::Coordinator g_Coordinator;
 
 // Game pointers
 DrawIndexedFn g_pfnDrawIndexed = nullptr;
@@ -60,7 +45,7 @@ void **g_ppRenderQueue = nullptr;
 float *g_pfNearZ = nullptr;
 float *g_pfRecipNearClip = nullptr;
 
-// Hooks
+// Hooks (provider only)
 void (*orig_AND_TouchEvent)(int, int, int, int) = nullptr;
 void (*orig_MobileMenuRender)(void *) = nullptr;
 void (*orig_ShutdownRenderWare)() = nullptr;
@@ -168,72 +153,63 @@ bool UpdateTexture(ImTextureData *texture) {
     return true;
 }
 
-void TryLoadButtonTexture() {
-    if (g_pButtonTexture)
+// Called by the provider once per frame for every plugin, back to front, with the touches this plugin owns.
+void ClientFrame(void *, const ImGuiShared::Touch *events, uint32_t count, int32_t width, int32_t height,
+                 float deltaTime) {
+    if (!g_pImGuiContext)
         return;
 
-    if (g_szButtonPath[0]) {
-        g_pButtonTexture = TextureLoader::LoadTextureFromFile(g_szButtonPath);
-        if (g_pButtonTexture)
-            return;
+    ImGui::SetCurrentContext(g_pImGuiContext);
+    ImGuiIO &io = ImGui::GetIO();
+    io.DisplaySize = ImVec2(static_cast<float>(width), static_cast<float>(height));
+    io.DisplayFramebufferScale = ImVec2(1.0f, 1.0f);
+    io.DeltaTime = deltaTime;
+
+    for (uint32_t i = 0; i < count; ++i) {
+        const ImGuiShared::Touch &ev = events[i];
+        io.AddMouseSourceEvent(ImGuiMouseSource_TouchScreen);
+        io.AddMousePosEvent(ev.x, ev.y);
+        if (ev.type == 2 /* TOUCH_PUSH */)
+            io.AddMouseButtonEvent(0, true);
+        else if (ev.type == 1 /* TOUCH_POP */ || ev.type == 4 /* TOUCH_CANCEL */)
+            io.AddMouseButtonEvent(0, false);
     }
 
-    const char *dirs[] = {aml ? aml->GetAndroidDataPath() : nullptr, aml ? aml->GetConfigPath() : nullptr};
-    const char *names[] = {"button.png", "button.jpg", "button.jpeg"};
+    const float uiScale = std::clamp(static_cast<float>(height) / 720.0f, 0.8f, 2.0f);
+    ImGui::GetStyle().FontSizeBase = 22.0f * uiScale;
+    ImGui::GetStyle().FramePadding = ImVec2(10.0f * uiScale, 6.0f * uiScale);
 
-    for (const auto *dir : dirs) {
-        if (!dir || g_pButtonTexture)
-            continue;
-        for (const auto *name : names) {
-            char path[512];
-            if (std::snprintf(path, sizeof(path), "%s/%s", dir, name) > 0) {
-                g_pButtonTexture = TextureLoader::LoadTextureFromFile(path);
-                if (g_pButtonTexture)
-                    return;
-            }
-        }
+    ImGui::NewFrame();
+
+    if (g_UserRenderCallback)
+        g_UserRenderCallback();
+
+    // Only touches inside these rectangles reach ImGui; everything else (joystick, camera, gaps between
+    // windows) stays with the game. Child windows are clipped by their parent, so only top-level windows count.
+    std::vector<ImGuiShared::Rect> rects;
+    for (const ImGuiWindow *win : g_pImGuiContext->Windows) {
+        if (win->Active && !win->Hidden && !(win->Flags & (ImGuiWindowFlags_NoInputs | ImGuiWindowFlags_ChildWindow)))
+            rects.push_back({win->Pos.x, win->Pos.y, win->Pos.x + win->Size.x, win->Pos.y + win->Size.y});
     }
+    g_pSharedAPI->setRects(g_pSharedAPI->state, g_hClient, rects.data(), static_cast<uint32_t>(rects.size()));
+
+    ImGui::EndFrame();
+    ImGui::Render();
+    ImGui_ImplRenderWare_RenderDrawData(ImGui::GetDrawData());
 }
 
-// Touch event hook: automatically updates ImGui input and swallows interaction
+void ClientReset(void *) { ImGui_ImplRenderWare_Shutdown(); }
+
 void Hooked_AND_TouchEvent(int type, int finger, int x, int y) {
-    if (!g_bInitialized) {
-        if (orig_AND_TouchEvent)
-            orig_AND_TouchEvent(type, finger, x, y);
-        return;
-    }
-
-    float touchX = static_cast<float>(x);
-    float touchY = static_cast<float>(y);
-
-    {
-        std::lock_guard<std::mutex> lock(g_InputMutex);
-        g_TouchEvents.push_back({type, finger, touchX, touchY});
-    }
-
-    bool swallow = false;
-
-    if (g_bMenuOpen) {
-        // When menu is active, consume all touches so CJ/camera doesn't move
-        swallow = true;
-    } else if (g_bButtonVisible) {
-        // When menu is closed, check if finger touched the floating Menu button
-        if (touchX >= g_CurrentButtonX && touchX <= g_CurrentButtonX + g_CurrentButtonW && touchY >= g_CurrentButtonY &&
-            touchY <= g_CurrentButtonY + g_CurrentButtonH) {
-            swallow = true;
-            if (type == 2 /* TOUCH_PUSH */) {
-                g_bMenuOpen = true;
-            }
-        }
-    }
-
-    if (!swallow && orig_AND_TouchEvent) {
+    // shortcut: touch coordinates are taken as render pixels (true on tested devices); pass the view size as the
+    // last two arguments if a device renders at a different resolution than its screen.
+    if (!g_Coordinator.ProcessTouch(type, finger, static_cast<float>(x), static_cast<float>(y), 0, 0) &&
+        orig_AND_TouchEvent)
         orig_AND_TouchEvent(type, finger, x, y);
-    }
 }
 
 void RenderFrame() {
-    if (!g_bInitialized || !g_ppEngine || !*g_ppEngine || !g_ppRenderQueue || !*g_ppRenderQueue)
+    if (!g_ppEngine || !*g_ppEngine || !g_ppRenderQueue || !*g_ppRenderQueue)
         return;
 
     RsGlobalType *pScreen = &RsGlobal;
@@ -243,13 +219,12 @@ void RenderFrame() {
     const int width = pScreen->maximumWidth;
     const int height = pScreen->maximumHeight;
 
-    // Prevent double rendering within the same game frame
-    uint32_t currentTimerMS = CTimer::m_snTimeInMilliseconds;
-    if (g_LastRenderFrame == currentTimerMS && currentTimerMS != 0)
+    // Render2dStuff and MobileMenu::Render may both run in one frame. The pause-mode clock keeps ticking
+    // while the game is paused (the gameplay clock freezes), so the pause menu still gets fresh UI frames.
+    const uint32_t frameTimeMS = CTimer::m_snTimeInMillisecondsPauseMode;
+    if (g_LastRenderFrame == frameTimeMS && frameTimeMS != 0)
         return;
-    g_LastRenderFrame = currentTimerMS;
-
-    TryLoadButtonTexture();
+    g_LastRenderFrame = frameTimeMS;
 
     // Calculate delta time
     uint32_t currentClockMS = CTimer::GetTimeMS();
@@ -261,85 +236,7 @@ void RenderFrame() {
     }
     g_LastRenderTime = currentClockMS;
 
-    ImGui::SetCurrentContext(g_pImGuiContext);
-    ImGuiIO &io = ImGui::GetIO();
-    io.DisplaySize = ImVec2(static_cast<float>(width), static_cast<float>(height));
-    io.DisplayFramebufferScale = ImVec2(1.0f, 1.0f);
-    io.DeltaTime = deltaTime;
-
-    // Drain queued touch events
-    {
-        std::lock_guard<std::mutex> lock(g_InputMutex);
-        for (const auto &ev : g_TouchEvents) {
-            io.AddMouseSourceEvent(ImGuiMouseSource_TouchScreen);
-            io.AddMousePosEvent(ev.x, ev.y);
-            if (ev.type == 2 /* TOUCH_PUSH */) {
-                io.AddMouseButtonEvent(0, true);
-            } else if (ev.type == 1 /* TOUCH_POP */ || ev.type == 4 /* TOUCH_CANCEL */) {
-                io.AddMouseButtonEvent(0, false);
-            }
-        }
-        g_TouchEvents.clear();
-    }
-
-    const float uiScale = std::clamp(static_cast<float>(height) / 720.0f, 0.8f, 2.0f);
-    ImGui::GetStyle().FontSizeBase = 22.0f * uiScale;
-    ImGui::GetStyle().FramePadding = ImVec2(10.0f * uiScale, 6.0f * uiScale);
-
-    ImGui::NewFrame();
-
-    // Calculate bottom-center button layout
-    float btnW = (g_CustomButtonW > 0.0f) ? g_CustomButtonW : (100.0f * uiScale);
-    float btnH = (g_CustomButtonH > 0.0f) ? g_CustomButtonH : (55.0f * uiScale);
-    if (g_pButtonTexture && g_CustomButtonW <= 0.0f) {
-        btnW = 72.0f * uiScale;
-        btnH = 72.0f * uiScale;
-    }
-
-    g_CurrentButtonW = btnW;
-    g_CurrentButtonH = btnH;
-    g_CurrentButtonX = (static_cast<float>(width) - btnW) * 0.5f;
-    g_CurrentButtonY = static_cast<float>(height) - btnH - (18.0f * uiScale);
-
-    if (g_bButtonVisible) {
-        ImGui::SetNextWindowPos(ImVec2(g_CurrentButtonX, g_CurrentButtonY));
-        ImGui::SetNextWindowSize(ImVec2(btnW, btnH));
-        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-        ImGui::Begin("##FloatingLauncher", nullptr,
-                     ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoMove |
-                         ImGuiWindowFlags_NoSavedSettings);
-
-        bool pressed = false;
-        if (g_pButtonTexture && g_pButtonTexture->raster) {
-            const auto textureId = static_cast<ImTextureID>(reinterpret_cast<uintptr_t>(g_pButtonTexture->raster));
-            ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
-            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
-            ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.2f, 0.2f, 0.2f, 0.4f));
-            ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.4f, 0.4f, 0.4f, 0.6f));
-            pressed = ImGui::ImageButton("##btnImg", ImTextureRef(textureId), ImVec2(btnW, btnH));
-            ImGui::PopStyleColor(3);
-            ImGui::PopStyleVar();
-        } else {
-            pressed = ImGui::Button("MENU", ImVec2(btnW, btnH));
-        }
-
-        if (pressed) {
-            g_bMenuOpen = !g_bMenuOpen;
-        }
-
-        ImGui::End();
-        ImGui::PopStyleVar();
-    }
-
-    // Call developer's UI callback when menu is opened
-    if (g_bMenuOpen && g_UserRenderCallback) {
-        g_UserRenderCallback();
-    }
-
-    ImGui::EndFrame();
-    ImGui::Render();
-
-    ImGui_ImplRenderWare_RenderDrawData(ImGui::GetDrawData());
+    g_Coordinator.Frame(width, height, deltaTime);
 }
 
 void Hooked_MobileMenuRender(void *menu) {
@@ -349,9 +246,69 @@ void Hooked_MobileMenuRender(void *menu) {
 }
 
 void Hooked_ShutdownRenderWare() {
-    ImGui_ImplRenderWare_Shutdown();
+    g_Coordinator.Reset(); // Every plugin frees its ImGui textures while RenderWare is still alive.
     if (orig_ShutdownRenderWare)
         orig_ShutdownRenderWare();
+}
+
+void InstallProviderHooks() {
+    void *pTouchSym = (void *)aml->GetSym(GetMainLibrary(), "_Z14AND_TouchEventiiii");
+#ifndef AML64
+    if (!pTouchSym)
+        pTouchSym = reinterpret_cast<void *>(GetMainLibraryAddress() + 0x2697C0);
+#endif
+    if (pTouchSym) {
+        aml->Hook(pTouchSym, reinterpret_cast<void *>(&Hooked_AND_TouchEvent),
+                  reinterpret_cast<void **>(&orig_AND_TouchEvent));
+    }
+
+    // Hook render loop (2D pass and pause menu)
+    Events::drawingEvent.after += RenderFrame;
+
+    void *pMobileMenuRender = reinterpret_cast<void *>(aml->GetSym(GetMainLibrary(), "_ZN10MobileMenu6RenderEv"));
+    if (pMobileMenuRender) {
+        aml->Hook(pMobileMenuRender, reinterpret_cast<void *>(&Hooked_MobileMenuRender),
+                  reinterpret_cast<void **>(&orig_MobileMenuRender));
+    }
+
+    void *pShutdown = reinterpret_cast<void *>(aml->GetSym(GetMainLibrary(), "_ZN5CGame18ShutdownRenderWareEv"));
+    if (pShutdown) {
+        aml->Hook(pShutdown, reinterpret_cast<void *>(&Hooked_ShutdownRenderWare),
+                  reinterpret_cast<void **>(&orig_ShutdownRenderWare));
+    }
+}
+
+// C ABI shims: other plugins call these through the published API, so only POD crosses the boundary.
+ImGuiShared::Handle SharedAdd(void *state, const ImGuiShared::Client *client) {
+    return client ? static_cast<ImGuiShared::Coordinator *>(state)->Add(*client) : 0;
+}
+
+void SharedRemove(void *state, ImGuiShared::Handle id) { static_cast<ImGuiShared::Coordinator *>(state)->Remove(id); }
+
+void SharedSetRects(void *state, ImGuiShared::Handle id, const ImGuiShared::Rect *rects, uint32_t count) {
+    static_cast<ImGuiShared::Coordinator *>(state)->SetRects(id, rects, count);
+}
+
+// The first plugin to initialize publishes its coordinator through AML and installs the hooks; later plugins
+// join it, so the touched plugin's windows draw on top of the others. AML cannot unhook or unregister an
+// interface, so the provider plugin must stay loaded for the whole session.
+const ImGuiShared::API *AcquireSharedAPI() {
+    static const ImGuiShared::API *const api = [] {
+        using namespace ImGuiShared;
+        const auto *existing = static_cast<const API *>(GetInterface(interfaceName));
+        if (existing && existing->version == version && existing->bytes >= sizeof(API))
+            return existing;
+
+        static API local{version, sizeof(API), &g_Coordinator, SharedAdd, SharedRemove, SharedSetRects};
+        if (existing)
+            logger->Error("ImGui/RW: shared ImGui interface v%u is incompatible; windows will not share focus",
+                          existing->version);
+        else
+            RegisterInterface(interfaceName, &local);
+        InstallProviderHooks();
+        return static_cast<const API *>(&local);
+    }();
+    return api;
 }
 } // namespace
 
@@ -388,7 +345,7 @@ bool ImGui_ImplRenderWare_InitRenderer() {
     return true;
 }
 
-bool ImGui_ImplRenderWare_Init(ImGui_RenderCallback renderCallback, const char *buttonPath) {
+bool ImGui_ImplRenderWare_Init(ImGui_RenderCallback renderCallback) {
     if (g_bInitialized)
         return true;
 
@@ -404,9 +361,6 @@ bool ImGui_ImplRenderWare_Init(ImGui_RenderCallback renderCallback, const char *
     ImGui::StyleColorsDark();
 
     g_UserRenderCallback = renderCallback;
-    if (buttonPath && *buttonPath) {
-        std::snprintf(g_szButtonPath, sizeof(g_szButtonPath), "%s", buttonPath);
-    }
 
     if (!ImGui_ImplRenderWare_InitRenderer()) {
         ImGui::DestroyContext(g_pImGuiContext);
@@ -414,31 +368,14 @@ bool ImGui_ImplRenderWare_Init(ImGui_RenderCallback renderCallback, const char *
         return false;
     }
 
-    // Install touch hook
-    void *pTouchSym = (void *)aml->GetSym(GetMainLibrary(), "_Z14AND_TouchEventiiii");
-#ifndef AML64
-    if (!pTouchSym)
-        pTouchSym = reinterpret_cast<void *>(GetMainLibraryAddress() + 0x2697C0);
-#endif
-    if (pTouchSym) {
-        aml->Hook(pTouchSym, reinterpret_cast<void *>(&Hooked_AND_TouchEvent),
-                  reinterpret_cast<void **>(&orig_AND_TouchEvent));
-    }
-
-    // Hook render loop (2D pass and pause menu)
-    Events::drawingEvent.after += RenderFrame;
-
-    void *pMobileMenuRender = reinterpret_cast<void *>(aml->GetSym(GetMainLibrary(), "_ZN10MobileMenu6RenderEv"));
-    if (pMobileMenuRender) {
-        aml->Hook(pMobileMenuRender, reinterpret_cast<void *>(&Hooked_MobileMenuRender),
-                  reinterpret_cast<void **>(&orig_MobileMenuRender));
-    }
-
-    // Hook shutdown
-    void *pShutdown = reinterpret_cast<void *>(aml->GetSym(GetMainLibrary(), "_ZN5CGame18ShutdownRenderWareEv"));
-    if (pShutdown) {
-        aml->Hook(pShutdown, reinterpret_cast<void *>(&Hooked_ShutdownRenderWare),
-                  reinterpret_cast<void **>(&orig_ShutdownRenderWare));
+    g_pSharedAPI = AcquireSharedAPI();
+    const ImGuiShared::Client client{nullptr, ClientFrame, ClientReset};
+    g_hClient = g_pSharedAPI->add(g_pSharedAPI->state, &client);
+    if (!g_hClient) {
+        logger->Error("ImGui/RW: shared ImGui interface rejected this plugin");
+        ImGui::DestroyContext(g_pImGuiContext);
+        g_pImGuiContext = nullptr;
+        return false;
     }
 
     g_bInitialized = true;
@@ -450,11 +387,9 @@ void ImGui_ImplRenderWare_Shutdown() {
     if (!g_bInitialized)
         return;
 
-    g_bMenuOpen = false;
-    if (g_pButtonTexture) {
-        RwTextureDestroy(g_pButtonTexture);
-        g_pButtonTexture = nullptr;
-    }
+    if (g_hClient)
+        g_pSharedAPI->remove(g_pSharedAPI->state, g_hClient);
+    g_hClient = 0;
 
     if (g_pImGuiContext) {
         ImGui::SetCurrentContext(g_pImGuiContext);
@@ -469,19 +404,6 @@ void ImGui_ImplRenderWare_Shutdown() {
 
     g_bInitialized = false;
     logger->Info("ImGui/RW: shutdown completed");
-}
-
-bool ImGui_ImplRenderWare_IsMenuOpen() { return g_bMenuOpen; }
-
-void ImGui_ImplRenderWare_SetMenuOpen(bool open) { g_bMenuOpen = open; }
-
-void ImGui_ImplRenderWare_ToggleMenu() { g_bMenuOpen = !g_bMenuOpen; }
-
-void ImGui_ImplRenderWare_SetButtonVisible(bool visible) { g_bButtonVisible = visible; }
-
-void ImGui_ImplRenderWare_SetButtonSize(float width, float height) {
-    g_CustomButtonW = width;
-    g_CustomButtonH = height;
 }
 
 bool ImGui_ImplRenderWare_RenderDrawData(ImDrawData *drawData) {
