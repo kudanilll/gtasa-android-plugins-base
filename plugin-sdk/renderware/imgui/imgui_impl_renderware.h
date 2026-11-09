@@ -2,16 +2,27 @@
 
 #include <mod/thirdparty/imgui/imgui.h>
 
-// One ImGui context per plugin. Call these on the game's 2D/render thread.
-bool ImGui_ImplRenderWare_Init();
-bool ImGui_ImplRenderWare_NewFrame(int width, int height, float deltaTime);
-bool ImGui_ImplRenderWare_RenderDrawData(ImDrawData *drawData);
+// User callback function type for drawing custom ImGui windows
+typedef void (*ImGui_RenderCallback)();
+
+// Initializes ImGui, RenderWare rendering backend, and hooks touch & render loop automatically.
+// buttonPath: optional path to a custom PNG/JPG button icon. If NULL, automatically searches
+// for button.png or button.jpg in the game files/data directory, falling back to a "MENU" button.
+bool ImGui_ImplRenderWare_Init(ImGui_RenderCallback renderCallback = nullptr, const char *buttonPath = nullptr);
+
+// Shuts down ImGui, cleans up textures, and restores original hooks
 void ImGui_ImplRenderWare_Shutdown();
 
-// May be called from the input thread. True means this entire touch belongs to the UI.
-// capture is considered only on press; releases belonging to the game always pass through.
-// x/y must use NewFrame's render coordinates; see main.cpp for window-to-render mapping.
-bool ImGui_ImplRenderWare_ProcessTouch(int type, int finger, int x, int y, bool capture);
-void ImGui_ImplRenderWare_SetInputEnabled(bool enabled);
+// Query or change menu window visibility
+bool ImGui_ImplRenderWare_IsMenuOpen();
+void ImGui_ImplRenderWare_SetMenuOpen(bool open);
+void ImGui_ImplRenderWare_ToggleMenu();
 
-// ImTextureID stores RwRaster*, not RwTexture* or a GLuint.
+// Floating toggle button configuration
+void ImGui_ImplRenderWare_SetButtonVisible(bool visible);
+void ImGui_ImplRenderWare_SetButtonSize(float width, float height);
+
+// Low-level renderer APIs (for developers who manage their own render loop)
+bool ImGui_ImplRenderWare_InitRenderer();
+bool ImGui_ImplRenderWare_NewFrame(int width, int height, float deltaTime);
+bool ImGui_ImplRenderWare_RenderDrawData(ImDrawData *drawData);
