@@ -183,9 +183,12 @@ void ClientFrame(void *, const ImGuiShared::Touch *events, uint32_t count, int32
 
     if (g_UserRenderCallback)
         g_UserRenderCallback();
+    ImGui::EndFrame();
 
     // Only touches inside these rectangles reach ImGui; everything else (joystick, camera, gaps between
     // windows) stays with the game. Child windows are clipped by their parent, so only top-level windows count.
+    // Collected after EndFrame: until then ImGui's invisible fallback "Debug" window (400x400 at 60,60) is still
+    // active and would swallow taps on the radar and the top-left of the pause map.
     std::vector<ImGuiShared::Rect> rects;
     for (const ImGuiWindow *win : g_pImGuiContext->Windows) {
         if (win->Active && !win->Hidden && !(win->Flags & (ImGuiWindowFlags_NoInputs | ImGuiWindowFlags_ChildWindow)))
@@ -193,7 +196,6 @@ void ClientFrame(void *, const ImGuiShared::Touch *events, uint32_t count, int32
     }
     g_pSharedAPI->setRects(g_pSharedAPI->state, g_hClient, rects.data(), static_cast<uint32_t>(rects.size()));
 
-    ImGui::EndFrame();
     ImGui::Render();
     ImGui_ImplRenderWare_RenderDrawData(ImGui::GetDrawData());
 }
