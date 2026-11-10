@@ -160,7 +160,7 @@ main() {
         replace main.cpp "Mod Template" "$name"
         replace .github/workflows/release.yml libmodtemplate "lib$lib"
         replace .github/workflows/release.yml BasePlugin-libs "$pascal-libs"
-        replace README.md libmodtemplate "lib$lib"
+        replace README.md libyourmod "lib$lib"
         # New title; drop the template-only "Create a new mod" section.
         awk -v title="# $name" 'NR == 1 { print title; next } /^## / { skip = ($0 == "## Create a new mod") } !skip' \
             README.md >README.md.tmp

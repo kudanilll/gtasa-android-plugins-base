@@ -163,7 +163,7 @@
         Set-Text $dest 'main.cpp' 'Mod Template' $name
         Set-Text $dest '.github\workflows\release.yml' 'libmodtemplate' "lib$lib"
         Set-Text $dest '.github\workflows\release.yml' 'BasePlugin-libs' "$pascal-libs"
-        Set-Text $dest 'README.md' 'libmodtemplate' "lib$lib"
+        Set-Text $dest 'README.md' 'libyourmod' "lib$lib"
         Set-Text $dest 'README.md' '\A# [^\n]*' "# $name"
         # Drop the template-only "Create a new mod" section.
         $readme = Join-Path $dest 'README.md'

@@ -63,7 +63,15 @@ Copy the `.so` for your game's ABI to the AML mods folder.
 ## Credits
 
 - [AML](https://github.com/AndroidModLoader/AndroidModLoader) and [aml-psdk](https://github.com/AndroidModLoader/aml-psdk): RusJJ and contributors.
-- [Dear ImGui](https://github.com/ocornut/imgui): Omar Cornut and contributors. [MIT](mod/thirdparty/imgui/LICENSE.txt).
-- [stb](https://github.com/nothings/stb): Sean Barrett and contributors. [License](mod/thirdparty/stb/STB_LICENSE).
+- [Dear ImGui](https://github.com/ocornut/imgui): Omar Cornut and contributors.
+- [stb](https://github.com/nothings/stb): Sean Barrett and contributors.
 - RenderWare integration references: [SA-MP Mobile v2.10](https://github.com/noobcooder-sys/SA-MP-Mobile-Client-GTA-SA-2.10-) and [build69-gtasa2.0](https://github.com/0xcds4r/build69-gtasa2.0).
-- Base template: [MIT](LICENSE). Plugin-SDK: [GPLv3](plugin-sdk/LICENSE).
+
+## License
+
+The template is [MIT](LICENSE) licensed by 0xavion. Bundled third-party code keeps its own license, and the full texts are in [`licenses/`](licenses):
+
+- AML mod headers in `mod/`: [MIT](licenses/AML.txt)
+- `plugin-sdk/`, based on aml-psdk: [GPLv3](licenses/aml-psdk.txt)
+- `mod/thirdparty/imgui/`: [MIT](licenses/imgui.txt)
+- `mod/thirdparty/stb/`: [MIT or public domain](licenses/stb.txt)
