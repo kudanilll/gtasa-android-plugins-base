@@ -41,11 +41,13 @@ The script asks for the mod name, author, version, mod ID and library name, then
 
 ## Build
 
-Set the Android NDK path in `NDKPath.txt` (the create script does this for you), then run `build.ps1` on Windows or `build.sh` on Linux and macOS:
+On Windows:
 
 ```powershell
 .\build.ps1
 ```
+
+On Linux or macOS:
 
 ```bash
 ./build.sh
