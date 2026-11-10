@@ -70,8 +70,3 @@ Copy the `.so` for your game's ABI to the AML mods folder.
 ## License
 
 The template is [MIT](LICENSE) licensed by 0xavion. Bundled third-party code keeps its own license, and the full texts are in [`licenses/`](licenses):
-
-- AML mod headers in `mod/`: [MIT](licenses/AML.txt)
-- `plugin-sdk/`, based on aml-psdk: [GPLv3](licenses/aml-psdk.txt)
-- `mod/thirdparty/imgui/`: [MIT](licenses/imgui.txt)
-- `mod/thirdparty/stb/`: [MIT or public domain](licenses/stb.txt)
