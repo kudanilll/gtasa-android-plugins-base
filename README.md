@@ -6,7 +6,6 @@ A template for building GTA San Andreas Android plugins with Android Mod Loader 
 
 - GTA SA Plugin-SDK with RenderWare support.
 - Dear ImGui 1.93.1 WIP with a RenderWare renderer and touch input. The backend has no menu of its own; your render callback decides what to draw and when.
-- Touches inside ImGui windows go to ImGui and everything else goes to the game, so the joystick and camera keep working while a menu is open.
 - Several plugins built from this template can show ImGui at the same time. The window you touch comes to the front.
 - Custom TTF/OTF fonts through ImGui's font API. Glyphs are rasterized on demand, so one font file covers every size.
 - Image loading through `stb_image`.
@@ -24,18 +23,38 @@ The example looks for these optional files in the game's `Android/data/<package>
 - `font.ttf` or `font.otf` for the trainer window and the text box.
 - `music.mp3` or `music.wav` for the Music tab.
 
+## Create a new mod
+
+On Windows:
+
+```powershell
+powershell -c "irm https://raw.githubusercontent.com/kudanilll/gtasa-android-plugins-base/master/create.ps1 | iex"
+```
+
+On Linux or macOS:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/kudanilll/gtasa-android-plugins-base/master/create.sh | bash
+```
+
+The script asks for the mod name, author, version, mod ID and library name, then downloads the template into a new folder. It puts your names into `main.cpp`, `Android.mk` and the release workflow, writes `NDKPath.txt` if it finds the Android NDK, and makes the first git commit.
+
 ## Build
 
-Set the Android NDK path in `NDKPath.txt`, then run:
+Set the Android NDK path in `NDKPath.txt` (the create script does this for you), then run `build.ps1` on Windows or `build.sh` on Linux and macOS:
 
 ```powershell
 .\build.ps1
 ```
 
+```bash
+./build.sh
+```
+
 The compiled libraries are saved to:
 
-- `libs/armeabi-v7a/libmodtemplate.so`
-- `libs/arm64-v8a/libmodtemplate.so`
+- `libs/armeabi-v7a/libyourmod.so`
+- `libs/arm64-v8a/libyourmod.so`
 
 Copy the `.so` for your game's ABI to the AML mods folder.
 
