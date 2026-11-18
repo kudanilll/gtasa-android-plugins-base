@@ -2,6 +2,7 @@
 
 #include <mod/amlmod.h>
 #include <mod/music_player.h>
+#include <plugin-sdk/game_sa/engine/MobileMenu.h>
 #include <plugin-sdk/game_sa/engine/Radar.h>
 #include <plugin-sdk/game_sa/engine/Streaming.h>
 #include <plugin-sdk/game_sa/engine/World.h>
@@ -41,6 +42,8 @@ std::string FindAsset(std::initializer_list<const char *> names) {
 }
 
 bool IsPlayerReady() { return Player() != nullptr; }
+
+bool IsGameMenuShowing() { return gMobileMenu.screenStack.Count() > 0 || gMobileMenu.pendingScreen; }
 
 void SetTime(int hour, int minute) { CClock::SetGameClock(static_cast<u8>(hour), static_cast<u8>(minute), 0); }
 

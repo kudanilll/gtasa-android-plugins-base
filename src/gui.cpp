@@ -224,6 +224,10 @@ void DrawTrainerUI(float scale) {
 
 namespace Gui {
 void Draw() {
+    // Gameplay only: nothing over the title, pause or Settings menus, so their taps reach the game.
+    if (Logic::IsGameMenuShowing())
+        return;
+
     const float scale = std::clamp(static_cast<float>(RsGlobal.maximumHeight) / 720.0f, 0.8f, 2.0f);
     DrawLauncher(scale);
 

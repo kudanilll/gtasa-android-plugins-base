@@ -12,6 +12,9 @@ std::string FindAsset(std::initializer_list<const char *> names);
 
 bool IsPlayerReady();
 
+// True while one of the game's menus (title, pause, Settings...) is on screen.
+bool IsGameMenuShowing();
+
 void SetTime(int hour, int minute);
 
 inline constexpr int weatherPresetCount = 8;
