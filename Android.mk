@@ -5,10 +5,16 @@ LOCAL_MODULE    := modtemplate
 LOCAL_SRC_FILES := main.cpp \
                    src/gui.cpp \
                    src/logic.cpp \
+                   src/menu_demo.cpp \
                    mod/logger.cpp \
                    mod/config.cpp \
                    mod/texture_loader.cpp \
                    mod/music_player.cpp \
+                   mod/menu/game_menu.cpp \
+                   mod/menu/menu.cpp \
+                   mod/menu/menu_items.cpp \
+                   mod/menu/menu_screens.cpp \
+                   mod/menu/menu_scroll.cpp \
                    mod/thirdparty/imgui/imgui.cpp \
                    mod/thirdparty/imgui/imgui_draw.cpp \
                    mod/thirdparty/imgui/imgui_tables.cpp \

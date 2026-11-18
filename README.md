@@ -7,6 +7,7 @@ A template for building GTA San Andreas Android plugins with Android Mod Loader 
 - GTA SA Plugin-SDK with RenderWare support.
 - Dear ImGui 1.93.1 WIP with a RenderWare renderer and touch input. The backend has no menu of its own; your render callback decides what to draw and when.
 - Several plugins built from this template can show ImGui at the same time. The window you touch comes to the front.
+- Native game menus: tiles in the main, pause, Start Game and Settings menus, items in the game's Settings tabs, and lists and carousels of your own. Long lists scroll, and SAUtils is not needed.
 - Custom TTF/OTF fonts through ImGui's font API. Glyphs are rasterized on demand, so one font file covers every size.
 - Image loading through `stb_image`.
 - `MusicPlayer` plays MP3 and WAV files with Android's MediaPlayer and pauses while the game is in the background.
@@ -15,7 +16,7 @@ A template for building GTA San Andreas Android plugins with Android Mod Loader 
 
 ## Example mod
 
-`main.cpp` registers the mod and passes `Gui::Draw` to `ImGui_ImplRenderWare_Init`. `src/gui.cpp` draws a launcher button, a trainer window with time, weather, teleport and music tabs, and a text box that says "mod loaded!" when the player first spawns. The game code behind those buttons lives in `src/logic.cpp`.
+`main.cpp` registers the mod and passes `Gui::Draw` to `ImGui_ImplRenderWare_Init`. `src/gui.cpp` draws a launcher button, a trainer window with time, weather, teleport and music tabs, and a text box that says "mod loaded!" when the player first spawns. The game code behind those buttons lives in `src/logic.cpp`. `src/menu_demo.cpp` shows the menu API in every place it reaches: a Multiplayer tile next to Start Game that opens a carousel of lists, a scrolling list of sample items from Settings and the pause menu, a Start Game tile, and a row in the Display tab.
 
 The example looks for these optional files in the game's `Android/data/<package>/files` folder, then in the AML config folder:
 
@@ -65,6 +66,7 @@ Copy the `.so` for your game's ABI to the AML mods folder.
 - [AML](https://github.com/AndroidModLoader/AndroidModLoader) and [aml-psdk](https://github.com/AndroidModLoader/aml-psdk): RusJJ and contributors.
 - [Dear ImGui](https://github.com/ocornut/imgui): Omar Cornut and contributors.
 - [stb](https://github.com/nothings/stb): Sean Barrett and contributors.
+- [SAUtils](https://github.com/AndroidModLoader/SAUtils): AndroidModLoader. `mod/menu/` follows its approach to the game's menus.
 - RenderWare integration references: [SA-MP Mobile v2.10](https://github.com/noobcooder-sys/SA-MP-Mobile-Client-GTA-SA-2.10-) and [build69-gtasa2.0](https://github.com/0xcds4r/build69-gtasa2.0).
 
 ## License
